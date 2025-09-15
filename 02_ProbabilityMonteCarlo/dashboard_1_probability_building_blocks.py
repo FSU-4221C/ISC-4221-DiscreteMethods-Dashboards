@@ -196,6 +196,7 @@ app.layout = dbc.Container([
     html.Div(id='num-trials', style={'display': 'none'}, children=100),
     html.Div(id='event-values', style={'display': 'none'}, children='[1, 2, 3]'),
     html.Div(id='simulation-results', style={'display': 'none'}),
+    html.Div(id='sample-space-visible', style={'display': 'none'}, children='false'),
     
     # Header
     dbc.Row([
@@ -268,11 +269,24 @@ app.layout = dbc.Container([
                 dbc.Col([
                     dbc.Card([
                         dbc.CardHeader([
-                            html.H5("📊 Sample Space", className="mb-0")
+                            dbc.Row([
+                                dbc.Col([
+                                    html.H5("📊 Sample Space", className="mb-0")
+                                ], width=10),
+                                dbc.Col([
+                                    dbc.Button(
+                                        "👁️", 
+                                        id="toggle-sample-space-btn",
+                                        color="outline-secondary",
+                                        size="sm",
+                                        className="float-end"
+                                    )
+                                ], width=2)
+                            ])
                         ]),
                         dbc.CardBody([
                             html.Div(id='sample-space-content')
-                        ])
+                        ], id="sample-space-body")
                     ])
                 ], width=6),
                 
@@ -402,6 +416,28 @@ def initialize_event_values(experiment_type: str, num_items: int) -> str:
         default_value = [1] if num_items == 1 else [0, 1]
     
     return str(default_value)
+
+@app.callback(
+    [Output('sample-space-body', 'style'),
+     Output('sample-space-visible', 'children'),
+     Output('toggle-sample-space-btn', 'children')],
+    [Input('toggle-sample-space-btn', 'n_clicks')],
+    [State('sample-space-visible', 'children')]
+)
+def toggle_sample_space_visibility(n_clicks: int, is_visible: str) -> Tuple[Dict[str, str], str, str]:
+    """Toggle the visibility of the Sample Space panel."""
+    if n_clicks is None:
+        # Initial state - hidden by default
+        return {'display': 'none'}, 'false', '👁️'
+    
+    # Toggle visibility
+    currently_visible = is_visible == 'true'
+    new_visibility = not currently_visible
+    
+    if new_visibility:
+        return {'display': 'block'}, 'true', '🙈'
+    else:
+        return {'display': 'none'}, 'false', '👁️'
 
 @app.callback(
     Output('sample-space-content', 'children'),
