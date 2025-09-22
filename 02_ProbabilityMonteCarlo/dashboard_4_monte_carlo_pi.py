@@ -219,7 +219,20 @@ app.layout = dbc.Container([
                               color="primary", className="w-100 mb-2"),
                     
                     dbc.Button("Add More Points", id="add-points-btn", 
-                              color="success", className="w-100")
+                              color="success", className="w-100"),
+                    
+                    html.Hr(className="my-3"),
+                    
+                    # Explanation text
+                    html.Div([
+                        html.H6("📚 How it works:", className="mb-2"),
+                        html.P([
+                            html.Strong("Monte Carlo Method:"), " We generate random points in a square and count how many fall inside the unit circle. The ratio of points inside to total points approximates π/4, so π ≈ 4 × (points inside) / (total points)."
+                        ], className="small mb-2"),
+                        html.P([
+                            html.Strong("Confidence Interval:"), " We calculate the standard error of our proportion estimate and use the normal approximation to create a confidence interval around our π estimate. The interval shows the range where the true π value is likely to fall."
+                        ], className="small")
+                    ], className="bg-light p-2 rounded")
                 ])
             ], className="h-100")
         ], width=3),
