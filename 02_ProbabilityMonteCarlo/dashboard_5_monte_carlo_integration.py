@@ -120,14 +120,16 @@ def monte_carlo_nd(func: Callable, domain: List[Tuple[float, float]], n_samples:
     # Calculate integral estimate
     integral_estimate = volume * np.mean(values)
     
-    # Calculate error estimate
-    sample_std = np.std(values)
+    # Calculate error estimate (standard error of the mean)
+    sample_std = np.std(values, ddof=1)  # Use sample standard deviation
     error_estimate = volume * sample_std / np.sqrt(n_samples)
     
     return {
         'integral': integral_estimate,
         'error': error_estimate,
-        'volume': volume
+        'volume': volume,
+        'mean_value': np.mean(values),
+        'std_value': sample_std
     }
 
 def trapezoidal_rule(func: Callable, domain: Tuple[float, float], n_points: int) -> float:
@@ -575,27 +577,33 @@ def dimensionality_analysis(n_clicks: int, dimensions: int, samples_per_dim: int
     if n_clicks is None or dimensions is None or samples_per_dim is None:
         return ["Click 'Compare Methods' to see results"]
     
-    # Simple test function: product of cosines
+    # Simple test function: sum of squares (more stable)
     def test_func(*args):
-        return np.prod([np.cos(x) for x in args])
+        return np.sum([x**2 for x in args])
     
     # Domain for each dimension
     domain = [(0, np.pi/2) for _ in range(dimensions)]
     
-    # Monte Carlo integration
-    mc_result = monte_carlo_nd(test_func, domain, samples_per_dim)
+    # Monte Carlo integration - use total samples
+    total_samples = samples_per_dim * dimensions
+    mc_result = monte_carlo_nd(test_func, domain, total_samples)
     
     # Traditional method would require (samples_per_dim)^dimensions points
     traditional_points = samples_per_dim ** dimensions
     
     return [
         html.H6(f"Dimensions: {dimensions}"),
-        html.P(f"Monte Carlo samples: {samples_per_dim}"),
+        html.P(f"Function: f(x₁,x₂,...,xₙ) = x₁² + x₂² + ... + xₙ²"),
+        html.P(f"Domain: [0, π/2]ⁿ (hypercube)"),
+        html.P(f"Monte Carlo samples: {total_samples:,}"),
         html.P(f"Traditional method points needed: {traditional_points:,}"),
         html.P(f"Monte Carlo estimate: {mc_result['integral']:.6f}"),
         html.P(f"Error estimate: {mc_result['error']:.6f}"),
+        html.P(f"Volume of domain: {mc_result['volume']:.6f}"),
+        html.P(f"Mean function value: {mc_result['mean_value']:.6f}"),
+        html.P(f"Std dev of function values: {mc_result['std_value']:.6f}"),
         html.Hr(),
-        html.P(f"Efficiency ratio: {traditional_points / samples_per_dim:.1f}x fewer points needed!"),
+        html.P(f"Efficiency ratio: {traditional_points / total_samples:.1f}x fewer points needed!"),
         html.P("This demonstrates why Monte Carlo is preferred in high dimensions.")
     ]
 
