@@ -1,0 +1,2465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Exam practice by problem type — ISC 4221C Discrete Algorithms</title>
+<meta name="description" content="Thirteen problem types drawn from the real midterm and final, every one answerable without seeing a figure, each with a worked solution you can reveal.">
+
+<link rel="stylesheet" href="../assets/css/fsu-tokens.css">
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+
+<!-- Theme bootstrap. Copy verbatim. Runs before first paint so a stored dark
+     preference does not flash light; theme.js agrees with whatever it set. -->
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('isc4221c.theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) { /* storage unavailable; fall through to the OS preference */ }
+  })();
+</script>
+</head>
+
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <!-- ROW 1 — identity and utilities. Scrolls away with the page. -->
+  <div class="site-header__bar">
+    <div class="site-header__bar-inner wrap">
+      <a class="brand" href="../index.html">
+        <span>
+          <span class="brand__code">ISC 4221C</span>
+          <span class="brand__name">Discrete Algorithms · Spring 2026</span>
+        </span>
+      </a>
+
+      <!-- Pushed to the right edge by margin-inline-start:auto, not by a
+           spacer element. Ships `hidden`; theme.js reveals it, so a reader
+           without the script never sees a control that cannot work. -->
+      <fieldset class="theme-switch" hidden>
+        <legend class="theme-switch__legend">Theme</legend>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-system" value="system" checked>
+          <label class="theme-switch__label" for="theme-system">Auto</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-light" value="light">
+          <label class="theme-switch__label" for="theme-light">Light</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-dark" value="dark">
+          <label class="theme-switch__label" for="theme-dark">Dark</label>
+        </span>
+      </fieldset>
+    </div>
+  </div>
+
+</header>
+
+<!-- ROW 2 — modules. Sticky, and it never wraps: every module is visible at
+     once, its sections behind a dropdown rather than spilled onto the strip.
+     nav.js fills each .chapter-nav__menu from window.NAV_MAP.
+
+     OUTSIDE <header> on purpose. A sticky element cannot leave its parent's
+     box, so while this lived inside the two-row <header> it stuck for the
+     header's own 85px of height and then scrolled away with it. Its parent has
+     to be <body>. -->
+<nav class="chapter-nav" aria-label="Modules">
+  <div class="chapter-nav__inner wrap">
+    <ul class="chapter-nav__list">
+        <li class="chapter-nav__item chapter-nav__item--plain">
+          <a class="chapter-nav__link" href="../index.html">Home</a>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m0">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m0"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m0"
+                  data-chapter-file="../m0-foundations.html">
+            <span class="chapter-nav__full">Module 0</span>
+            <span class="chapter-nav__short" aria-hidden="true">M0</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m0" role="group"
+               aria-labelledby="chapbtn-m0" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m1">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m1"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m1"
+                  data-chapter-file="../m1-algorithm-design.html">
+            <span class="chapter-nav__full">Module 1</span>
+            <span class="chapter-nav__short" aria-hidden="true">M1</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m1" role="group"
+               aria-labelledby="chapbtn-m1" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m2">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m2"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m2"
+                  data-chapter-file="../m2-probability.html">
+            <span class="chapter-nav__full">Module 2</span>
+            <span class="chapter-nav__short" aria-hidden="true">M2</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m2" role="group"
+               aria-labelledby="chapbtn-m2" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m3">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m3"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m3"
+                  data-chapter-file="../m3-graphs.html">
+            <span class="chapter-nav__full">Module 3</span>
+            <span class="chapter-nav__short" aria-hidden="true">M3</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m3" role="group"
+               aria-labelledby="chapbtn-m3" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m4">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m4"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m4"
+                  data-chapter-file="../m4-image-processing.html">
+            <span class="chapter-nav__full">Module 4</span>
+            <span class="chapter-nav__short" aria-hidden="true">M4</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m4" role="group"
+               aria-labelledby="chapbtn-m4" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m5">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m5"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m5"
+                  data-chapter-file="../m5-data-mining.html">
+            <span class="chapter-nav__full">Module 5</span>
+            <span class="chapter-nav__short" aria-hidden="true">M5</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m5" role="group"
+               aria-labelledby="chapbtn-m5" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m6">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m6"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m6"
+                  data-chapter-file="../m6-computational-geometry.html">
+            <span class="chapter-nav__full">Module 6</span>
+            <span class="chapter-nav__short" aria-hidden="true">M6</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m6" role="group"
+               aria-labelledby="chapbtn-m6" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m7">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m7"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m7"
+                  data-chapter-file="../m7-discrete-optimization.html">
+            <span class="chapter-nav__full">Module 7</span>
+            <span class="chapter-nav__short" aria-hidden="true">M7</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m7" role="group"
+               aria-labelledby="chapbtn-m7" hidden></div>
+        </li>
+        <li class="chapter-nav__item chapter-nav__item--plain chapter-nav__item--sep"
+            data-chapter="threads">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-threads"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-threads">
+            <span class="chapter-nav__full">Threads</span>
+            <span class="chapter-nav__short" aria-hidden="true">Thr</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-threads" role="group"
+               aria-labelledby="chapbtn-threads" hidden></div>
+        </li>
+      </ul>
+    </div>
+</nav>
+
+<nav class="breadcrumb wrap" aria-label="Breadcrumb">
+  <ol class="breadcrumb__list">
+    <li><a href="../index.html">Course home</a></li>
+    <li><a href="../index.html#threads">Cross-cutting threads</a></li>
+    <li><span aria-current="page">Exam practice by problem type</span></li>
+  </ol>
+</nav>
+
+<div class="layout">
+
+  <div class="layout__sidebar">
+
+    <nav class="module-nav" aria-label="On this page">
+      <p class="module-nav__title">On this page</p>
+
+      <button class="module-nav__toggle btn btn--ghost" type="button"
+              aria-expanded="true" aria-controls="module-nav-list" hidden>
+        <span data-nav-label>Page contents</span>
+      </button>
+
+      <ul class="module-nav__list" id="module-nav-list">
+        <li><a class="module-nav__link" href="#section-how"><span>How to use this page</span></a></li>
+        <li><a class="module-nav__link" href="#section-shape"><span>The shape of the two exams</span></a></li>
+        <li><a class="module-nav__link" href="#section-picker"><span>Build a practice set</span></a></li>
+        <li>
+          <p class="module-nav__group-title">Midterm types</p>
+          <ul class="module-nav__sublist">
+            <li><a class="module-nav__link" href="#type-sorting"><span>1 · Sorting traces</span></a></li>
+            <li><a class="module-nav__link" href="#type-random-variables"><span>2 · PMF, CDF, mean, variance</span></a></li>
+            <li><a class="module-nav__link" href="#type-complexity"><span>3 · Counting the operation of interest</span></a></li>
+            <li><a class="module-nav__link" href="#type-probability"><span>4 · Conditional probability</span></a></li>
+            <li><a class="module-nav__link" href="#type-dijkstra"><span>5 · Dijkstra, and re-running it</span></a></li>
+            <li><a class="module-nav__link" href="#type-monte-carlo"><span>6 · Monte Carlo integration</span></a></li>
+          </ul>
+        </li>
+        <li>
+          <p class="module-nav__group-title">Final types</p>
+          <ul class="module-nav__sublist">
+            <li><a class="module-nav__link" href="#type-lines"><span>7 · Lines, s coordinate, distance</span></a></li>
+            <li><a class="module-nav__link" href="#type-ear-clipping"><span>8 · Polygon triangulation</span></a></li>
+            <li><a class="module-nav__link" href="#type-decision-tree"><span>9 · Impurity, gain, Hunt's choice</span></a></li>
+            <li><a class="module-nav__link" href="#type-single-linkage"><span>10 · Single-linkage clustering</span></a></li>
+            <li><a class="module-nav__link" href="#type-median-filter"><span>11 · Median filter</span></a></li>
+            <li><a class="module-nav__link" href="#type-sobel"><span>12 · Sobel edge detection</span></a></li>
+            <li><a class="module-nav__link" href="#type-morphology"><span>13 · Dilation and erosion</span></a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <nav class="module-nav" aria-label="Cross-cutting threads">
+      <p class="module-nav__title">Other threads</p>
+      <ul class="module-nav__list">
+        <li><a class="module-nav__link" href="complexity-comparator.html"><span>Complexity comparator</span></a></li>
+        <li><a class="module-nav__link" href="kmeans-everywhere.html"><span>k-means everywhere</span></a></li>
+        <li><a class="module-nav__link" href="greedy-gallery.html"><span>Greedy gallery</span></a></li>
+        <li><a class="module-nav__link" href="delaunay-thread.html"><span>Delaunay thread</span></a></li>
+        <li><a class="module-nav__link" href="../index.html#search"><span>Search all topics</span></a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main class="layout__main" id="main" tabindex="-1">
+    <!-- Search. Every page carries one; a reader who lands here from a link
+         should not have to go back to the home page to look something up.
+         Ids are page-unique because two [data-search] blocks on one page
+         would otherwise share a label target. -->
+    <section class="search search--inline" data-search data-search-limit="8"
+             data-search-base="../"
+             aria-label="Search the course">
+      <form class="search__form" role="search">
+        <div class="search__field">
+          <label class="search__label" for="exam-practice-search">Search all topics</label>
+          <input class="search__input" id="exam-practice-search" name="q" type="search"
+                 autocomplete="off" spellcheck="false" data-search-input>
+        </div>
+      </form>
+      <p class="search__status" role="status" aria-live="polite" data-search-status></p>
+      <ul class="search__results" data-search-results aria-label="Search results"></ul>
+      <p class="search__nojs">Search is not running. JavaScript is switched off,
+         or a script file is missing.</p>
+    </section>
+
+
+    <div class="page-header">
+      <p class="eyebrow">Cross-cutting thread</p>
+      <h1>Exam practice by problem type</h1>
+      <p class="lede">
+        Thirteen problem types, taken from the structure of the real midterm and final.
+        Every one is stated so it can be answered without seeing any picture: graphs come
+        as edge lists, images come as tables of pixel values, code comes as real text.
+        Each has a worked solution you can reveal when you want it.
+      </p>
+      <p class="page-header__meta">
+        <span><strong>13</strong> problem types</span>
+        <span><strong>6</strong> modules assessed</span>
+        <span>Midterm 100 marks · Final 100 marks</span>
+        <span><strong>0</strong> figures required</span>
+      </p>
+    </div>
+
+    <div class="coverage-legend">
+      <p class="coverage-legend__intro" id="coverage-legend-intro">Coverage markers</p>
+      <dl aria-labelledby="coverage-legend-intro">
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-exam-practice-exam" class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Exam</span></dt>
+            <dd id="legend-exam-practice-exam">Assessed on the midterm or the final</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-exam-practice-full" class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Full</span></dt>
+            <dd id="legend-exam-practice-full">Taught in full in the named source</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-exam-practice-partial" class="pill pill--partial"><span class="pill__glyph" aria-hidden="true">◐</span> Partial</span></dt>
+            <dd id="legend-exam-practice-partial">Mentioned, or covered only in passing — worth extra revision</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-exam-practice-new" class="pill pill--new"><span class="pill__glyph" aria-hidden="true">✚</span> New</span></dt>
+            <dd id="legend-exam-practice-new">Built for 2026 — no interactive version existed before</dd>
+          </div>
+      </dl>
+    </div>
+
+    <!-- ============================================================ SECTION 1 -->
+    <section class="topic-group" id="section-how" aria-labelledby="section-how-title">
+      <div class="topic-group__header">
+        <h2 id="section-how-title">How to use this page</h2>
+      </div>
+
+      <div class="prose">
+        <p>
+          These are practice problems built on the <em>types</em> of question the course
+          sets, using the same data the Fall 2025 papers used. They are not a copy of any
+          paper you will sit, and the numbers on a future exam will differ. What carries
+          over is the shape: what you are asked to produce, what counts as working, and
+          where the marks are.
+        </p>
+
+        <div class="callout callout--key">
+          <p class="callout__title">Key idea</p>
+          <p>
+            Both papers say the same thing in their instructions: <strong>no credit is
+            given for an answer without a clear explanation or derivation</strong>. On the
+            midterm, leaving a question blank earns 15 per cent; an answer that shows no
+            understanding earns nothing. Showing the steps is not politeness, it is where
+            most of the marks are.
+          </p>
+        </div>
+
+        <h3 id="sub-solutions">The worked solutions</h3>
+        <p>
+          Each problem type ends with a <em>Show the worked solution</em> control. It is a
+          standard disclosure: reach it with Tab, open and close it with Enter or Space,
+          and your screen reader will announce whether it is expanded or collapsed.
+          Nothing is hidden from assistive technology that is not also hidden visually.
+        </p>
+
+        <div class="callout callout--warning">
+          <p class="callout__title">Common mistake</p>
+          <p>
+            Reading the solution first. The solutions below are complete, which makes them
+            very easy to nod along to. Write your own answer on paper first, then open the
+            disclosure and compare working, not just final answers — most of the marks are
+            in the working.
+          </p>
+        </div>
+
+        <h3 id="sub-alternate">If you need this in another format</h3>
+        <p>
+          Every problem on this page is real text: no image is needed to answer anything,
+          every matrix is a real table with headers, and every code snippet is selectable.
+          If you need the material as a document, in large print, or in braille, ask the
+          instructor — you do not need to explain why. See the
+          <a class="link-external" href="../../ACCESSIBILITY_STATEMENT.md">accessibility
+          statement<span class="visually-hidden"> (Markdown file, opens outside the dashboard)</span></a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 2 -->
+    <section class="topic-group" id="section-shape" aria-labelledby="section-shape-title">
+      <div class="topic-group__header">
+        <h2 id="section-shape-title">The shape of the two exams</h2>
+      </div>
+
+      <div class="prose">
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-shape-label">
+          <p class="visually-hidden" id="table-shape-label">Structure and mark allocation of both exams</p>
+          <table class="data-table">
+            <caption>Structure of the two papers, as set in Fall 2025</caption>
+            <thead>
+              <tr>
+                <th scope="col">Paper</th>
+                <th scope="col">Length</th>
+                <th scope="col">Questions</th>
+                <th scope="col">Choice</th>
+                <th scope="col">Modules assessed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Midterm</th>
+                <td>1 hour 45 minutes</td>
+                <td>6 problems, 20 marks each</td>
+                <td>Answer any 5 of the 6, and the Monte Carlo problem must be one of them, for 100 marks</td>
+                <td>M1, M2, M3</td>
+              </tr>
+              <tr>
+                <th scope="row">Final</th>
+                <td>2 hours</td>
+                <td>4 questions: 25, 25, 25 and 30 marks</td>
+                <td>None — answer all four. The maxima sum to 105 against a total of 100, so 5 marks are built-in extra credit</td>
+                <td>M4, M5, M6</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Two modules are assessed on neither paper: M0 Foundations and M7 Discrete
+          Optimization. M7 in particular is 121 slide frames and all of Lab 14 with no
+          exam representation.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 3 -->
+    <section class="topic-group" id="section-picker" aria-labelledby="section-picker-title">
+      <div class="topic-group__header">
+        <h2 id="section-picker-title">Build a practice set</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--new"><span class="pill__glyph" aria-hidden="true">✚</span> New for 2026</span></li>
+        </ul>
+
+        <h3 id="sub-picker">Filter the thirteen types</h3>
+
+        <p>
+          Choose a paper, a module, or a kind of answer, and the tool lists the problem
+          types that match, with their mark values and the topic numbers they assess. Each
+          one appears as a heading further down this page under the name shown in the
+          table.
+        </p>
+
+        <div id="demo-practice-picker-mount">
+          <div class="demo__fallback">
+            <p><strong>Practice set builder — interactive version not running.</strong>
+               Either JavaScript is off, or this page was opened directly from a folder.
+               All thirteen problem types are listed below, and each is a heading further
+               down this page.</p>
+            <div class="table-scroll" role="region" tabindex="0"
+                 aria-label="All thirteen problem types with their paper, module and marks">
+              <table class="data-table">
+                <caption>All thirteen problem types</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Paper</th>
+                    <th scope="col">Module</th>
+                    <th scope="col" class="is-numeric">Marks</th>
+                    <th scope="col">Answer is</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">1 · Sorting traces</th><td>Midterm</td><td>M1</td><td class="is-numeric">20</td><td>a trace and an explanation</td></tr>
+                  <tr><th scope="row">2 · PMF, CDF, mean, variance</th><td>Midterm</td><td>M2</td><td class="is-numeric">20</td><td>a calculation</td></tr>
+                  <tr><th scope="row">3 · Counting the operation of interest</th><td>Midterm</td><td>M1</td><td class="is-numeric">20</td><td>a calculation</td></tr>
+                  <tr><th scope="row">4 · Conditional probability</th><td>Midterm</td><td>M2</td><td class="is-numeric">20</td><td>a calculation</td></tr>
+                  <tr><th scope="row">5 · Dijkstra, and re-running it</th><td>Midterm</td><td>M3</td><td class="is-numeric">20</td><td>a trace</td></tr>
+                  <tr><th scope="row">6 · Monte Carlo integration</th><td>Midterm</td><td>M2</td><td class="is-numeric">20</td><td>a calculation and pseudocode</td></tr>
+                  <tr><th scope="row">7 · Lines, s coordinate, distance</th><td>Final</td><td>M6</td><td class="is-numeric">20</td><td>a calculation</td></tr>
+                  <tr><th scope="row">8 · Polygon triangulation</th><td>Final</td><td>M6</td><td class="is-numeric">5</td><td>an explanation</td></tr>
+                  <tr><th scope="row">9 · Impurity, gain, Hunt's choice</th><td>Final</td><td>M5</td><td class="is-numeric">25</td><td>a calculation</td></tr>
+                  <tr><th scope="row">10 · Single-linkage clustering</th><td>Final</td><td>M5</td><td class="is-numeric">25</td><td>a trace and a dendrogram</td></tr>
+                  <tr><th scope="row">11 · Median filter</th><td>Final</td><td>M4</td><td class="is-numeric">10</td><td>a calculation</td></tr>
+                  <tr><th scope="row">12 · Sobel edge detection</th><td>Final</td><td>M4</td><td class="is-numeric">10</td><td>a calculation</td></tr>
+                  <tr><th scope="row">13 · Dilation and erosion</th><td>Final</td><td>M4</td><td class="is-numeric">10</td><td>a calculation and an explanation</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================= MIDTERM TYPES -->
+    <section class="topic-group" id="section-midterm" aria-labelledby="section-midterm-title">
+      <div class="topic-group__header">
+        <h2 id="section-midterm-title">Midterm problem types</h2>
+      </div>
+
+      <!-- ------------------------------------------------------------ TYPE 1 -->
+      <section class="topic-section" id="type-sorting" aria-labelledby="type-sorting-title">
+        <div class="topic-section__header">
+          <h3 id="type-sorting-title">
+            <span class="topic-section__number">Type 1</span>
+            Sorting traces: bubble sort and selection sort
+          </h3>
+          <a class="topic-section__anchor" href="#type-sorting">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 1, sorting traces</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Midterm, 20 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M1 topics 1.1.2, 1.1.3, 1.4.6</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p><strong>The question.</strong> Consider the sorting algorithms bubble sort and selection sort.</p>
+          <ol>
+            <li>(10 marks) Briefly explain the basic idea behind each algorithm, including how they compare and swap elements.</li>
+            <li>(5 marks) Give the best-case and worst-case time complexities for both algorithms, and explain when each case occurs.</li>
+            <li>(5 marks) Given the array [7, 3, 9, 4, 2, 10], show the first two passes of both bubble sort and selection sort.</li>
+          </ol>
+
+          <details>
+            <summary>Show the worked solution for type 1, sorting traces</summary>
+
+            <p><strong>(a) The two ideas.</strong></p>
+            <p>
+              <em>Bubble sort</em> sweeps left to right comparing each adjacent pair and
+              swapping them when they are out of order. One sweep carries the largest
+              remaining element to the end — it &ldquo;bubbles up&rdquo;. Sweeps repeat
+              until an entire sweep makes no swap at all.
+            </p>
+            <p>
+              <em>Selection sort</em> takes the current position, finds the smallest
+              element anywhere to its right, and swaps the two. The prefix to the left of
+              the current position is sorted and never touched again. It performs at most
+              one swap per position, but it always scans the whole remaining tail to find
+              the minimum.
+            </p>
+
+            <p><strong>(b) Best and worst case.</strong></p>
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Best and worst case complexity of the two sorts">
+              <table class="data-table">
+                <caption>Complexities, and when each case happens</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Algorithm</th>
+                    <th scope="col">Best case</th>
+                    <th scope="col">When</th>
+                    <th scope="col">Worst case</th>
+                    <th scope="col">When</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Bubble sort</th>
+                    <td>O(<var>n</var>)</td>
+                    <td>the array is already sorted, so the first sweep makes no swap and the algorithm stops after <var>n</var>&nbsp;&minus;&nbsp;1 comparisons</td>
+                    <td>O(<var>n</var><sup>2</sup>)</td>
+                    <td>the array is in reverse order, so every pair is swapped on every sweep</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Selection sort</th>
+                    <td>O(<var>n</var><sup>2</sup>)</td>
+                    <td>always — it makes <var>n</var>(<var>n</var>&nbsp;&minus;&nbsp;1)/2 comparisons regardless of the input, because it must scan the tail to be sure it has the minimum</td>
+                    <td>O(<var>n</var><sup>2</sup>)</td>
+                    <td>always, for the same reason</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              The mark for &ldquo;explain when these cases occur&rdquo; is the point of
+              the question: selection sort has no cheap case, and that is the interesting
+              difference between the two.
+            </p>
+
+            <p><strong>(c) The first two passes on [7, 3, 9, 4, 2, 10].</strong></p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Bubble sort, first two passes">
+              <table class="data-table">
+                <caption>Bubble sort, every comparison of the first two sweeps</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Sweep</th>
+                    <th scope="col">Pair compared</th>
+                    <th scope="col">Swap?</th>
+                    <th scope="col">Array after</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">1</th><td>7 and 3</td><td>yes</td><td>[3, 7, 9, 4, 2, 10]</td></tr>
+                  <tr><th scope="row">1</th><td>7 and 9</td><td>no</td><td>[3, 7, 9, 4, 2, 10]</td></tr>
+                  <tr><th scope="row">1</th><td>9 and 4</td><td>yes</td><td>[3, 7, 4, 9, 2, 10]</td></tr>
+                  <tr><th scope="row">1</th><td>9 and 2</td><td>yes</td><td>[3, 7, 4, 2, 9, 10]</td></tr>
+                  <tr><th scope="row">1</th><td>9 and 10</td><td>no</td><td>[3, 7, 4, 2, 9, 10]</td></tr>
+                  <tr><th scope="row">2</th><td>3 and 7</td><td>no</td><td>[3, 7, 4, 2, 9, 10]</td></tr>
+                  <tr><th scope="row">2</th><td>7 and 4</td><td>yes</td><td>[3, 4, 7, 2, 9, 10]</td></tr>
+                  <tr><th scope="row">2</th><td>7 and 2</td><td>yes</td><td>[3, 4, 2, 7, 9, 10]</td></tr>
+                  <tr><th scope="row">2</th><td>7 and 9</td><td>no</td><td>[3, 4, 2, 7, 9, 10]</td></tr>
+                  <tr><th scope="row">2</th><td>9 and 10</td><td>no</td><td>[3, 4, 2, 7, 9, 10]</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>After two sweeps of bubble sort: <strong>[3, 4, 2, 7, 9, 10]</strong>.</p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Selection sort, first two passes">
+              <table class="data-table">
+                <caption>Selection sort, the first two passes</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Pass</th>
+                    <th scope="col">Position being filled</th>
+                    <th scope="col">Smallest to its right</th>
+                    <th scope="col">Swap</th>
+                    <th scope="col">Array after</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">1</th><td>1</td><td>2, at position 5</td><td>swap positions 1 and 5</td><td>[2, 3, 9, 4, 7, 10]</td></tr>
+                  <tr><th scope="row">2</th><td>2</td><td>3, already at position 2</td><td>none needed</td><td>[2, 3, 9, 4, 7, 10]</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              After two passes of selection sort: <strong>[2, 3, 9, 4, 7, 10]</strong>.
+              Note that pass 2 does the full scan and then performs no swap — the scan
+              still happened, and it still costs.
+            </p>
+          </details>
+
+          <p>
+            More on this: <a href="../m1-algorithm-design.html#topic-1-1-2">selection sort in M1 §1.1.2</a>,
+            <a href="../m1-algorithm-design.html#topic-1-1-3">bubble sort in §1.1.3</a>,
+            and the <a href="complexity-comparator.html">complexity comparator</a> for the
+            exact operation counts.
+          </p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ TYPE 2 -->
+      <section class="topic-section" id="type-random-variables" aria-labelledby="type-random-variables-title">
+        <div class="topic-section__header">
+          <h3 id="type-random-variables-title">
+            <span class="topic-section__number">Type 2</span>
+            Random variables: PMF, CDF, expected value, variance
+          </h3>
+          <a class="topic-section__anchor" href="#type-random-variables">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 2, random variables</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Midterm, 20 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M2 topics 2.3.1, 2.3.2, 2.3.4, 2.3.5, 2.3.6, 2.3.8</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> A random variable <var>X</var> takes the four
+            values 1, 2, 3 and 4 with the probability mass function below.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-label="The probability mass function of X">
+            <table class="data-table">
+              <caption>Probability mass function of <var>X</var></caption>
+              <thead>
+                <tr>
+                  <th scope="col" class="is-numeric">Value <var>x</var></th>
+                  <th scope="col" class="is-numeric">p(<var>X</var> = <var>x</var>)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row" class="is-numeric">1</th><td class="is-numeric">0.15</td></tr>
+                <tr><th scope="row" class="is-numeric">2</th><td class="is-numeric">0.35</td></tr>
+                <tr><th scope="row" class="is-numeric">3</th><td class="is-numeric">0.25</td></tr>
+                <tr><th scope="row" class="is-numeric">4</th><td class="is-numeric">0.25</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol>
+            <li>(3 marks) Verify that these probabilities form a valid PMF.</li>
+            <li>(5 marks) Calculate the cumulative distribution function of <var>X</var> at all points.</li>
+            <li>(2 marks) What is the probability that <var>X</var> is less than or equal to 3?</li>
+            <li>(5 marks) Calculate the expected value of <var>X</var>.</li>
+            <li>(5 marks) Calculate the variance of <var>X</var>.</li>
+          </ol>
+          <p>Show your work for each part.</p>
+
+          <details>
+            <summary>Show the worked solution for type 2, random variables</summary>
+
+            <p><strong>(a) Valid PMF.</strong> Two conditions. Every probability is
+              non-negative: 0.15, 0.35, 0.25 and 0.25 all are. And they sum to one:
+              0.15 + 0.35 + 0.25 + 0.25 = 1.00. So it is a valid PMF.</p>
+
+            <p><strong>(b) The CDF.</strong> The CDF is a step function defined for every
+              real <var>x</var>, not only at the four values — that is where the marks
+              usually go missing.</p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Cumulative distribution function of X">
+              <table class="data-table">
+                <caption>CDF of <var>X</var>, defined on the whole real line</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Range of <var>x</var></th>
+                    <th scope="col" class="is-numeric">F(<var>x</var>) = P(<var>X</var> ≤ <var>x</var>)</th>
+                    <th scope="col">Working</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row"><var>x</var> &lt; 1</th><td class="is-numeric">0.00</td><td>no value of <var>X</var> is that small</td></tr>
+                  <tr><th scope="row">1 ≤ <var>x</var> &lt; 2</th><td class="is-numeric">0.15</td><td>0.15</td></tr>
+                  <tr><th scope="row">2 ≤ <var>x</var> &lt; 3</th><td class="is-numeric">0.50</td><td>0.15 + 0.35</td></tr>
+                  <tr><th scope="row">3 ≤ <var>x</var> &lt; 4</th><td class="is-numeric">0.75</td><td>0.15 + 0.35 + 0.25</td></tr>
+                  <tr><th scope="row"><var>x</var> ≥ 4</th><td class="is-numeric">1.00</td><td>0.15 + 0.35 + 0.25 + 0.25</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>(c)</strong> P(<var>X</var> ≤ 3) = F(3) = <strong>0.75</strong>.</p>
+
+            <p><strong>(d) Expected value.</strong></p>
+            <p>
+              E[<var>X</var>] = 1(0.15) + 2(0.35) + 3(0.25) + 4(0.25)
+              = 0.15 + 0.70 + 0.75 + 1.00 = <strong>2.60</strong>.
+            </p>
+
+            <p><strong>(e) Variance.</strong> Use Var(<var>X</var>) = E[<var>X</var><sup>2</sup>] &minus; (E[<var>X</var>])<sup>2</sup>.</p>
+            <p>
+              E[<var>X</var><sup>2</sup>] = 1(0.15) + 4(0.35) + 9(0.25) + 16(0.25)
+              = 0.15 + 1.40 + 2.25 + 4.00 = 7.80.
+            </p>
+            <p>
+              (E[<var>X</var>])<sup>2</sup> = 2.60<sup>2</sup> = 6.76, so
+              Var(<var>X</var>) = 7.80 &minus; 6.76 = <strong>1.04</strong>.
+            </p>
+            <p>
+              Checking by the definition gives the same number:
+              0.15(1&minus;2.6)<sup>2</sup> + 0.35(2&minus;2.6)<sup>2</sup> +
+              0.25(3&minus;2.6)<sup>2</sup> + 0.25(4&minus;2.6)<sup>2</sup>
+              = 0.384 + 0.126 + 0.040 + 0.490 = 1.04.
+            </p>
+          </details>
+
+          <p>More on this: <a href="../m2-probability.html#section-2-3">M2 §2.3 Distributions</a>.</p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ TYPE 3 -->
+      <section class="topic-section" id="type-complexity" aria-labelledby="type-complexity-title">
+        <div class="topic-section__header">
+          <h3 id="type-complexity-title">
+            <span class="topic-section__number">Type 3</span>
+            Counting the operation of interest
+          </h3>
+          <a class="topic-section__anchor" href="#type-complexity">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 3, counting the operation of interest</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Midterm, 20 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M1 topics 1.4.3, 1.4.4, 1.4.5</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> For each code snippet, do three things.
+            (a, 1 mark) State the line number of the operation you consider the operation
+            of interest. (b, 2 marks) Give the exact number of times it is executed, in
+            terms of the input size <var>n</var>. (c, 2 marks) Express the time complexity
+            in Big-O notation. Assume <var>n</var> is a positive integer.
+          </p>
+
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">Python</span>
+              <span id="code-snippet-1-label">Code 1, 5 marks</span>
+            </div>
+            <pre tabindex="0" role="region" aria-labelledby="code-snippet-1-label"><code>1  total = 0
+2  for i in range(n):
+3      total += i
+4  print(total)</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">Python</span>
+              <span id="code-snippet-2-label">Code 2, 5 marks</span>
+            </div>
+            <pre tabindex="0" role="region" aria-labelledby="code-snippet-2-label"><code>1  for i in range(n):
+2      for j in range(n):
+3          if i == j:
+4              print(i, j)</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">Python</span>
+              <span id="code-snippet-3-label">Code 3, 5 marks</span>
+            </div>
+            <pre tabindex="0" role="region" aria-labelledby="code-snippet-3-label"><code>1  i = 1
+2  while i &lt; n:
+3      print(i)
+4      i *= 2</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">Python</span>
+              <span id="code-snippet-4-label">Code 4, 5 marks</span>
+            </div>
+            <pre tabindex="0" role="region" aria-labelledby="code-snippet-4-label"><code>1  for i in range(n):
+2      for j in range(i):
+3          print(i, j)</code></pre>
+          </div>
+
+          <details>
+            <summary>Show the worked solution for type 3, counting the operation of interest</summary>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Answers for the four code snippets">
+              <table class="data-table">
+                <caption>Operation of interest, exact count, and complexity class for each snippet</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Snippet</th>
+                    <th scope="col">Operation of interest</th>
+                    <th scope="col">Exact number of executions</th>
+                    <th scope="col">Big-O</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Code 1</th>
+                    <td>line 3, <code>total += i</code></td>
+                    <td><var>n</var></td>
+                    <td>O(<var>n</var>)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Code 2</th>
+                    <td>line 3, the comparison <code>i == j</code></td>
+                    <td><var>n</var><sup>2</sup></td>
+                    <td>O(<var>n</var><sup>2</sup>)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Code 3</th>
+                    <td>line 3, <code>print(i)</code></td>
+                    <td>&lfloor;log<sub>2</sub>(<var>n</var> &minus; 1)&rfloor; + 1 for <var>n</var> ≥ 2, and 0 for <var>n</var> = 1</td>
+                    <td>O(log&thinsp;<var>n</var>)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Code 4</th>
+                    <td>line 3, <code>print(i, j)</code></td>
+                    <td><var>n</var>(<var>n</var> &minus; 1)/2</td>
+                    <td>O(<var>n</var><sup>2</sup>)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Code 1.</strong> The loop runs for <code>i</code> = 0 up to
+              <var>n</var> &minus; 1, so the body runs exactly <var>n</var> times. Linear.</p>
+
+            <p><strong>Code 2.</strong> Careful here: two different lines have two
+              different counts, and only one of them is the operation of interest. The
+              comparison on line 3 runs once for every pair, so <var>n</var><sup>2</sup>
+              times. The <code>print</code> on line 4 runs only when
+              <code>i == j</code>, which is <var>n</var> times. Either can be defended as
+              &ldquo;the operation of interest&rdquo;, but the complexity of the snippet
+              is set by the comparison: O(<var>n</var><sup>2</sup>).</p>
+
+            <p><strong>Code 3.</strong> <code>i</code> takes the values 1, 2, 4, 8, …,
+              and the loop continues while <code>i &lt; n</code>. So the body runs once
+              for every power of two strictly below <var>n</var>. For
+              <var>n</var>&nbsp;=&nbsp;8 that is 1, 2, 4 — three times — and
+              &lfloor;log<sub>2</sub>&thinsp;7&rfloor; + 1 = 2 + 1 = 3. Logarithmic.</p>
+
+            <p><strong>Code 4.</strong> The inner loop runs <code>i</code> times, and
+              <code>i</code> goes from 0 to <var>n</var> &minus; 1, so the body runs
+              0 + 1 + 2 + … + (<var>n</var> &minus; 1) =
+              <var>n</var>(<var>n</var> &minus; 1)/2 times. That is half of
+              <var>n</var><sup>2</sup>, and half of a quadratic is still a quadratic:
+              O(<var>n</var><sup>2</sup>).</p>
+
+            <div class="callout callout--warning">
+              <p class="callout__title">Common mistake</p>
+              <p>
+                Answering Code 4 with <var>n</var><sup>2</sup>. The exact count is worth
+                2 of the 5 marks and it is not <var>n</var><sup>2</sup> — the constant
+                factor of one half is exactly what part (b) is testing, and part (c) is
+                where it stops mattering.
+              </p>
+            </div>
+          </details>
+
+          <p>
+            More on this: <a href="../m1-algorithm-design.html#section-1-4">M1 §1.4 Efficiency analysis</a>
+            and the <a href="complexity-comparator.html#section-comparator">complexity comparator</a>,
+            where you can watch these classes separate as <var>n</var> grows.
+          </p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ TYPE 4 -->
+      <section class="topic-section" id="type-probability" aria-labelledby="type-probability-title">
+        <div class="topic-section__header">
+          <h3 id="type-probability-title">
+            <span class="topic-section__number">Type 4</span>
+            Conditional probability and the law of total probability
+          </h3>
+          <a class="topic-section__anchor" href="#type-probability">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 4, conditional probability</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Midterm, 20 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M2 topics 2.1.7, 2.1.10</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> You are studying how students in a
+            computational science course use AI tools. You have gathered the following.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-label="Given probabilities for the AI tools question">
+            <table class="data-table">
+              <caption>The given probabilities</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Statement</th>
+                  <th scope="col" class="is-numeric">Probability</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">A student has access to AI tools</th><td class="is-numeric">0.80</td></tr>
+                <tr><th scope="row">Uses AI for legitimate learning, given AI access</th><td class="is-numeric">0.70</td></tr>
+                <tr><th scope="row">Uses AI for academic dishonesty, given AI access</th><td class="is-numeric">0.25</td></tr>
+                <tr><th scope="row">Traditional academic dishonesty, given no AI access</th><td class="is-numeric">0.15</td></tr>
+                <tr><th scope="row">Seeks help from tutors or study groups, given no AI access</th><td class="is-numeric">0.60</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Define the events:</p>
+          <ul>
+            <li><var>A</var>: the student has AI access.</li>
+            <li><var>B</var>: the student uses AI for legitimate learning.</li>
+            <li><var>C</var>: the student engages in any form of academic dishonesty, AI-assisted or traditional.</li>
+          </ul>
+
+          <ol>
+            <li>(10 marks) Calculate P(<var>B</var>).</li>
+            <li>(10 marks) Calculate P(<var>C</var>).</li>
+          </ol>
+
+          <details>
+            <summary>Show the worked solution for type 4, conditional probability</summary>
+
+            <p><strong>(a)</strong> Legitimate learning use only happens among students
+              with access, so <var>B</var> is contained in <var>A</var> and the
+              multiplication rule applies directly:</p>
+            <p>
+              P(<var>B</var>) = P(<var>A</var>) &times; P(<var>B</var> given <var>A</var>)
+              = 0.80 &times; 0.70 = <strong>0.56</strong>.
+            </p>
+
+            <p><strong>(b)</strong> Dishonesty can arise in two mutually exclusive ways —
+              with access, or without it — so use the law of total probability over the
+              partition {<var>A</var>, not <var>A</var>}, with P(not <var>A</var>) = 0.20:</p>
+            <p>
+              P(<var>C</var>) = P(<var>A</var>) &times; 0.25 + P(not <var>A</var>) &times; 0.15
+              = 0.80 &times; 0.25 + 0.20 &times; 0.15
+              = 0.20 + 0.03 = <strong>0.23</strong>.
+            </p>
+
+            <div class="callout callout--warning">
+              <p class="callout__title">Common mistake</p>
+              <p>
+                Using the 0.60 figure. &ldquo;Seeks help from tutors&rdquo; is a
+                distractor: it is not a form of dishonesty and it does not appear in
+                either answer. The other trap is forgetting P(not <var>A</var>) = 0.20 and
+                adding 0.25 + 0.15 directly, which gives 0.40 and no marks.
+              </p>
+            </div>
+          </details>
+
+          <p>More on this: <a href="../m2-probability.html#section-2-1">M2 §2.1 Probability fundamentals</a>.</p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ TYPE 5 -->
+      <section class="topic-section" id="type-dijkstra" aria-labelledby="type-dijkstra-title">
+        <div class="topic-section__header">
+          <h3 id="type-dijkstra-title">
+            <span class="topic-section__number">Type 5</span>
+            Dijkstra on a given graph, and re-running it after an edge changes
+          </h3>
+          <a class="topic-section__anchor" href="#type-dijkstra">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 5, Dijkstra</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Midterm, 20 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M3 topics 3.5.3, 3.5.5, 3.5.6</span></li>
+          <li><span class="pill pill--partial"><span class="pill__glyph" aria-hidden="true">◐</span> M3 topic 3.5.8 — re-running after a change, taught nowhere</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> The graph below is a network of roads between
+            six cities, A to F. The weights are travel times in minutes. The graph is
+            undirected: an edge can be used in either direction.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-mt-edges-label">
+            <p class="visually-hidden" id="table-mt-edges-label">Edge list for the road network</p>
+            <table class="data-table">
+              <caption>Edge list: 6 cities, 8 undirected roads, travel times in minutes</caption>
+              <thead>
+                <tr>
+                  <th scope="col">From</th>
+                  <th scope="col">To</th>
+                  <th scope="col" class="is-numeric">Travel time (min)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">A</th><td>B</td><td class="is-numeric">4</td></tr>
+                <tr><th scope="row">A</th><td>C</td><td class="is-numeric">7</td></tr>
+                <tr><th scope="row">B</th><td>C</td><td class="is-numeric">1</td></tr>
+                <tr><th scope="row">B</th><td>D</td><td class="is-numeric">5</td></tr>
+                <tr><th scope="row">C</th><td>E</td><td class="is-numeric">3</td></tr>
+                <tr><th scope="row">D</th><td>E</td><td class="is-numeric">2</td></tr>
+                <tr><th scope="row">D</th><td>F</td><td class="is-numeric">6</td></tr>
+                <tr><th scope="row">E</th><td>F</td><td class="is-numeric">4</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-mt-adj-label">
+            <p class="visually-hidden" id="table-mt-adj-label">Adjacency matrix for the same road network</p>
+            <table class="data-table data-table--compact">
+              <caption>The same graph as an adjacency matrix. A dash means there is no direct road.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">&nbsp;</th>
+                  <th scope="col" class="is-numeric">A</th>
+                  <th scope="col" class="is-numeric">B</th>
+                  <th scope="col" class="is-numeric">C</th>
+                  <th scope="col" class="is-numeric">D</th>
+                  <th scope="col" class="is-numeric">E</th>
+                  <th scope="col" class="is-numeric">F</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">A</th><td class="is-numeric">—</td><td class="is-numeric">4</td><td class="is-numeric">7</td><td class="is-numeric">—</td><td class="is-numeric">—</td><td class="is-numeric">—</td></tr>
+                <tr><th scope="row">B</th><td class="is-numeric">4</td><td class="is-numeric">—</td><td class="is-numeric">1</td><td class="is-numeric">5</td><td class="is-numeric">—</td><td class="is-numeric">—</td></tr>
+                <tr><th scope="row">C</th><td class="is-numeric">7</td><td class="is-numeric">1</td><td class="is-numeric">—</td><td class="is-numeric">—</td><td class="is-numeric">3</td><td class="is-numeric">—</td></tr>
+                <tr><th scope="row">D</th><td class="is-numeric">—</td><td class="is-numeric">5</td><td class="is-numeric">—</td><td class="is-numeric">—</td><td class="is-numeric">2</td><td class="is-numeric">6</td></tr>
+                <tr><th scope="row">E</th><td class="is-numeric">—</td><td class="is-numeric">—</td><td class="is-numeric">3</td><td class="is-numeric">2</td><td class="is-numeric">—</td><td class="is-numeric">4</td></tr>
+                <tr><th scope="row">F</th><td class="is-numeric">—</td><td class="is-numeric">—</td><td class="is-numeric">—</td><td class="is-numeric">6</td><td class="is-numeric">4</td><td class="is-numeric">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol>
+            <li>(10 marks) Use Dijkstra's algorithm to find the shortest distance from A
+              to D. Show each step: the current node, the updated tentative distances to
+              its neighbours, and which node is marked visited.</li>
+            <li>(10 marks) Now suppose the travel time between E and C changes to 1.
+              Recompute the shortest distance from A to F. Show the updated steps and
+              state whether the shortest path itself changes.</li>
+          </ol>
+
+          <details>
+            <summary>Show the worked solution for type 5, Dijkstra</summary>
+
+            <p><strong>(a) Shortest distance from A to D on the original graph.</strong></p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Dijkstra working table for part a">
+              <table class="data-table">
+                <caption>Dijkstra from A. Each row fixes one node and relaxes its neighbours.</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Step</th>
+                    <th scope="col">Node fixed</th>
+                    <th scope="col">Relaxations performed</th>
+                    <th scope="col" class="is-numeric">A</th>
+                    <th scope="col" class="is-numeric">B</th>
+                    <th scope="col" class="is-numeric">C</th>
+                    <th scope="col" class="is-numeric">D</th>
+                    <th scope="col" class="is-numeric">E</th>
+                    <th scope="col" class="is-numeric">F</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">0</th><td>—</td><td>initialise</td><td class="is-numeric">0</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td></tr>
+                  <tr><th scope="row">1</th><td>A at 0</td><td>B to 4, C to 7</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">7</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td></tr>
+                  <tr><th scope="row">2</th><td>B at 4</td><td>C down from 7 to 5, D to 9</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">9</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td></tr>
+                  <tr><th scope="row">3</th><td>C at 5</td><td>E to 8</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">9</td><td class="is-numeric">8</td><td class="is-numeric">∞</td></tr>
+                  <tr><th scope="row">4</th><td>E at 8</td><td>D stays 9 because 8 + 2 = 10 is worse; F to 12</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">9</td><td class="is-numeric">8</td><td class="is-numeric">12</td></tr>
+                  <tr><th scope="row">5</th><td>D at 9</td><td>F stays 12 because 9 + 6 = 15 is worse</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">9</td><td class="is-numeric">8</td><td class="is-numeric">12</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              <strong>Answer to (a): the shortest distance from A to D is 9 minutes</strong>,
+              along A → B → D (4 + 5). Note that E is fixed before D even though D was
+              discovered first — Dijkstra always fixes the smallest tentative distance,
+              and 8 is smaller than 9.
+            </p>
+
+            <p><strong>(b) After the E–C edge becomes 1.</strong></p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Dijkstra working table for part b">
+              <table class="data-table">
+                <caption>Dijkstra from A on the modified graph, with C–E now 1 instead of 3</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Step</th>
+                    <th scope="col">Node fixed</th>
+                    <th scope="col">Relaxations performed</th>
+                    <th scope="col" class="is-numeric">A</th>
+                    <th scope="col" class="is-numeric">B</th>
+                    <th scope="col" class="is-numeric">C</th>
+                    <th scope="col" class="is-numeric">D</th>
+                    <th scope="col" class="is-numeric">E</th>
+                    <th scope="col" class="is-numeric">F</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">0</th><td>—</td><td>initialise</td><td class="is-numeric">0</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td></tr>
+                  <tr><th scope="row">1</th><td>A at 0</td><td>B to 4, C to 7</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">7</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td></tr>
+                  <tr><th scope="row">2</th><td>B at 4</td><td>C down to 5, D to 9</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">9</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td></tr>
+                  <tr><th scope="row">3</th><td>C at 5</td><td>E to 6, using the new weight 1</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">9</td><td class="is-numeric">6</td><td class="is-numeric">∞</td></tr>
+                  <tr><th scope="row">4</th><td>E at 6</td><td>D down from 9 to 8; F to 10</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">8</td><td class="is-numeric">6</td><td class="is-numeric">10</td></tr>
+                  <tr><th scope="row">5</th><td>D at 8</td><td>F stays 10 because 8 + 6 = 14 is worse</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">8</td><td class="is-numeric">6</td><td class="is-numeric">10</td></tr>
+                  <tr><th scope="row">6</th><td>F at 10</td><td>done</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">8</td><td class="is-numeric">6</td><td class="is-numeric">10</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              <strong>Answer to (b): the shortest distance from A to F becomes 10
+              minutes.</strong> Before the change it was 12, along A → B → C → E → F
+              (4 + 1 + 3 + 4). After the change the shortest route is still
+              <strong>A → B → C → E → F</strong>, now costing 4 + 1 + 1 + 4 = 10. So the
+              <em>path does not change</em>; only its length does. Saying &ldquo;the
+              distance drops to 10 and the route is unchanged&rdquo; is the complete
+              answer, and the second half is what the question is really asking.
+            </p>
+          </details>
+
+          <h4 id="sub-dijkstra-demo">Check your own working</h4>
+
+          <p>
+            The tool below runs exactly this algorithm on exactly this graph, with a
+            control for the C–E weight so you can do part (a) and part (b) without
+            retyping anything.
+          </p>
+
+          <div id="demo-dijkstra-midterm-mount">
+            <div class="demo__fallback">
+              <p><strong>Dijkstra step-through — interactive version not running.</strong>
+                 Either JavaScript is off, or this page was opened directly from a folder.
+                 The final working table on the original graph, with C–E at 3, is below.
+                 The full step-by-step trace is in the worked solution above.</p>
+              <div class="table-scroll" role="region" tabindex="0"
+                   aria-label="Dijkstra final state on the road network with C to E equal to 3">
+                <table class="data-table">
+                  <caption>Dijkstra from A on the road network, final state, C–E = 3</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">City</th>
+                      <th scope="col" class="is-numeric">Shortest time from A (min)</th>
+                      <th scope="col">Reached from</th>
+                      <th scope="col">Order fixed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row">A</th><td class="is-numeric">0</td><td>—</td><td>1st</td></tr>
+                    <tr><th scope="row">B</th><td class="is-numeric">4</td><td>A</td><td>2nd</td></tr>
+                    <tr><th scope="row">C</th><td class="is-numeric">5</td><td>B</td><td>3rd</td></tr>
+                    <tr><th scope="row">E</th><td class="is-numeric">8</td><td>C</td><td>4th</td></tr>
+                    <tr><th scope="row">D</th><td class="is-numeric">9</td><td>B</td><td>5th</td></tr>
+                    <tr><th scope="row">F</th><td class="is-numeric">12</td><td>E</td><td>6th</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <p>
+            More on this: <a href="../m3-graphs.html#section-3-5">M3 §3.5</a> and the
+            <a href="greedy-gallery.html#section-dijkstra">greedy gallery</a>, where the
+            same algorithm is examined as a greedy strategy.
+          </p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ TYPE 6 -->
+      <section class="topic-section" id="type-monte-carlo" aria-labelledby="type-monte-carlo-title">
+        <div class="topic-section__header">
+          <h3 id="type-monte-carlo-title">
+            <span class="topic-section__number">Type 6</span>
+            Monte Carlo integration: exact value, then pseudocode
+          </h3>
+          <a class="topic-section__anchor" href="#type-monte-carlo">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 6, Monte Carlo integration</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Midterm, 20 marks, compulsory</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M2 topics 2.5.1, 2.5.2, 2.5.4</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> Consider the definite integral of
+            <var>f</var>(<var>x</var>) = cos(<var>x</var>) + sin(3<var>x</var>) from 0 to
+            &pi;/2.
+          </p>
+          <ol>
+            <li>(5 marks) Calculate the exact value of this integral analytically. Show your work.</li>
+            <li>(15 marks) Give detailed pseudocode for estimating this integral by the
+              Monte Carlo method, covering: initialisation of variables (5 marks); how to
+              generate random points within the integration limits (5 marks); and the
+              calculation of the estimate (5 marks).</li>
+          </ol>
+          <p>
+            This problem is compulsory: the instructions require it as one of the five
+            problems you answer.
+          </p>
+
+          <details>
+            <summary>Show the worked solution for type 6, Monte Carlo integration</summary>
+
+            <p><strong>(a) The exact value.</strong> Integrate term by term.</p>
+            <p>
+              The integral of cos(<var>x</var>) is sin(<var>x</var>), which between 0 and
+              &pi;/2 gives sin(&pi;/2) &minus; sin(0) = 1 &minus; 0 = 1.
+            </p>
+            <p>
+              The integral of sin(3<var>x</var>) is &minus;cos(3<var>x</var>)/3, which
+              between 0 and &pi;/2 gives
+              &minus;cos(3&pi;/2)/3 + cos(0)/3 = &minus;0/3 + 1/3 = 1/3.
+            </p>
+            <p>
+              So the exact value is 1 + 1/3 = <strong>4/3</strong>, which is about
+              <strong>1.3333</strong>. Keep this number: it is what your Monte Carlo
+              estimate should approach, and quoting it is how you show the estimate works.
+            </p>
+
+            <p><strong>(b) The pseudocode.</strong> The method rests on one identity: the
+              integral equals the width of the interval times the average value of the
+              function over it, and a random sample estimates that average.</p>
+
+            <div class="formula" role="math"
+                 aria-label="The integral from a to b of f of x d x is approximately b minus a times one over N times the sum from i equals 1 to N of f of x i">
+              <span class="formula__label">Monte Carlo estimate of a one-dimensional integral</span>
+              <p class="formula__expr">
+                &int;<sub><var>a</var></sub><sup><var>b</var></sup> <var>f</var>(<var>x</var>)&thinsp;d<var>x</var>
+                &nbsp;&asymp;&nbsp;
+                (<var>b</var> &minus; <var>a</var>) &middot;
+                (1/<var>N</var>) &sum;<sub><var>i</var>=1</sub><sup><var>N</var></sup> <var>f</var>(<var>x</var><sub><var>i</var></sub>)
+              </p>
+              <dl class="formula__where">
+                <dt><var>a</var>, <var>b</var></dt><dd>the integration limits, 0 and &pi;/2 here</dd>
+                <dt><var>N</var></dt><dd>the number of sample points</dd>
+                <dt><var>x</var><sub><var>i</var></sub></dt><dd>a point drawn uniformly at random from the interval [<var>a</var>, <var>b</var>]</dd>
+              </dl>
+            </div>
+
+            <div class="code-block">
+              <div class="code-block__header">
+                <span class="code-block__lang">Pseudocode</span>
+                <span id="code-mc-label">Monte Carlo estimate of the integral</span>
+              </div>
+              <pre tabindex="0" role="region" aria-labelledby="code-mc-label"><code># 1. Initialisation
+a    = 0
+b    = pi / 2
+N    = 100000        # number of samples
+seed = 42            # fixed so the run can be reproduced
+set_random_seed(seed)
+total = 0
+
+# 2. Generate points inside the integration limits
+repeat N times:
+    u = uniform_random_in_[0,1)
+    x = a + u * (b - a)     # maps [0,1) onto [a, b)
+    total = total + (cos(x) + sin(3 * x))
+
+# 3. Form the estimate
+mean_value = total / N
+estimate   = (b - a) * mean_value
+
+report estimate                       # approaches 4/3 = 1.3333
+report abs(estimate - 4/3)            # the error, which falls like 1/sqrt(N)</code></pre>
+            </div>
+
+            <p>
+              Three things earn the marks and are easy to leave out. <strong>Seed the
+              generator</strong>, so the run is reproducible. <strong>Map the uniform
+              sample onto [<var>a</var>, <var>b</var>]</strong> rather than sampling
+              [0,&nbsp;1) and forgetting the interval. And <strong>multiply by the width
+              (<var>b</var> &minus; <var>a</var>)</strong> at the end — an average is not
+              an integral.
+            </p>
+
+            <div class="callout callout--note">
+              <p class="callout__title">Note</p>
+              <p>
+                The error of this estimate falls like one over the square root of
+                <var>N</var>, so 100 times more samples buys about one extra correct
+                digit. That rate is independent of the dimension, which is exactly why
+                Monte Carlo wins in high dimensions and loses in one.
+              </p>
+            </div>
+          </details>
+
+          <p>More on this: <a href="../m2-probability.html#section-2-5">M2 §2.5 Monte Carlo methods</a>.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ========================================================= FINAL TYPES -->
+    <section class="topic-group" id="section-final" aria-labelledby="section-final-title">
+      <div class="topic-group__header">
+        <h2 id="section-final-title">Final problem types</h2>
+      </div>
+
+      <!-- ------------------------------------------------------------ TYPE 7 -->
+      <section class="topic-section" id="type-lines" aria-labelledby="type-lines-title">
+        <div class="topic-section__header">
+          <h3 id="type-lines-title">
+            <span class="topic-section__number">Type 7</span>
+            Lines: parametric form, the <var>s</var> coordinate, closest point, distance
+          </h3>
+          <a class="topic-section__anchor" href="#type-lines">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 7, lines and distances</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Final, 20 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M6 topics 6.1.2, 6.1.3, 6.1.4, 6.1.7, 6.1.8</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> Consider the line through the two points
+            <var>p</var><sub>1</sub> = (2,&nbsp;0) and
+            <var>p</var><sub>2</sub> = (5,&nbsp;4).
+          </p>
+          <ol>
+            <li>(5 marks) Write a formula for a point <var>p</var>(<var>s</var>) on the line.</li>
+            <li>(5 marks) Use the dot-product method to compute the <var>s</var> coordinate
+              of the point <var>p</var> = (3.5,&nbsp;2), which lies on the line.</li>
+            <li>(5 marks) Find the point on the line closest to <var>q</var> = (1,&nbsp;1).</li>
+            <li>(5 marks) Compute how far <var>q</var> is from the line.</li>
+          </ol>
+
+          <details>
+            <summary>Show the worked solution for type 7, lines and distances</summary>
+
+            <p><strong>(a) Parametric form.</strong> Take the direction vector
+              <var>v</var> = <var>p</var><sub>2</sub> &minus; <var>p</var><sub>1</sub> =
+              (5&minus;2, 4&minus;0) = (3,&nbsp;4), whose length is
+              &radic;(9&nbsp;+&nbsp;16) = 5. Then</p>
+            <p>
+              <var>p</var>(<var>s</var>) = <var>p</var><sub>1</sub> + <var>s</var>&thinsp;<var>v</var>
+              = (2 + 3<var>s</var>,&nbsp;4<var>s</var>).
+            </p>
+            <p>
+              With this normalisation, <var>s</var> = 0 is <var>p</var><sub>1</sub>,
+              <var>s</var> = 1 is <var>p</var><sub>2</sub>, <var>s</var> between 0 and 1
+              is between them, and <var>s</var> outside [0,&nbsp;1] is beyond one end.
+            </p>
+
+            <p><strong>(b) The <var>s</var> coordinate of (3.5, 2).</strong> Project the
+              offset onto the direction:</p>
+            <p>
+              <var>p</var> &minus; <var>p</var><sub>1</sub> = (1.5,&nbsp;2), and
+              (1.5,&nbsp;2) &middot; (3,&nbsp;4) = 4.5 + 8 = 12.5.
+              Dividing by |<var>v</var>|<sup>2</sup> = 25 gives
+              <var>s</var> = 12.5&thinsp;/&thinsp;25 = <strong>0.5</strong>.
+            </p>
+            <p>
+              Sanity check: <var>s</var> = 0.5 predicts the point
+              (2&nbsp;+&nbsp;1.5,&nbsp;2) = (3.5,&nbsp;2), which is what we were given, and
+              it is the midpoint. If your course convention measures <var>s</var> in units
+              of length along the line — dividing by |<var>v</var>| rather than
+              |<var>v</var>|<sup>2</sup> — the same point gives <var>s</var> = 2.5, which
+              is half of the length 5. State which convention you are using.
+            </p>
+
+            <p><strong>(c) Closest point to <var>q</var> = (1, 1).</strong> Same
+              projection, different point:</p>
+            <p>
+              <var>q</var> &minus; <var>p</var><sub>1</sub> = (&minus;1,&nbsp;1), and
+              (&minus;1,&nbsp;1) &middot; (3,&nbsp;4) = &minus;3 + 4 = 1.
+              So <var>s</var><sup>*</sup> = 1&thinsp;/&thinsp;25 = 0.04, and the closest
+              point is
+            </p>
+            <p>
+              <var>p</var>(0.04) = (2 + 3(0.04),&nbsp;4(0.04)) =
+              <strong>(2.12,&nbsp;0.16)</strong>.
+            </p>
+            <p>
+              Because <var>s</var><sup>*</sup> = 0.04 lies between 0 and 1, the closest
+              point is genuinely between <var>p</var><sub>1</sub> and
+              <var>p</var><sub>2</sub> — that is what the sign and size of <var>s</var>
+              tell you.
+            </p>
+
+            <p><strong>(d) Distance from <var>q</var> to the line.</strong> Either
+              measure it directly or use the cross product; both give the same number,
+              and doing both is a free check.</p>
+            <p>
+              Directly: <var>q</var> &minus; <var>p</var>(0.04) =
+              (1&nbsp;&minus;&nbsp;2.12,&nbsp;1&nbsp;&minus;&nbsp;0.16) =
+              (&minus;1.12,&nbsp;0.84), whose length is
+              &radic;(1.2544&nbsp;+&nbsp;0.7056) = &radic;1.96 = <strong>1.4</strong>.
+            </p>
+            <p>
+              By cross product: |(&minus;1)(4) &minus; (1)(3)|&thinsp;/&thinsp;|<var>v</var>|
+              = |&minus;7|&thinsp;/&thinsp;5 = <strong>1.4</strong>.
+            </p>
+          </details>
+
+          <p>More on this: <a href="../m6-computational-geometry.html#section-6-1">M6 §6.1 Points and lines</a>.</p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ TYPE 8 -->
+      <section class="topic-section" id="type-ear-clipping" aria-labelledby="type-ear-clipping-title">
+        <div class="topic-section__header">
+          <h3 id="type-ear-clipping-title">
+            <span class="topic-section__number">Type 8</span>
+            Triangulating a polygon by ear clipping
+          </h3>
+          <a class="topic-section__anchor" href="#type-ear-clipping">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 8, ear clipping</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Final, 5 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M6 topics 6.3.4, 6.3.5, 6.3.6</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> Explain how to triangulate the polygon below.
+            Give the detailed steps of the algorithm — ear clipping — applied to this
+            specific polygon, identifying which vertices are processed and in what order.
+            You do not need to perform the exact numerical computations.
+          </p>
+
+          <p>
+            The polygon is closed and has five vertices, listed in counter-clockwise
+            order. Each side joins consecutive vertices in the list, and the last vertex
+            joins back to the first.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-polygon-label">
+            <p class="visually-hidden" id="table-polygon-label">Vertex list of the polygon to be triangulated</p>
+            <table class="data-table">
+              <caption>
+                The polygon: four vertices are the corners of a 5 by 5 square, and the
+                fifth, (2, 2), is a reflex vertex that notches the top edge downward into
+                the interior. Signed area by the shoelace formula is +17.5, confirming the
+                counter-clockwise order.
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Vertex</th>
+                  <th scope="col">Coordinates</th>
+                  <th scope="col">Interior angle</th>
+                  <th scope="col">Joined to</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">v1</th><td>(0, 0)</td><td>convex</td><td>v5 and v2</td></tr>
+                <tr><th scope="row">v2</th><td>(5, 0)</td><td>convex</td><td>v1 and v3</td></tr>
+                <tr><th scope="row">v3</th><td>(5, 5)</td><td>convex</td><td>v2 and v4</td></tr>
+                <tr><th scope="row">v4</th><td>(2, 2)</td><td><strong>reflex</strong>, greater than 180 degrees</td><td>v3 and v5</td></tr>
+                <tr><th scope="row">v5</th><td>(0, 5)</td><td>convex</td><td>v4 and v1</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <details>
+            <summary>Show the worked solution for type 8, ear clipping</summary>
+
+            <p><strong>The algorithm, stated first.</strong> An <em>ear</em> is a vertex
+              that is convex and whose two neighbours can be joined by a straight segment
+              that stays inside the polygon — equivalently, the triangle formed by the
+              vertex and its two neighbours contains no other vertex of the polygon. The
+              &ldquo;polygons have ears&rdquo; theorem guarantees that every simple polygon
+              with more than three vertices has at least two ears, so the following always
+              terminates.</p>
+
+            <ol>
+              <li>Walk the vertex list and classify each vertex as convex or reflex, using
+                the sign of the cross product of the two edge vectors meeting there.</li>
+              <li>Find a convex vertex whose triangle with its neighbours contains no other
+                vertex. That is an ear.</li>
+              <li>Output that triangle, delete the ear vertex from the list, and
+                reclassify its two neighbours — removing a vertex can turn a reflex
+                neighbour convex.</li>
+              <li>Repeat until three vertices remain; they are the last triangle.</li>
+            </ol>
+            <p>
+              A polygon with <var>n</var> vertices always yields
+              <var>n</var> &minus; 2 triangles, so this one gives <strong>three</strong>.
+            </p>
+
+            <p><strong>Applied to this polygon.</strong></p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Ear clipping trace on the five-vertex polygon">
+              <table class="data-table">
+                <caption>Ear clipping, step by step. Three triangles, whose areas sum to 17.5 — the area of the polygon.</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Step</th>
+                    <th scope="col">Vertex tested</th>
+                    <th scope="col">Verdict</th>
+                    <th scope="col">Triangle output</th>
+                    <th scope="col" class="is-numeric">Area</th>
+                    <th scope="col">Vertices remaining</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>v1 (0, 0)</td>
+                    <td>not an ear — the triangle (0,5), (0,0), (5,0) contains the reflex vertex (2, 2)</td>
+                    <td>—</td>
+                    <td class="is-numeric">—</td>
+                    <td>all five</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>v4 (2, 2)</td>
+                    <td>skipped — it is reflex, so it can never be an ear</td>
+                    <td>—</td>
+                    <td class="is-numeric">—</td>
+                    <td>all five</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>v3 (5, 5)</td>
+                    <td><strong>ear</strong> — convex, and the triangle (5,0), (5,5), (2,2) contains no other vertex</td>
+                    <td>(5,0), (5,5), (2,2)</td>
+                    <td class="is-numeric">7.5</td>
+                    <td>v1, v2, v4, v5</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td>v2 (5, 0)</td>
+                    <td><strong>ear</strong> — its neighbours are now v1 and v4, and the triangle (0,0), (5,0), (2,2) is empty</td>
+                    <td>(0,0), (5,0), (2,2)</td>
+                    <td class="is-numeric">5.0</td>
+                    <td>v1, v4, v5</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5</th>
+                    <td>—</td>
+                    <td>three vertices left, so they form the last triangle</td>
+                    <td>(0,0), (2,2), (0,5)</td>
+                    <td class="is-numeric">5.0</td>
+                    <td>none</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              The order matters only in that a reflex vertex is never an ear and a vertex
+              whose triangle swallows another vertex is never an ear. Any order that
+              respects those two rules produces a valid triangulation, though not
+              necessarily the same one — which is exactly the point M6 makes when it
+              introduces the <a href="delaunay-thread.html">Delaunay triangulation</a>.
+            </p>
+          </details>
+
+          <p>More on this: <a href="../m6-computational-geometry.html#section-6-3">M6 §6.3 Polygons</a>.</p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ TYPE 9 -->
+      <section class="topic-section" id="type-decision-tree" aria-labelledby="type-decision-tree-title">
+        <div class="topic-section__header">
+          <h3 id="type-decision-tree-title">
+            <span class="topic-section__number">Type 9</span>
+            Decision trees: impurity, split tables, gain, Hunt's choice
+          </h3>
+          <a class="topic-section__anchor" href="#type-decision-tree">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 9, decision trees</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Final, 25 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M5 topics 5.6.3, 5.6.5–5.6.9</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> You are building a decision tree to classify
+            tumours as Benign or Malignant from two attributes: tumour size in
+            centimetres, and cell density, recorded as Low or High. You have six records.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-dt-records-label">
+            <p class="visually-hidden" id="table-dt-records-label">The six training records</p>
+            <table class="data-table">
+              <caption>Training set: six records, two attributes, two classes</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Record</th>
+                  <th scope="col" class="is-numeric">Size (cm)</th>
+                  <th scope="col">Density</th>
+                  <th scope="col">Class</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">1</th><td class="is-numeric">6</td><td>High</td><td>Malignant</td></tr>
+                <tr><th scope="row">2</th><td class="is-numeric">3</td><td>Low</td><td>Benign</td></tr>
+                <tr><th scope="row">3</th><td class="is-numeric">7</td><td>High</td><td>Malignant</td></tr>
+                <tr><th scope="row">4</th><td class="is-numeric">2</td><td>Low</td><td>Benign</td></tr>
+                <tr><th scope="row">5</th><td class="is-numeric">8</td><td>Low</td><td>Malignant</td></tr>
+                <tr><th scope="row">6</th><td class="is-numeric">4</td><td>High</td><td>Benign</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            Make the Size attribute binary by splitting it at 5 cm: less than 5, and 5 or
+            more. The split table for Size is given.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-dt-size-label">
+            <p class="visually-hidden" id="table-dt-size-label">The given split table for the Size attribute</p>
+            <table class="data-table">
+              <caption>Given: how the Size split divides the six records</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Size</th>
+                  <th scope="col" class="is-numeric">Malignant</th>
+                  <th scope="col" class="is-numeric">Benign</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">less than 5</th><td class="is-numeric">0</td><td class="is-numeric">3</td></tr>
+                <tr><th scope="row">5 or more</th><td class="is-numeric">3</td><td class="is-numeric">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol>
+            <li>(5 marks) Compute the impurity of the root node using classification error,
+              <var>E</var>(<var>t</var>) = 1 &minus; max<sub><var>i</var></sub> <var>p</var>(<var>i</var> | <var>t</var>).</li>
+            <li>(5 marks) Construct the equivalent split table for the Density attribute.</li>
+            <li>(5 marks) Using classification error, compute the impurity of the two child
+              nodes of the Size split. Give the four conditional probabilities first.</li>
+            <li>(5 marks) Use the impurities to compute the gain of both possible splits.</li>
+            <li>(5 marks) According to Hunt's algorithm, which split should be applied at
+              the root?</li>
+          </ol>
+
+          <details>
+            <summary>Show the worked solution for type 9, decision trees</summary>
+
+            <p><strong>(a) Root impurity.</strong> The root holds all six records: three
+              Malignant (1, 3, 5) and three Benign (2, 4, 6). So
+              <var>p</var>(Malignant) = 3/6 = 0.5 and <var>p</var>(Benign) = 0.5, and</p>
+            <p>
+              <var>E</var>(root) = 1 &minus; max(0.5,&nbsp;0.5) = 1 &minus; 0.5 =
+              <strong>0.5</strong>.
+            </p>
+            <p>
+              0.5 is the largest classification error possible with two classes: a
+              perfectly mixed node.
+            </p>
+
+            <p><strong>(b) The Density split table.</strong> Density High covers records
+              1, 3 and 6; Density Low covers records 2, 4 and 5.</p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Split table for the Density attribute">
+              <table class="data-table">
+                <caption>How the Density split divides the six records</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Density</th>
+                    <th scope="col" class="is-numeric">Malignant</th>
+                    <th scope="col" class="is-numeric">Benign</th>
+                    <th scope="col">Records</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">High</th><td class="is-numeric">2</td><td class="is-numeric">1</td><td>1, 3 are Malignant; 6 is Benign</td></tr>
+                  <tr><th scope="row">Low</th><td class="is-numeric">1</td><td class="is-numeric">2</td><td>5 is Malignant; 2, 4 are Benign</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>(c) Impurity of the two Size children.</strong> The four
+              conditional probabilities first:</p>
+            <ul>
+              <li><var>p</var>(Malignant | Size &lt; 5) = 0/3 = 0</li>
+              <li><var>p</var>(Benign | Size &lt; 5) = 3/3 = 1</li>
+              <li><var>p</var>(Malignant | Size &ge; 5) = 3/3 = 1</li>
+              <li><var>p</var>(Benign | Size &ge; 5) = 0/3 = 0</li>
+            </ul>
+            <p>
+              So <var>E</var>(Size &lt; 5) = 1 &minus; max(0,&nbsp;1) = <strong>0</strong>
+              and <var>E</var>(Size &ge; 5) = 1 &minus; max(1,&nbsp;0) =
+              <strong>0</strong>. Both children are pure.
+            </p>
+
+            <p><strong>(d) Gain for both splits.</strong> Gain is the parent's impurity
+              minus the weighted average of the children's, each weighted by the fraction
+              of records it receives.</p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Gain calculation for both candidate splits">
+              <table class="data-table">
+                <caption>Gain for the two candidate splits, using classification error</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Split</th>
+                    <th scope="col">Weighted child impurity</th>
+                    <th scope="col" class="is-numeric">Value</th>
+                    <th scope="col">Gain = 0.5 &minus; that</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Size</th>
+                    <td>(3/6)(0) + (3/6)(0)</td>
+                    <td class="is-numeric">0.000</td>
+                    <td><strong>0.500</strong></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Density</th>
+                    <td>(3/6)(1 &minus; 2/3) + (3/6)(1 &minus; 2/3) = (0.5)(1/3) + (0.5)(1/3)</td>
+                    <td class="is-numeric">0.333</td>
+                    <td><strong>0.167</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>(e) Hunt's choice.</strong> Hunt's algorithm is greedy: at each
+              node it takes the split with the largest gain and never revisits it. The
+              Size split gains 0.5 against Density's 0.167, so <strong>split the root on
+              Size, less than 5 versus 5 or more</strong>.</p>
+            <p>
+              Both children are then pure, so both become leaves — Size &lt; 5 predicts
+              Benign, Size &ge; 5 predicts Malignant — and the tree is finished after one
+              split. Note that this outcome is luck of the data, not a guarantee: greedy
+              tree construction gives no promise of the smallest or best tree. See the
+              <a href="greedy-gallery.html#section-hunt">greedy gallery</a>.
+            </p>
+          </details>
+
+          <p>More on this: <a href="../m5-data-mining.html#section-5-6">M5 §5.6 Classification</a>.</p>
+        </div>
+      </section>
+
+      <!-- ----------------------------------------------------------- TYPE 10 -->
+      <section class="topic-section" id="type-single-linkage" aria-labelledby="type-single-linkage-title">
+        <div class="topic-section__header">
+          <h3 id="type-single-linkage-title">
+            <span class="topic-section__number">Type 10</span>
+            Agglomerative clustering by single linkage, and the dendrogram
+          </h3>
+          <a class="topic-section__anchor" href="#type-single-linkage">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 10, single-linkage clustering</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Final, 25 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M5 topics 5.3.1, 5.3.2, 5.3.5, 5.3.6</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> The table below is the distance matrix for five
+            data points. It is symmetric and its diagonal is zero.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-dist-label">
+            <p class="visually-hidden" id="table-dist-label">Distance matrix for five points</p>
+            <table class="data-table">
+              <caption>Distances between the five points</caption>
+              <thead>
+                <tr>
+                  <th scope="col">&nbsp;</th>
+                  <th scope="col" class="is-numeric">x1</th>
+                  <th scope="col" class="is-numeric">x2</th>
+                  <th scope="col" class="is-numeric">x3</th>
+                  <th scope="col" class="is-numeric">x4</th>
+                  <th scope="col" class="is-numeric">x5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">x1</th><td class="is-numeric">0</td><td class="is-numeric">3</td><td class="is-numeric">8</td><td class="is-numeric">6</td><td class="is-numeric">9</td></tr>
+                <tr><th scope="row">x2</th><td class="is-numeric">3</td><td class="is-numeric">0</td><td class="is-numeric">5</td><td class="is-numeric">7</td><td class="is-numeric">7</td></tr>
+                <tr><th scope="row">x3</th><td class="is-numeric">8</td><td class="is-numeric">5</td><td class="is-numeric">0</td><td class="is-numeric">2</td><td class="is-numeric">5</td></tr>
+                <tr><th scope="row">x4</th><td class="is-numeric">6</td><td class="is-numeric">7</td><td class="is-numeric">2</td><td class="is-numeric">0</td><td class="is-numeric">4</td></tr>
+                <tr><th scope="row">x5</th><td class="is-numeric">9</td><td class="is-numeric">7</td><td class="is-numeric">5</td><td class="is-numeric">4</td><td class="is-numeric">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol>
+            <li>(20 marks) Perform agglomerative hierarchical clustering with
+              <strong>single linkage</strong> — the distance between two clusters is the
+              minimum distance between any member of one and any member of the other —
+              until one cluster is left. At each step, say which clusters were merged and
+              give the updated distance matrix.</li>
+            <li>(5 marks) Draw the dendrogram of the process, and be explicit about the
+              distance at which each merge happens.</li>
+          </ol>
+
+          <details>
+            <summary>Show the worked solution for type 10, single-linkage clustering</summary>
+
+            <p><strong>Merge 1, at distance 2.</strong> The smallest off-diagonal entry is
+              2, between x3 and x4. Merge them into {x3, x4}. Under single linkage every
+              new distance is the smaller of the two it replaces:</p>
+            <ul>
+              <li>d({x3,x4}, x1) = min(8, 6) = 6</li>
+              <li>d({x3,x4}, x2) = min(5, 7) = 5</li>
+              <li>d({x3,x4}, x5) = min(5, 4) = 4</li>
+            </ul>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Distance matrix after the first merge">
+              <table class="data-table">
+                <caption>After merge 1: four clusters remain</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">&nbsp;</th>
+                    <th scope="col" class="is-numeric">x1</th>
+                    <th scope="col" class="is-numeric">x2</th>
+                    <th scope="col" class="is-numeric">{x3, x4}</th>
+                    <th scope="col" class="is-numeric">x5</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">x1</th><td class="is-numeric">0</td><td class="is-numeric">3</td><td class="is-numeric">6</td><td class="is-numeric">9</td></tr>
+                  <tr><th scope="row">x2</th><td class="is-numeric">3</td><td class="is-numeric">0</td><td class="is-numeric">5</td><td class="is-numeric">7</td></tr>
+                  <tr><th scope="row">{x3, x4}</th><td class="is-numeric">6</td><td class="is-numeric">5</td><td class="is-numeric">0</td><td class="is-numeric">4</td></tr>
+                  <tr><th scope="row">x5</th><td class="is-numeric">9</td><td class="is-numeric">7</td><td class="is-numeric">4</td><td class="is-numeric">0</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Merge 2, at distance 3.</strong> The smallest entry is now 3,
+              between x1 and x2. Merge into {x1, x2}:</p>
+            <ul>
+              <li>d({x1,x2}, {x3,x4}) = min(6, 5) = 5</li>
+              <li>d({x1,x2}, x5) = min(9, 7) = 7</li>
+            </ul>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Distance matrix after the second merge">
+              <table class="data-table">
+                <caption>After merge 2: three clusters remain</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">&nbsp;</th>
+                    <th scope="col" class="is-numeric">{x1, x2}</th>
+                    <th scope="col" class="is-numeric">{x3, x4}</th>
+                    <th scope="col" class="is-numeric">x5</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">{x1, x2}</th><td class="is-numeric">0</td><td class="is-numeric">5</td><td class="is-numeric">7</td></tr>
+                  <tr><th scope="row">{x3, x4}</th><td class="is-numeric">5</td><td class="is-numeric">0</td><td class="is-numeric">4</td></tr>
+                  <tr><th scope="row">x5</th><td class="is-numeric">7</td><td class="is-numeric">4</td><td class="is-numeric">0</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Merge 3, at distance 4.</strong> The smallest entry is 4, between
+              {x3, x4} and x5. Merge into {x3, x4, x5}:</p>
+            <ul>
+              <li>d({x1,x2}, {x3,x4,x5}) = min(5, 7) = 5</li>
+            </ul>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Distance matrix after the third merge">
+              <table class="data-table">
+                <caption>After merge 3: two clusters remain</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">&nbsp;</th>
+                    <th scope="col" class="is-numeric">{x1, x2}</th>
+                    <th scope="col" class="is-numeric">{x3, x4, x5}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">{x1, x2}</th><td class="is-numeric">0</td><td class="is-numeric">5</td></tr>
+                  <tr><th scope="row">{x3, x4, x5}</th><td class="is-numeric">5</td><td class="is-numeric">0</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Merge 4, at distance 5.</strong> The last two clusters join, giving
+              {x1, x2, x3, x4, x5}. The process is complete.</p>
+
+            <p><strong>(b) The dendrogram, as a table.</strong> A dendrogram is four
+              merges at four heights; drawn or tabulated, the same four numbers are what is
+              being marked.</p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="The four merges and their heights">
+              <table class="data-table">
+                <caption>The dendrogram: which clusters join, and at what height</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Merge</th>
+                    <th scope="col">Clusters joined</th>
+                    <th scope="col" class="is-numeric">Height</th>
+                    <th scope="col">Resulting cluster</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">1</th><td>x3 and x4</td><td class="is-numeric">2</td><td>{x3, x4}</td></tr>
+                  <tr><th scope="row">2</th><td>x1 and x2</td><td class="is-numeric">3</td><td>{x1, x2}</td></tr>
+                  <tr><th scope="row">3</th><td>{x3, x4} and x5</td><td class="is-numeric">4</td><td>{x3, x4, x5}</td></tr>
+                  <tr><th scope="row">4</th><td>{x1, x2} and {x3, x4, x5}</td><td class="is-numeric">5</td><td>all five</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              To describe the drawing in words: five leaves along the bottom in the order
+              x1, x2, x3, x4, x5. A bar joins x3 and x4 at height 2, and a bar joins x1
+              and x2 at height 3. The x3–x4 bar joins x5 at height 4. Finally the two
+              remaining bars join at height 5, which is the root. Cutting the dendrogram
+              anywhere between heights 4 and 5 gives the two-cluster solution
+              {x1, x2} and {x3, x4, x5}.
+            </p>
+
+            <div class="callout callout--warning">
+              <p class="callout__title">Common mistake</p>
+              <p>
+                Using the wrong linkage without noticing. Single linkage takes the
+                <em>minimum</em>; complete linkage would take the maximum and would give
+                different heights — 2, 3, 5 then 9 on this same matrix. Read the question
+                and write down which rule you are using before you start.
+              </p>
+            </div>
+          </details>
+
+          <p>More on this: <a href="../m5-data-mining.html#section-5-3">M5 §5.3 Hierarchical clustering</a>.</p>
+        </div>
+      </section>
+
+      <!-- ----------------------------------------------------------- TYPE 11 -->
+      <section class="topic-section" id="type-median-filter" aria-labelledby="type-median-filter-title">
+        <div class="topic-section__header">
+          <h3 id="type-median-filter-title">
+            <span class="topic-section__number">Type 11</span>
+            Median filtering a small image
+          </h3>
+          <a class="topic-section__anchor" href="#type-median-filter">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 11, median filter</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Final, 10 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M4 topics 4.4.1, 4.4.5, 4.4.6</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> The table below is a greyscale image stored as
+            unsigned 4-bit integers, so values run from 0 to 15. Rows are numbered 1 to 4
+            from the top and columns 1 to 5 from the left. It contains salt-and-pepper
+            noise, visible as the 0 and the 15 sitting among mid-tones.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-image-label">
+            <p class="visually-hidden" id="table-image-label">The four by five greyscale image</p>
+            <table class="data-table data-table--compact">
+              <caption>The image: 4 rows, 5 columns, values 0 to 15</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Row</th>
+                  <th scope="col" class="is-numeric">Col 1</th>
+                  <th scope="col" class="is-numeric">Col 2</th>
+                  <th scope="col" class="is-numeric">Col 3</th>
+                  <th scope="col" class="is-numeric">Col 4</th>
+                  <th scope="col" class="is-numeric">Col 5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">1</th><td class="is-numeric">3</td><td class="is-numeric">4</td><td class="is-numeric">3</td><td class="is-numeric">5</td><td class="is-numeric">4</td></tr>
+                <tr><th scope="row">2</th><td class="is-numeric">2</td><td class="is-numeric">0</td><td class="is-numeric">4</td><td class="is-numeric">15</td><td class="is-numeric">3</td></tr>
+                <tr><th scope="row">3</th><td class="is-numeric">3</td><td class="is-numeric">3</td><td class="is-numeric">14</td><td class="is-numeric">2</td><td class="is-numeric">4</td></tr>
+                <tr><th scope="row">4</th><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">2</td><td class="is-numeric">4</td><td class="is-numeric">5</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            (10 marks) Apply the denoising algorithm from class: replace each pixel by the
+            median of its nine neighbours, itself included. Do not apply it to boundary
+            pixels — only the six interior pixels at rows 2 to 3 and columns 2 to 4 change.
+          </p>
+
+          <details>
+            <summary>Show the worked solution for type 11, median filter</summary>
+
+            <p>
+              For each interior pixel, list the nine values in its 3 by 3 window, sort
+              them, and take the fifth. Sorting the nine is the whole method; the fifth of
+              nine is the median.
+            </p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Median computation for each interior pixel">
+              <table class="data-table">
+                <caption>The six interior pixels, with their windows sorted</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Pixel</th>
+                    <th scope="col" class="is-numeric">Old value</th>
+                    <th scope="col">The nine values, sorted</th>
+                    <th scope="col" class="is-numeric">Median, the fifth</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">row 2, col 2</th><td class="is-numeric">0</td><td>0, 2, 3, 3, <strong>3</strong>, 3, 4, 4, 14</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row">row 2, col 3</th><td class="is-numeric">4</td><td>0, 2, 3, 3, <strong>4</strong>, 4, 5, 14, 15</td><td class="is-numeric">4</td></tr>
+                  <tr><th scope="row">row 2, col 4</th><td class="is-numeric">15</td><td>2, 3, 3, 4, <strong>4</strong>, 4, 5, 14, 15</td><td class="is-numeric">4</td></tr>
+                  <tr><th scope="row">row 3, col 2</th><td class="is-numeric">3</td><td>0, 2, 2, 3, <strong>3</strong>, 4, 4, 5, 14</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row">row 3, col 3</th><td class="is-numeric">14</td><td>0, 2, 2, 3, <strong>4</strong>, 4, 5, 14, 15</td><td class="is-numeric">4</td></tr>
+                  <tr><th scope="row">row 3, col 4</th><td class="is-numeric">2</td><td>2, 2, 3, 4, <strong>4</strong>, 4, 5, 14, 15</td><td class="is-numeric">4</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="The filtered image">
+              <table class="data-table data-table--compact">
+                <caption>The result. Boundary pixels are unchanged; the interior 2 by 3 block is the filtered output.</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Row</th>
+                    <th scope="col" class="is-numeric">Col 1</th>
+                    <th scope="col" class="is-numeric">Col 2</th>
+                    <th scope="col" class="is-numeric">Col 3</th>
+                    <th scope="col" class="is-numeric">Col 4</th>
+                    <th scope="col" class="is-numeric">Col 5</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">1</th><td class="is-numeric">3</td><td class="is-numeric">4</td><td class="is-numeric">3</td><td class="is-numeric">5</td><td class="is-numeric">4</td></tr>
+                  <tr><th scope="row">2</th><td class="is-numeric">2</td><td class="is-numeric">3</td><td class="is-numeric">4</td><td class="is-numeric">4</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row">3</th><td class="is-numeric">3</td><td class="is-numeric">3</td><td class="is-numeric">4</td><td class="is-numeric">4</td><td class="is-numeric">4</td></tr>
+                  <tr><th scope="row">4</th><td class="is-numeric">4</td><td class="is-numeric">5</td><td class="is-numeric">2</td><td class="is-numeric">4</td><td class="is-numeric">5</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              Every outlier is gone: the 0, the 15 and the 14 have all been replaced by 3
+              or 4, and no new value was invented — the median always returns a value that
+              was already in the window. That is the property a mean filter does not have,
+              and it is why the median is the right tool for salt-and-pepper noise.
+            </p>
+          </details>
+
+          <p>More on this: <a href="../m4-image-processing.html#section-4-4">M4 §4.4 Local and convolutional operations</a>.</p>
+        </div>
+      </section>
+
+      <!-- ----------------------------------------------------------- TYPE 12 -->
+      <section class="topic-section" id="type-sobel" aria-labelledby="type-sobel-title">
+        <div class="topic-section__header">
+          <h3 id="type-sobel-title">
+            <span class="topic-section__number">Type 12</span>
+            Applying a Sobel kernel by hand
+          </h3>
+          <a class="topic-section__anchor" href="#type-sobel">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 12, Sobel edge detection</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Final, 10 marks</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> M4 topics 4.4.1, 4.5.1, 4.5.3</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> Apply the Sobel operator below to the same
+            4 by 5 image as type 11. Show the computation for at least two pixels. Do not
+            apply it to boundary pixels.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-sobel-kernel-label">
+            <p class="visually-hidden" id="table-sobel-kernel-label">The three by three Sobel kernel</p>
+            <table class="data-table data-table--compact">
+              <caption>The kernel <var>S</var>, given in the question</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Kernel row</th>
+                  <th scope="col" class="is-numeric">Left</th>
+                  <th scope="col" class="is-numeric">Centre</th>
+                  <th scope="col" class="is-numeric">Right</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Top</th><td class="is-numeric">−1</td><td class="is-numeric">−2</td><td class="is-numeric">−1</td></tr>
+                <tr><th scope="row">Middle</th><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td></tr>
+                <tr><th scope="row">Bottom</th><td class="is-numeric">1</td><td class="is-numeric">2</td><td class="is-numeric">1</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout--note">
+            <p class="callout__title">Note</p>
+            <p>
+              The exam calls this &ldquo;Sobel vertical edge detection&rdquo;, but a kernel
+              with zeros across the middle <em>row</em> differences the rows, so it
+              responds to <strong>horizontal</strong> edges — it is the
+              <var>G</var><sub>y</sub> operator. The instructor's own solution notes this.
+              Answer with the kernel as printed and say in one line which edges it actually
+              detects; that is worth more than silently transposing it.
+            </p>
+          </div>
+
+          <details>
+            <summary>Show the worked solution for type 12, Sobel edge detection</summary>
+
+            <p>
+              The response at a pixel is the sum of the nine neighbours each multiplied by
+              the kernel entry sitting on it. Because the middle row is zero, only the row
+              above and the row below contribute: the response is (row below, weighted
+              1&nbsp;2&nbsp;1) minus (row above, weighted 1&nbsp;2&nbsp;1).
+            </p>
+
+            <p><strong>Worked pixel 1: row 2, column 3.</strong> The window is rows 1 to 3,
+              columns 2 to 4:</p>
+            <ul>
+              <li>row above: 4, 3, 5</li>
+              <li>row of the pixel: 0, 4, 15 — multiplied by zero, so ignored</li>
+              <li>row below: 3, 14, 2</li>
+            </ul>
+            <p>
+              Response = [1(3) + 2(14) + 1(2)] &minus; [1(4) + 2(3) + 1(5)]
+              = [3 + 28 + 2] &minus; [4 + 6 + 5] = 33 &minus; 15 = <strong>+18</strong>.
+            </p>
+
+            <p><strong>Worked pixel 2: row 3, column 4.</strong> The window is rows 2 to 4,
+              columns 3 to 5:</p>
+            <ul>
+              <li>row above: 4, 15, 3</li>
+              <li>row of the pixel: 14, 2, 4 — ignored</li>
+              <li>row below: 2, 4, 5</li>
+            </ul>
+            <p>
+              Response = [1(2) + 2(4) + 1(5)] &minus; [1(4) + 2(15) + 1(3)]
+              = [2 + 8 + 5] &minus; [4 + 30 + 3] = 15 &minus; 37 = <strong>&minus;22</strong>.
+            </p>
+
+            <p><strong>All six interior pixels, for checking.</strong></p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="Sobel response at every interior pixel">
+              <table class="data-table">
+                <caption>
+                  Response of the given kernel at the six interior pixels. Large magnitude
+                  means a strong horizontal edge; the sign says which way the brightness
+                  steps.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Pixel</th>
+                    <th scope="col" class="is-numeric">Response</th>
+                    <th scope="col" class="is-numeric">Magnitude</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">row 2, col 2</th><td class="is-numeric">+9</td><td class="is-numeric">9</td></tr>
+                  <tr><th scope="row">row 2, col 3</th><td class="is-numeric">+18</td><td class="is-numeric">18</td></tr>
+                  <tr><th scope="row">row 2, col 4</th><td class="is-numeric">+5</td><td class="is-numeric">5</td></tr>
+                  <tr><th scope="row">row 3, col 2</th><td class="is-numeric">+10</td><td class="is-numeric">10</td></tr>
+                  <tr><th scope="row">row 3, col 3</th><td class="is-numeric">−10</td><td class="is-numeric">10</td></tr>
+                  <tr><th scope="row">row 3, col 4</th><td class="is-numeric">−22</td><td class="is-numeric">22</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              The two largest magnitudes, 18 and 22, sit next to the noise spikes rather
+              than next to any real structure — which is exactly why the median filter of
+              type 11 is normally applied <em>before</em> edge detection, not after.
+            </p>
+          </details>
+
+          <p>More on this: <a href="../m4-image-processing.html#section-4-5">M4 §4.5 Edge detection</a>.</p>
+        </div>
+      </section>
+
+      <!-- ----------------------------------------------------------- TYPE 13 -->
+      <section class="topic-section" id="type-morphology" aria-labelledby="type-morphology-title">
+        <div class="topic-section__header">
+          <h3 id="type-morphology-title">
+            <span class="topic-section__number">Type 13</span>
+            Morphology: dilation and erosion with a cross
+          </h3>
+          <a class="topic-section__anchor" href="#type-morphology">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to problem type 13, dilation and erosion</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Final, 10 marks</span></li>
+          <li><span class="pill pill--partial"><span class="pill__glyph" aria-hidden="true">◐</span> M4 topics 4.6.9–4.6.11 — assessed, but taught only in a supplementary deck</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+          <p>
+            <strong>The question.</strong> Below is a binary image, where 1 is foreground
+            and 0 is background, and a 3 by 3 structuring element shaped like a cross.
+          </p>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-binary-label">
+            <p class="visually-hidden" id="table-binary-label">The binary image</p>
+            <table class="data-table data-table--compact">
+              <caption>Binary image: 4 rows, 5 columns. Foreground pixels are at row 2 columns 2, 3 and 4, and row 3 column 3.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Row</th>
+                  <th scope="col" class="is-numeric">Col 1</th>
+                  <th scope="col" class="is-numeric">Col 2</th>
+                  <th scope="col" class="is-numeric">Col 3</th>
+                  <th scope="col" class="is-numeric">Col 4</th>
+                  <th scope="col" class="is-numeric">Col 5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">1</th><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td></tr>
+                <tr><th scope="row">2</th><td class="is-numeric">0</td><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">0</td></tr>
+                <tr><th scope="row">3</th><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">1</td><td class="is-numeric">0</td><td class="is-numeric">0</td></tr>
+                <tr><th scope="row">4</th><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-se-label">
+            <p class="visually-hidden" id="table-se-label">The structuring element</p>
+            <table class="data-table data-table--compact">
+              <caption>Structuring element <var>S</var>: a cross. Its centre and its four edge-neighbours are 1; its four corners are 0.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">SE row</th>
+                  <th scope="col" class="is-numeric">Left</th>
+                  <th scope="col" class="is-numeric">Centre</th>
+                  <th scope="col" class="is-numeric">Right</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Top</th><td class="is-numeric">0</td><td class="is-numeric">1</td><td class="is-numeric">0</td></tr>
+                <tr><th scope="row">Middle</th><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">1</td></tr>
+                <tr><th scope="row">Bottom</th><td class="is-numeric">0</td><td class="is-numeric">1</td><td class="is-numeric">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol>
+            <li>(5 marks) Perform <strong>dilation</strong> of the image with <var>S</var>.
+              Give the resulting binary image, explain at least one pixel in detail, and
+              describe the effect of dilation.</li>
+            <li>(5 marks) Perform <strong>erosion</strong> of the image with <var>S</var>.
+              Give the resulting binary image, explain at least one pixel in detail, and
+              describe the effect of erosion.</li>
+          </ol>
+
+          <details>
+            <summary>Show the worked solution for type 13, dilation and erosion</summary>
+
+            <p><strong>The two rules, in the form that makes them easy to apply by hand.</strong></p>
+            <ul>
+              <li><strong>Dilation:</strong> centre the cross on a pixel; the output is 1
+                if <em>any</em> of the five cross positions covers a foreground pixel.
+                Equivalently, mark every foreground pixel and each of its four
+                edge-neighbours.</li>
+              <li><strong>Erosion:</strong> centre the cross on a pixel; the output is 1
+                only if <em>every</em> one of the five cross positions covers a foreground
+                pixel. A pixel survives only if it and all four of its edge-neighbours are
+                foreground.</li>
+            </ul>
+            <p>
+              The foreground is four pixels: (row 2, col 2), (row 2, col 3),
+              (row 2, col 4) and (row 3, col 3).
+            </p>
+
+            <p><strong>(a) Dilation.</strong> One pixel in detail: the output at
+              (row 1, col 3). Centre the cross there. Its down position is
+              (row 2, col 3), which is foreground. That single hit is enough, so the
+              output is 1 — even though (row 1, col 3) is background in the input.</p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="The dilated image">
+              <table class="data-table data-table--compact">
+                <caption>After dilation: the cross has grown by one pixel in each of the four edge directions</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Row</th>
+                    <th scope="col" class="is-numeric">Col 1</th>
+                    <th scope="col" class="is-numeric">Col 2</th>
+                    <th scope="col" class="is-numeric">Col 3</th>
+                    <th scope="col" class="is-numeric">Col 4</th>
+                    <th scope="col" class="is-numeric">Col 5</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">1</th><td class="is-numeric">0</td><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">0</td></tr>
+                  <tr><th scope="row">2</th><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">1</td></tr>
+                  <tr><th scope="row">3</th><td class="is-numeric">0</td><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">0</td></tr>
+                  <tr><th scope="row">4</th><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">1</td><td class="is-numeric">0</td><td class="is-numeric">0</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              The object grew from 4 foreground pixels to 12. <strong>Effect of
+              dilation:</strong> it thickens objects, closes small gaps and single-pixel
+              holes, and joins components that were nearly touching. It also enlarges any
+              noise speck by the same amount.
+            </p>
+
+            <p><strong>(b) Erosion.</strong> One pixel in detail: the output at
+              (row 2, col 3), the most promising candidate because it has the most
+              foreground around it. The cross requires (row 2, col 3) itself — foreground,
+              yes — plus (row 1, col 3) above it, which is background. One miss is enough,
+              so the output is 0.</p>
+
+            <div class="table-scroll" role="region" tabindex="0" aria-label="The eroded image">
+              <table class="data-table data-table--compact">
+                <caption>After erosion: every pixel is 0, because the object is thinner than the structuring element</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Row</th>
+                    <th scope="col" class="is-numeric">Col 1</th>
+                    <th scope="col" class="is-numeric">Col 2</th>
+                    <th scope="col" class="is-numeric">Col 3</th>
+                    <th scope="col" class="is-numeric">Col 4</th>
+                    <th scope="col" class="is-numeric">Col 5</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">1</th><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td></tr>
+                  <tr><th scope="row">2</th><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td></tr>
+                  <tr><th scope="row">3</th><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td></tr>
+                  <tr><th scope="row">4</th><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td><td class="is-numeric">0</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              The object vanishes entirely. <strong>Effect of erosion:</strong> it thins
+              objects, removes isolated specks, and separates components joined by a thin
+              bridge — but it deletes outright anything narrower than the structuring
+              element, which is exactly what happened here. That is not a mistake in your
+              working; state it as the result and say why.
+            </p>
+
+            <div class="callout callout--key">
+              <p class="callout__title">Key idea</p>
+              <p>
+                Dilation is &ldquo;any&rdquo;, erosion is &ldquo;all&rdquo;. If you can
+                remember which quantifier goes with which name, you can derive both
+                results at the exam desk without recalling any formula.
+              </p>
+            </div>
+          </details>
+
+          <p>More on this: <a href="../m4-image-processing.html#section-4-6">M4 §4.6 Segmentation and morphology</a>.</p>
+        </div>
+      </section>
+    </section>
+
+    <p><a href="#main" data-back-to-top>Back to the top of exam practice</a></p>
+
+  </main>
+</div>
+
+<footer class="site-footer" data-surface="dark">
+  <div class="site-footer__inner wrap">
+    <section aria-labelledby="footer-modules">
+      <h2 id="footer-modules">Modules</h2>
+      <ul>
+        <li><a href="../m0-foundations.html">M0 — Foundations &amp; Tooling</a></li>
+        <li><a href="../m1-algorithm-design.html">M1 — Algorithm Design &amp; Analysis</a></li>
+        <li><a href="../m2-probability.html">M2 — Probability &amp; Random Processes</a></li>
+        <li><a href="../m3-graphs.html">M3 — Graphs</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-modules-2">
+      <h2 id="footer-modules-2">Modules, continued</h2>
+      <ul>
+        <li><a href="../m4-image-processing.html">M4 — Image Processing</a></li>
+        <li><a href="../m5-data-mining.html">M5 — Data Mining</a></li>
+        <li><a href="../m6-computational-geometry.html">M6 — Computational Geometry</a></li>
+        <li><a href="../m7-discrete-optimization.html">M7 — Discrete Optimization</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-threads">
+      <h2 id="footer-threads">Cross-cutting threads</h2>
+      <ul>
+        <li><a href="complexity-comparator.html">Complexity comparator</a></li>
+        <li><a href="kmeans-everywhere.html">k-means everywhere</a></li>
+        <li><a href="greedy-gallery.html">Greedy gallery</a></li>
+        <li><a href="delaunay-thread.html">Delaunay thread</a></li>
+        <li><a href="exam-practice.html">Exam practice by type</a></li>
+        <li><a class="link-external" href="../../ACCESSIBILITY_STATEMENT.md">Accessibility statement<span class="visually-hidden"> (Markdown file, opens outside the dashboard)</span></a></li>
+      </ul>
+      <p class="site-footer__note">
+        ISC 4221C · Florida State University · Department of Scientific Computing.
+        Built to work offline: no external requests, no tracking, no account.
+      </p>
+    </section>
+  </div>
+</footer>
+
+<script defer src="../assets/js/core/gfx.js"></script>
+<script defer data-manual src="../assets/js/vendor/prism.js"></script>
+<script defer src="../assets/js/highlight.js"></script>
+<script defer src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/nav-map.js"></script>
+<script defer src="../assets/js/nav.js"></script>
+<script defer src="../assets/js/search-index.js"></script>
+<script defer src="../assets/js/search.js"></script>
+<script defer src="../assets/js/demo.js"></script>
+<script defer src="../assets/js/demos/cross-exam-practice.js"></script>
+</body>
+</html>

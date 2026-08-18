@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Thread: greedy gallery — ISC 4221C Discrete Algorithms</title>
+<meta name="description" content="One strategy in four places: coin change in M1, Dijkstra and Kruskal in M3, Hunt's algorithm in M5 — and the 30-cent case where greedy loses.">
+
+<link rel="stylesheet" href="../assets/css/fsu-tokens.css">
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+
+<!-- Theme bootstrap. Copy verbatim. Runs before first paint so a stored dark
+     preference does not flash light; theme.js agrees with whatever it set. -->
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('isc4221c.theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) { /* storage unavailable; fall through to the OS preference */ }
+  })();
+</script>
+</head>
+
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <!-- ROW 1 — identity and utilities. Scrolls away with the page. -->
+  <div class="site-header__bar">
+    <div class="site-header__bar-inner wrap">
+      <a class="brand" href="../index.html">
+        <span>
+          <span class="brand__code">ISC 4221C</span>
+          <span class="brand__name">Discrete Algorithms · Spring 2026</span>
+        </span>
+      </a>
+
+      <!-- Pushed to the right edge by margin-inline-start:auto, not by a
+           spacer element. Ships `hidden`; theme.js reveals it, so a reader
+           without the script never sees a control that cannot work. -->
+      <fieldset class="theme-switch" hidden>
+        <legend class="theme-switch__legend">Theme</legend>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-system" value="system" checked>
+          <label class="theme-switch__label" for="theme-system">Auto</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-light" value="light">
+          <label class="theme-switch__label" for="theme-light">Light</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-dark" value="dark">
+          <label class="theme-switch__label" for="theme-dark">Dark</label>
+        </span>
+      </fieldset>
+    </div>
+  </div>
+
+</header>
+
+<!-- ROW 2 — modules. Sticky, and it never wraps: every module is visible at
+     once, its sections behind a dropdown rather than spilled onto the strip.
+     nav.js fills each .chapter-nav__menu from window.NAV_MAP.
+
+     OUTSIDE <header> on purpose. A sticky element cannot leave its parent's
+     box, so while this lived inside the two-row <header> it stuck for the
+     header's own 85px of height and then scrolled away with it. Its parent has
+     to be <body>. -->
+<nav class="chapter-nav" aria-label="Modules">
+  <div class="chapter-nav__inner wrap">
+    <ul class="chapter-nav__list">
+        <li class="chapter-nav__item chapter-nav__item--plain">
+          <a class="chapter-nav__link" href="../index.html">Home</a>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m0">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m0"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m0"
+                  data-chapter-file="../m0-foundations.html">
+            <span class="chapter-nav__full">Module 0</span>
+            <span class="chapter-nav__short" aria-hidden="true">M0</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m0" role="group"
+               aria-labelledby="chapbtn-m0" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m1">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m1"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m1"
+                  data-chapter-file="../m1-algorithm-design.html">
+            <span class="chapter-nav__full">Module 1</span>
+            <span class="chapter-nav__short" aria-hidden="true">M1</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m1" role="group"
+               aria-labelledby="chapbtn-m1" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m2">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m2"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m2"
+                  data-chapter-file="../m2-probability.html">
+            <span class="chapter-nav__full">Module 2</span>
+            <span class="chapter-nav__short" aria-hidden="true">M2</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m2" role="group"
+               aria-labelledby="chapbtn-m2" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m3">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m3"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m3"
+                  data-chapter-file="../m3-graphs.html">
+            <span class="chapter-nav__full">Module 3</span>
+            <span class="chapter-nav__short" aria-hidden="true">M3</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m3" role="group"
+               aria-labelledby="chapbtn-m3" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m4">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m4"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m4"
+                  data-chapter-file="../m4-image-processing.html">
+            <span class="chapter-nav__full">Module 4</span>
+            <span class="chapter-nav__short" aria-hidden="true">M4</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m4" role="group"
+               aria-labelledby="chapbtn-m4" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m5">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m5"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m5"
+                  data-chapter-file="../m5-data-mining.html">
+            <span class="chapter-nav__full">Module 5</span>
+            <span class="chapter-nav__short" aria-hidden="true">M5</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m5" role="group"
+               aria-labelledby="chapbtn-m5" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m6">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m6"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m6"
+                  data-chapter-file="../m6-computational-geometry.html">
+            <span class="chapter-nav__full">Module 6</span>
+            <span class="chapter-nav__short" aria-hidden="true">M6</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m6" role="group"
+               aria-labelledby="chapbtn-m6" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m7">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m7"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m7"
+                  data-chapter-file="../m7-discrete-optimization.html">
+            <span class="chapter-nav__full">Module 7</span>
+            <span class="chapter-nav__short" aria-hidden="true">M7</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m7" role="group"
+               aria-labelledby="chapbtn-m7" hidden></div>
+        </li>
+        <li class="chapter-nav__item chapter-nav__item--plain chapter-nav__item--sep"
+            data-chapter="threads">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-threads"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-threads">
+            <span class="chapter-nav__full">Threads</span>
+            <span class="chapter-nav__short" aria-hidden="true">Thr</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-threads" role="group"
+               aria-labelledby="chapbtn-threads" hidden></div>
+        </li>
+      </ul>
+    </div>
+</nav>
+
+<nav class="breadcrumb wrap" aria-label="Breadcrumb">
+  <ol class="breadcrumb__list">
+    <li><a href="../index.html">Course home</a></li>
+    <li><a href="../index.html#threads">Cross-cutting threads</a></li>
+    <li><span aria-current="page">Greedy gallery</span></li>
+  </ol>
+</nav>
+
+<div class="layout">
+
+  <div class="layout__sidebar">
+
+    <nav class="module-nav" aria-label="On this page">
+      <p class="module-nav__title">On this page</p>
+
+      <button class="module-nav__toggle btn btn--ghost" type="button"
+              aria-expanded="true" aria-controls="module-nav-list" hidden>
+        <span data-nav-label>Page contents</span>
+      </button>
+
+      <ul class="module-nav__list" id="module-nav-list">
+        <li><a class="module-nav__link" href="#section-pattern"><span>The pattern, in two sentences</span></a></li>
+        <li><a class="module-nav__link" href="#section-gallery"><span>The gallery: four appearances</span></a></li>
+        <li><a class="module-nav__link" href="#section-coins"><span>M1 — coin change, and where it breaks</span></a></li>
+        <li><a class="module-nav__link" href="#section-dijkstra"><span>M3 — Dijkstra</span></a></li>
+        <li><a class="module-nav__link" href="#section-kruskal"><span>M3 — Kruskal</span></a></li>
+        <li><a class="module-nav__link" href="#section-hunt"><span>M5 — Hunt's algorithm</span></a></li>
+        <li><a class="module-nav__link" href="#section-verdict"><span>So when is greedy safe?</span></a></li>
+      </ul>
+    </nav>
+
+    <nav class="module-nav" aria-label="Cross-cutting threads">
+      <p class="module-nav__title">Other threads</p>
+      <ul class="module-nav__list">
+        <li><a class="module-nav__link" href="complexity-comparator.html"><span>Complexity comparator</span></a></li>
+        <li><a class="module-nav__link" href="kmeans-everywhere.html"><span>k-means everywhere</span></a></li>
+        <li><a class="module-nav__link" href="delaunay-thread.html"><span>Delaunay thread</span></a></li>
+        <li><a class="module-nav__link" href="exam-practice.html"><span>Exam practice by type</span></a></li>
+        <li><a class="module-nav__link" href="../index.html#search"><span>Search all topics</span></a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main class="layout__main" id="main" tabindex="-1">
+    <!-- Search. Every page carries one; a reader who lands here from a link
+         should not have to go back to the home page to look something up.
+         Ids are page-unique because two [data-search] blocks on one page
+         would otherwise share a label target. -->
+    <section class="search search--inline" data-search data-search-limit="8"
+             data-search-base="../"
+             aria-label="Search the course">
+      <form class="search__form" role="search">
+        <div class="search__field">
+          <label class="search__label" for="greedy-gallery-search">Search all topics</label>
+          <input class="search__input" id="greedy-gallery-search" name="q" type="search"
+                 autocomplete="off" spellcheck="false" data-search-input>
+        </div>
+      </form>
+      <p class="search__status" role="status" aria-live="polite" data-search-status></p>
+      <ul class="search__results" data-search-results aria-label="Search results"></ul>
+      <p class="search__nojs">Search is not running. JavaScript is switched off,
+         or a script file is missing.</p>
+    </section>
+
+
+    <div class="page-header">
+      <p class="eyebrow">Cross-cutting thread</p>
+      <h1>Greedy algorithms gallery</h1>
+      <p class="lede">
+        Take the locally best step and never reconsider it. The course uses that one
+        sentence four times — coin change in M1, Dijkstra and Kruskal in M3, and Hunt's
+        tree construction in M5. Two of the four are provably optimal, two are not, and
+        telling them apart is the whole skill.
+      </p>
+      <p class="page-header__meta">
+        <span><strong>4</strong> appearances</span>
+        <span><strong>3</strong> modules</span>
+        <span><strong>2</strong> interactive tools</span>
+        <span>Topics 1.3.3, 1.3.4, 3.5.9, 3.6.4, 5.6.4, 5.6.5</span>
+      </p>
+    </div>
+
+    <div class="coverage-legend">
+      <p class="coverage-legend__intro" id="coverage-legend-intro">Coverage markers</p>
+      <dl aria-labelledby="coverage-legend-intro">
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-greedy-gallery-full" class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Full</span></dt>
+            <dd id="legend-greedy-gallery-full">Taught in full in the named source</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-greedy-gallery-partial" class="pill pill--partial"><span class="pill__glyph" aria-hidden="true">◐</span> Partial</span></dt>
+            <dd id="legend-greedy-gallery-partial">Mentioned, or covered only in passing</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-greedy-gallery-lab" class="pill pill--lab"><span class="pill__glyph" aria-hidden="true">▣</span> Lab</span></dt>
+            <dd id="legend-greedy-gallery-lab">Implemented in the named lab</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-greedy-gallery-new" class="pill pill--new"><span class="pill__glyph" aria-hidden="true">✚</span> New</span></dt>
+            <dd id="legend-greedy-gallery-new">Built for 2026 — no interactive version existed before</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-greedy-gallery-exam" class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Exam</span></dt>
+            <dd id="legend-greedy-gallery-exam">Assessed on the midterm or the final</dd>
+          </div>
+      </dl>
+    </div>
+
+    <!-- ============================================================ SECTION 1 -->
+    <section class="topic-group" id="section-pattern" aria-labelledby="section-pattern-title">
+      <div class="topic-group__header">
+        <h2 id="section-pattern-title">The pattern, in two sentences</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Slides, M1</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Tutorial</span></li>
+        </ul>
+
+        <div class="callout callout--definition">
+          <p class="callout__title">Definition</p>
+          <dl>
+            <dt>Greedy algorithm</dt>
+            <dd>A solution built as a sequence of steps. At each step you make the
+              <strong>best local choice</strong> among the feasible choices available at
+              that step, and that choice is <strong>irrevocable</strong> — once made, it
+              is never reconsidered.</dd>
+          </dl>
+        </div>
+
+        <p>
+          Reading a greedy algorithm therefore means answering exactly three questions.
+          Every one of the four appearances below is just a different set of answers.
+        </p>
+
+        <ol>
+          <li><strong>What are the candidates?</strong> The set you choose from at each step.</li>
+          <li><strong>What does &ldquo;best&rdquo; mean?</strong> The single number you sort or minimise on.</li>
+          <li><strong>What makes a candidate feasible?</strong> The check that rules some out — and in two of the four cases, the check is what makes the whole thing correct.</li>
+        </ol>
+
+        <div class="callout callout--key">
+          <p class="callout__title">Key idea</p>
+          <p>
+            M1 offers the metaphor: scrabble versus chess. In scrabble, playing the
+            highest-scoring word available is usually right. In chess, capturing the most
+            valuable piece available usually is not. Greedy algorithms are scrabble
+            algorithms; the question is always whether your problem is scrabble or chess.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 2 -->
+    <section class="topic-group" id="section-gallery" aria-labelledby="section-gallery-title">
+      <div class="topic-group__header">
+        <h2 id="section-gallery-title">The gallery: four appearances</h2>
+      </div>
+
+      <div class="prose">
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-gallery-label">
+          <p class="visually-hidden" id="table-gallery-label">The four greedy algorithms compared step by step</p>
+          <table class="data-table">
+            <caption>
+              The same three questions, answered four ways. The last column is the one
+              that matters: two of these are provably optimal and two are not.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Algorithm</th>
+                <th scope="col">Where</th>
+                <th scope="col">Candidates at each step</th>
+                <th scope="col">&ldquo;Best&rdquo; means</th>
+                <th scope="col">Feasibility check</th>
+                <th scope="col">Optimal?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Coin change</th>
+                <td>M1 topic 1.3.3</td>
+                <td>the coin denominations</td>
+                <td>the largest coin not bigger than what is left</td>
+                <td>none</td>
+                <td><strong>Only for canonical systems.</strong> Fails for 30c with {1, 10, 25}</td>
+              </tr>
+              <tr>
+                <th scope="row">Dijkstra</th>
+                <td>M3 topics 3.5.5, 3.5.9</td>
+                <td>the nodes not yet connected</td>
+                <td>the smallest tentative distance</td>
+                <td>the distance must be finite</td>
+                <td><strong>Yes</strong>, provided no edge weight is negative</td>
+              </tr>
+              <tr>
+                <th scope="row">Kruskal</th>
+                <td>M3 topic 3.6.4</td>
+                <td>the edges not yet in the tree</td>
+                <td>the shortest edge</td>
+                <td>it must not close a cycle</td>
+                <td><strong>Yes.</strong> The cycle check is what makes it so</td>
+              </tr>
+              <tr>
+                <th scope="row">Hunt's algorithm</th>
+                <td>M5 topics 5.6.4, 5.6.5</td>
+                <td>the attribute splits available at this node</td>
+                <td>the largest gain in purity</td>
+                <td>the node must not already be pure</td>
+                <td><strong>No.</strong> Finding the optimal tree is exponentially hard, so the greedy tree is accepted as good enough</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Two patterns fall out of that table. First: the two provably optimal ones both
+          have a real feasibility check, and the two that are not optimal have a weak
+          check or none at all. Second: when greedy is not optimal, the course does not
+          abandon it — it says so and uses it anyway, because the alternative is
+          exponential.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 3 -->
+    <section class="topic-group" id="section-coins" aria-labelledby="section-coins-title">
+      <div class="topic-group__header">
+        <h2 id="section-coins-title">M1 — coin change, and where it breaks</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Slides</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Tutorial</span></li>
+          <li><span class="pill pill--new"><span class="pill__glyph" aria-hidden="true">✚</span> New for 2026</span></li>
+        </ul>
+
+        <h3 id="sub-coins-works">Where it works: 41 cents, United States coins</h3>
+
+        <p>
+          Denominations 1c, 5c, 10c and 25c; make 41 cents with as few coins as possible.
+          The greedy rule takes the largest coin that still fits, four times.
+        </p>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-41-label">
+          <p class="visually-hidden" id="table-41-label">Greedy change for 41 cents with United States denominations</p>
+          <table class="data-table">
+            <caption>Greedy change-making for 41c with denominations 1c, 5c, 10c and 25c — 4 coins, which is optimal</caption>
+            <thead>
+              <tr>
+                <th scope="col">Step</th>
+                <th scope="col">Operation</th>
+                <th scope="col" class="is-numeric">Remaining</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Step 1</th><td>41c &minus; (1) &times; 25c</td><td class="is-numeric">16c</td></tr>
+              <tr><th scope="row">Step 2</th><td>16c &minus; (1) &times; 10c</td><td class="is-numeric">6c</td></tr>
+              <tr><th scope="row">Step 3</th><td>6c &minus; (1) &times; 5c</td><td class="is-numeric">1c</td></tr>
+              <tr><th scope="row">Step 4</th><td>1c &minus; (1) &times; 1c</td><td class="is-numeric">0c</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="sub-coins-fails">Where it breaks: 30 cents with no nickel</h3>
+
+        <p>
+          Now delete the 5c coin. Denominations are 1c, 10c and 25c; make 30 cents. The
+          greedy rule still runs, still terminates, and still returns a correct amount —
+          it is simply not the best answer.
+        </p>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-30-label">
+          <p class="visually-hidden" id="table-30-label">Greedy change for 30 cents when the 5 cent coin is missing</p>
+          <table class="data-table">
+            <caption>Greedy change-making for 30c with denominations 1c, 10c and 25c — 6 coins, where 3 would do</caption>
+            <thead>
+              <tr>
+                <th scope="col">Step</th>
+                <th scope="col">Operation</th>
+                <th scope="col" class="is-numeric">Remaining</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Step 1</th><td>30c &minus; (1) &times; 25c</td><td class="is-numeric">5c</td></tr>
+              <tr><th scope="row">Step 2</th><td>5c &minus; (5) &times; 1c</td><td class="is-numeric">0c</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout--warning">
+          <p class="callout__title">Common mistake</p>
+          <p>
+            Greedy uses <strong>6 coins</strong> here: one 25c and five 1c. The optimal
+            answer is <strong>3 coins</strong>: three 10c. Nothing went wrong in the
+            execution — the first choice, the 25c, was locally best and permanently
+            wrong. This is the counterexample the module is built around, and it is the
+            reason &ldquo;it terminated and gave an answer&rdquo; is never evidence that
+            a greedy algorithm is correct.
+          </p>
+        </div>
+
+        <h3 id="sub-coin-demo">Run it yourself</h3>
+
+        <div id="demo-greedy-coin-change-mount">
+          <div class="demo__fallback">
+            <p><strong>Coin change: greedy against optimal — interactive version not running.</strong>
+               Either JavaScript is off, or this page was opened directly from a folder.
+               The default case — 30 cents with denominations 1c, 10c and 25c — is below.</p>
+            <div class="table-scroll" role="region" tabindex="0"
+                 aria-label="Greedy trace for 30 cents with denominations 1, 10 and 25 cents">
+              <table class="data-table">
+                <caption>Greedy trace for 30c with {1c, 10c, 25c}: 6 coins, against an optimal 3 coins</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Step</th>
+                    <th scope="col" class="is-numeric">Coin taken</th>
+                    <th scope="col" class="is-numeric">Amount before</th>
+                    <th scope="col" class="is-numeric">Amount after</th>
+                    <th scope="col" class="is-numeric">Coins used</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">1</th><td class="is-numeric">25</td><td class="is-numeric">30</td><td class="is-numeric">5</td><td class="is-numeric">1</td></tr>
+                  <tr><th scope="row">2</th><td class="is-numeric">1</td><td class="is-numeric">5</td><td class="is-numeric">4</td><td class="is-numeric">2</td></tr>
+                  <tr><th scope="row">3</th><td class="is-numeric">1</td><td class="is-numeric">4</td><td class="is-numeric">3</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row">4</th><td class="is-numeric">1</td><td class="is-numeric">3</td><td class="is-numeric">2</td><td class="is-numeric">4</td></tr>
+                  <tr><th scope="row">5</th><td class="is-numeric">1</td><td class="is-numeric">2</td><td class="is-numeric">1</td><td class="is-numeric">5</td></tr>
+                  <tr><th scope="row">6</th><td class="is-numeric">1</td><td class="is-numeric">1</td><td class="is-numeric">0</td><td class="is-numeric">6</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>The optimal solution for the same amount is 10 + 10 + 10, which is 3 coins.</p>
+          </div>
+        </div>
+
+        <h3 id="sub-coin-survey">How often does it lose?</h3>
+
+        <p>
+          One counterexample is easy to dismiss as a curiosity. The survey below runs
+          greedy and an exact dynamic-programming optimum on every amount from 1 up to
+          the limit you choose, and lists every amount where they disagree.
+        </p>
+
+        <div id="demo-greedy-gap-mount">
+          <div class="demo__fallback">
+            <p><strong>Greedy gap survey — interactive version not running.</strong>
+               Either JavaScript is off, or this page was opened directly from a folder.
+               The default survey — denominations 1c, 10c, 25c, amounts 1 to 60 — finds
+               15 amounts where greedy is not optimal, listed below.</p>
+            <div class="table-scroll" role="region" tabindex="0"
+                 aria-label="Amounts from 1 to 60 where greedy is not optimal with denominations 1, 10 and 25 cents">
+              <table class="data-table">
+                <caption>The 15 amounts between 1c and 60c where greedy loses with {1c, 10c, 25c}</caption>
+                <thead>
+                  <tr>
+                    <th scope="col" class="is-numeric">Amount</th>
+                    <th scope="col" class="is-numeric">Greedy coins</th>
+                    <th scope="col" class="is-numeric">Optimal coins</th>
+                    <th scope="col" class="is-numeric">Extra coins</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row" class="is-numeric">30</th><td class="is-numeric">6</td><td class="is-numeric">3</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">31</th><td class="is-numeric">7</td><td class="is-numeric">4</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">32</th><td class="is-numeric">8</td><td class="is-numeric">5</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">33</th><td class="is-numeric">9</td><td class="is-numeric">6</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">34</th><td class="is-numeric">10</td><td class="is-numeric">7</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">40</th><td class="is-numeric">7</td><td class="is-numeric">4</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">41</th><td class="is-numeric">8</td><td class="is-numeric">5</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">42</th><td class="is-numeric">9</td><td class="is-numeric">6</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">43</th><td class="is-numeric">10</td><td class="is-numeric">7</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">44</th><td class="is-numeric">11</td><td class="is-numeric">8</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">55</th><td class="is-numeric">7</td><td class="is-numeric">4</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">56</th><td class="is-numeric">8</td><td class="is-numeric">5</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">57</th><td class="is-numeric">9</td><td class="is-numeric">6</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">58</th><td class="is-numeric">10</td><td class="is-numeric">7</td><td class="is-numeric">3</td></tr>
+                  <tr><th scope="row" class="is-numeric">59</th><td class="is-numeric">11</td><td class="is-numeric">8</td><td class="is-numeric">3</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              With the 5c coin restored, greedy matches the optimum at every one of the
+              60 amounts. The failure is a property of the denomination set, not of the
+              amount.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 4 -->
+    <section class="topic-group" id="section-dijkstra" aria-labelledby="section-dijkstra-title">
+      <div class="topic-group__header">
+        <h2 id="section-dijkstra-title">M3 — Dijkstra: greedy, and provably right</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Slides</span></li>
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Midterm</span></li>
+        </ul>
+
+        <p>
+          M3 states it plainly: Dijkstra is a greedy algorithm. At each step it takes the
+          node that looks best — smallest tentative distance — with no regard for
+          long-term strategy. Unlike coin change, that turns out to be safe, because once
+          a node is fixed no later edge can shorten the route to it.
+        </p>
+
+        <div class="formula" role="math"
+             aria-label="Dist of X is set to the minimum of Dist of X and Dist of P plus Length of X P">
+          <span class="formula__label">The relaxation step (M3 topic 3.5.5)</span>
+          <p class="formula__expr">
+            Dist(<var>X</var>) = min&thinsp;( Dist(<var>X</var>),
+            Dist(<var>P</var>) + Length(<var>X</var>,&thinsp;<var>P</var>) )
+          </p>
+          <dl class="formula__where">
+            <dt><var>P</var></dt><dd>the node just connected — the greedy choice</dd>
+            <dt><var>X</var></dt><dd>an unconnected neighbour of P</dd>
+            <dt>Length(X, P)</dt><dd>the weight of the edge between them, infinite if there is no edge</dd>
+            <dt>Dist(X)</dt><dd>the shortest distance to X found so far</dd>
+          </dl>
+        </div>
+
+        <p>
+          The worked example from the slides has six nodes and eight edges. Its edge list
+          is given in full below, so the trace can be checked without seeing the drawing.
+        </p>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-dj-edges-label">
+          <p class="visually-hidden" id="table-dj-edges-label">Edge list for the six-node Dijkstra example</p>
+          <table class="data-table">
+            <caption>Edge list for the M3 Dijkstra example: 6 nodes, 8 undirected edges</caption>
+            <thead>
+              <tr>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col" class="is-numeric">Length</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">A</th><td>B</td><td class="is-numeric">40</td></tr>
+              <tr><th scope="row">A</th><td>C</td><td class="is-numeric">15</td></tr>
+              <tr><th scope="row">C</th><td>B</td><td class="is-numeric">20</td></tr>
+              <tr><th scope="row">C</th><td>D</td><td class="is-numeric">100</td></tr>
+              <tr><th scope="row">B</th><td>D</td><td class="is-numeric">10</td></tr>
+              <tr><th scope="row">B</th><td>E</td><td class="is-numeric">25</td></tr>
+              <tr><th scope="row">B</th><td>F</td><td class="is-numeric">6</td></tr>
+              <tr><th scope="row">F</th><td>E</td><td class="is-numeric">8</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-dj-trace-label">
+          <p class="visually-hidden" id="table-dj-trace-label">Dijkstra working table for the six-node example</p>
+          <table class="data-table">
+            <caption>
+              Dijkstra from A on that graph. Each row is one greedy choice: connect the
+              closest unconnected node, then relax its neighbours. The answer is
+              Dist(F) = 41.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Step</th>
+                <th scope="col">Node connected</th>
+                <th scope="col">Connected set</th>
+                <th scope="col" class="is-numeric">A</th>
+                <th scope="col" class="is-numeric">B</th>
+                <th scope="col" class="is-numeric">C</th>
+                <th scope="col" class="is-numeric">D</th>
+                <th scope="col" class="is-numeric">E</th>
+                <th scope="col" class="is-numeric">F</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">0</th><td>A</td><td>A</td><td class="is-numeric">0</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td></tr>
+              <tr><th scope="row">1</th><td>A</td><td>A</td><td class="is-numeric">0</td><td class="is-numeric">40</td><td class="is-numeric">15</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td></tr>
+              <tr><th scope="row">2</th><td>C</td><td>A, C</td><td class="is-numeric">0</td><td class="is-numeric">35</td><td class="is-numeric">15</td><td class="is-numeric">115</td><td class="is-numeric">∞</td><td class="is-numeric">∞</td></tr>
+              <tr><th scope="row">3</th><td>B</td><td>A, B, C</td><td class="is-numeric">0</td><td class="is-numeric">35</td><td class="is-numeric">15</td><td class="is-numeric">45</td><td class="is-numeric">60</td><td class="is-numeric">41</td></tr>
+              <tr><th scope="row">4</th><td>F</td><td>A, B, C, F</td><td class="is-numeric">0</td><td class="is-numeric">35</td><td class="is-numeric">15</td><td class="is-numeric">45</td><td class="is-numeric">49</td><td class="is-numeric">41</td></tr>
+              <tr><th scope="row">5</th><td>D</td><td>A, B, C, D, F</td><td class="is-numeric">0</td><td class="is-numeric">35</td><td class="is-numeric">15</td><td class="is-numeric">45</td><td class="is-numeric">49</td><td class="is-numeric">41</td></tr>
+              <tr><th scope="row">6</th><td>E</td><td>all six</td><td class="is-numeric">0</td><td class="is-numeric">35</td><td class="is-numeric">15</td><td class="is-numeric">45</td><td class="is-numeric">49</td><td class="is-numeric">41</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout--note">
+          <p class="callout__title">Note</p>
+          <p>
+            Two different slides print two different values for E at step 3 — one says 60,
+            one says 65. The correct value is <strong>60</strong>, because
+            Dist(B) + Length(B, E) is 35 + 25. The final answer is unaffected: step 4
+            replaces it with 41 + 8 = 49 either way. If your working disagrees with a
+            slide, redo the arithmetic before assuming you are wrong.
+          </p>
+        </div>
+
+        <div class="callout callout--warning">
+          <p class="callout__title">Common mistake</p>
+          <p>
+            Dijkstra's greedy choice is only safe when no edge weight is negative. A
+            negative edge could reduce a distance that has already been fixed, and fixed
+            distances are never revisited — the irrevocability that makes it fast is
+            exactly what makes it wrong there.
+          </p>
+        </div>
+
+        <p><a href="../m3-graphs.html#topic-3-5-5">Dijkstra's algorithm in M3 §3.5.5</a> ·
+           <a href="exam-practice.html#type-dijkstra">Practise it on the midterm graph</a></p>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 5 -->
+    <section class="topic-group" id="section-kruskal" aria-labelledby="section-kruskal-title">
+      <div class="topic-group__header">
+        <h2 id="section-kruskal-title">M3 — Kruskal: the check is the proof</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Slides</span></li>
+          <li><span class="pill pill--lab"><span class="pill__glyph" aria-hidden="true">▣</span> Lab 08</span></li>
+        </ul>
+
+        <p>
+          Kruskal sorts every edge by length, then walks the sorted list adding any edge
+          that does not close a cycle, until the tree has <var>n</var>&nbsp;&minus;&nbsp;1
+          edges. M3 classifies it as greedy in the same words it used for Dijkstra: take
+          the edge that looks best, with the only check being that it cannot add a loop.
+        </p>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-kruskal-label">
+          <p class="visually-hidden" id="table-kruskal-label">Kruskal worked example, nine accepted edges and one rejected</p>
+          <table class="data-table">
+            <caption>
+              Kruskal on the M3 ten-node example. Nine edges are accepted and one, FG, is
+              rejected because both endpoints were already in the tree. Total length 48.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Step</th>
+                <th scope="col">Edge</th>
+                <th scope="col" class="is-numeric">Length</th>
+                <th scope="col">Decision</th>
+                <th scope="col" class="is-numeric">Running total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">1</th><td>EF</td><td class="is-numeric">1</td><td>accepted</td><td class="is-numeric">1</td></tr>
+              <tr><th scope="row">2</th><td>AF</td><td class="is-numeric">2</td><td>accepted</td><td class="is-numeric">3</td></tr>
+              <tr><th scope="row">3</th><td>AB</td><td class="is-numeric">3</td><td>accepted</td><td class="is-numeric">6</td></tr>
+              <tr><th scope="row">4</th><td>DI</td><td class="is-numeric">4</td><td>accepted</td><td class="is-numeric">10</td></tr>
+              <tr><th scope="row">5</th><td>EH</td><td class="is-numeric">5</td><td>accepted</td><td class="is-numeric">15</td></tr>
+              <tr><th scope="row">6</th><td>EG</td><td class="is-numeric">6</td><td>accepted</td><td class="is-numeric">21</td></tr>
+              <tr><th scope="row">—</th><td>FG</td><td class="is-numeric">7</td><td><strong>rejected — closes a cycle</strong></td><td class="is-numeric">21</td></tr>
+              <tr><th scope="row">7</th><td>CD</td><td class="is-numeric">8</td><td>accepted</td><td class="is-numeric">29</td></tr>
+              <tr><th scope="row">8</th><td>IJ</td><td class="is-numeric">9</td><td>accepted</td><td class="is-numeric">38</td></tr>
+              <tr><th scope="row">9</th><td>EI</td><td class="is-numeric">10</td><td>accepted</td><td class="is-numeric">48</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          The rejected row is the interesting one. FG is shorter than CD, IJ and EI, and
+          greedy still refuses it — not because of any look-ahead, but because the
+          feasibility test says no. That is the structural difference between Kruskal and
+          coin change: Kruskal has a check that encodes what makes a partial solution
+          extendable, and coin change has none.
+        </p>
+
+        <p><a href="../m3-graphs.html#topic-3-6-4">Kruskal's algorithm in M3 §3.6.4</a> ·
+           <a href="../m3-graphs.html#topic-3-6-5">Cycle detection and union-find, §3.6.5</a></p>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 6 -->
+    <section class="topic-group" id="section-hunt" aria-labelledby="section-hunt-title">
+      <div class="topic-group__header">
+        <h2 id="section-hunt-title">M5 — Hunt's algorithm: greedy on purpose, not by luck</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Slides</span></li>
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Final, Question 2</span></li>
+        </ul>
+
+        <p>
+          M5 is unusually honest about this one. Many decision trees can be built from the
+          same attributes; finding the best one is exponentially hard; so the course
+          settles for a suboptimal result and builds the tree greedily. Hunt's algorithm
+          recurses: if every record at a node has the same class, make it a leaf;
+          otherwise pick an attribute test, split, and repeat on each child.
+        </p>
+
+        <p>
+          &ldquo;Best&rdquo; here is the split that reduces impurity the most. Using
+          classification error as the impurity measure, on the six-record data set from
+          the final exam:
+        </p>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-tumour-label">
+          <p class="visually-hidden" id="table-tumour-label">Six training records with size, density and class</p>
+          <table class="data-table">
+            <caption>The training set: six records, two attributes, two classes</caption>
+            <thead>
+              <tr>
+                <th scope="col">Record</th>
+                <th scope="col" class="is-numeric">Size (cm)</th>
+                <th scope="col">Density</th>
+                <th scope="col">Class</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">1</th><td class="is-numeric">6</td><td>High</td><td>Malignant</td></tr>
+              <tr><th scope="row">2</th><td class="is-numeric">3</td><td>Low</td><td>Benign</td></tr>
+              <tr><th scope="row">3</th><td class="is-numeric">7</td><td>High</td><td>Malignant</td></tr>
+              <tr><th scope="row">4</th><td class="is-numeric">2</td><td>Low</td><td>Benign</td></tr>
+              <tr><th scope="row">5</th><td class="is-numeric">8</td><td>Low</td><td>Malignant</td></tr>
+              <tr><th scope="row">6</th><td class="is-numeric">4</td><td>High</td><td>Benign</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="formula" role="math"
+             aria-label="E of t equals 1 minus the maximum over i from 1 to k of p of i given t">
+          <span class="formula__label">Classification error as an impurity measure (M5 topic 5.6.8)</span>
+          <p class="formula__expr">
+            <var>E</var>(<var>t</var>) = 1 &minus; max<sub>1&nbsp;&le;&nbsp;<var>i</var>&nbsp;&le;&nbsp;<var>k</var></sub>&nbsp;<var>p</var>(<var>i</var>&nbsp;|&nbsp;<var>t</var>)
+          </p>
+          <dl class="formula__where">
+            <dt><var>t</var></dt><dd>a node of the tree, holding some subset of the training records</dd>
+            <dt><var>p</var>(<var>i</var> | <var>t</var>)</dt><dd>the fraction of records at node t whose class is i</dd>
+            <dt><var>k</var></dt><dd>the number of classes — two here, Malignant and Benign</dd>
+          </dl>
+        </div>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-gain-label">
+          <p class="visually-hidden" id="table-gain-label">Impurity and gain for the two candidate splits</p>
+          <table class="data-table">
+            <caption>
+              The greedy choice at the root. The root holds 3 Malignant and 3 Benign, so
+              its impurity is 0.5. Splitting on Size gains twice as much as splitting on
+              Density, so Hunt's algorithm takes Size.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Candidate split</th>
+                <th scope="col">Left child</th>
+                <th scope="col" class="is-numeric">E(left)</th>
+                <th scope="col">Right child</th>
+                <th scope="col" class="is-numeric">E(right)</th>
+                <th scope="col" class="is-numeric">Weighted impurity</th>
+                <th scope="col" class="is-numeric">Gain</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Size &lt; 5 versus Size &ge; 5</th>
+                <td>records 2, 4, 6 — 0 Malignant, 3 Benign</td>
+                <td class="is-numeric">0.000</td>
+                <td>records 1, 3, 5 — 3 Malignant, 0 Benign</td>
+                <td class="is-numeric">0.000</td>
+                <td class="is-numeric">0.000</td>
+                <td class="is-numeric">0.500</td>
+              </tr>
+              <tr>
+                <th scope="row">Density High versus Low</th>
+                <td>records 1, 3, 6 — 2 Malignant, 1 Benign</td>
+                <td class="is-numeric">0.333</td>
+                <td>records 2, 4, 5 — 1 Malignant, 2 Benign</td>
+                <td class="is-numeric">0.333</td>
+                <td class="is-numeric">0.333</td>
+                <td class="is-numeric">0.167</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Both children of the Size split are pure, so Hunt's algorithm marks them as
+          leaves and stops. Here the greedy choice happens to give a perfect tree — but
+          nothing in the algorithm guaranteed that, and on a larger data set the first
+          split that looks best often is not part of the smallest correct tree.
+        </p>
+
+        <p><a href="../m5-data-mining.html#topic-5-6-5">Hunt's algorithm in M5 §5.6.5</a> ·
+           <a href="../m5-data-mining.html#topic-5-6-8">Impurity measures, §5.6.8</a> ·
+           <a href="exam-practice.html#type-decision-tree">Practise the full exam question</a></p>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 7 -->
+    <section class="topic-group" id="section-verdict" aria-labelledby="section-verdict-title">
+      <div class="topic-group__header">
+        <h2 id="section-verdict-title">So when is greedy safe?</h2>
+      </div>
+
+      <div class="prose">
+        <p>
+          The course does not give a general theorem, and there is a reason for that:
+          proving a greedy algorithm optimal is genuinely hard and is done per problem.
+          What it does give you is a working habit.
+        </p>
+
+        <ol>
+          <li><strong>Write down the three answers</strong> — candidates, &ldquo;best&rdquo;, feasibility check.</li>
+          <li><strong>Look for the check.</strong> If there is no test that can reject a locally best candidate, be suspicious: coin change has none, and coin change is the one that fails.</li>
+          <li><strong>Try to break it with a small case.</strong> 30 cents with no nickel is four coins and a minute of arithmetic. A counterexample settles the question; a hundred successful runs do not.</li>
+          <li><strong>If it is not optimal, say so and use it anyway when the exact method is exponential.</strong> That is precisely M5's position on decision trees, and it is a legitimate engineering answer, not a failure.</li>
+        </ol>
+
+        <div class="callout callout--key">
+          <p class="callout__title">Key idea</p>
+          <p>
+            &ldquo;It ran and produced an answer&rdquo; is not evidence of correctness.
+            Greedy coin change on 30c produces a perfectly valid set of coins totalling
+            exactly 30c. It is just twice as many coins as necessary.
+          </p>
+        </div>
+
+        <h3 id="sub-threads">The other threads</h3>
+        <ul>
+          <li><a href="complexity-comparator.html">Complexity comparator</a> — what Dijkstra, Kruskal and the exhaustive alternatives cost</li>
+          <li><a href="kmeans-everywhere.html">k-means everywhere</a> — another algorithm that converges without promising the best answer</li>
+          <li><a href="delaunay-thread.html">Delaunay thread</a></li>
+          <li><a href="exam-practice.html">Exam practice by problem type</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <p><a href="#main" data-back-to-top>Back to the top of the greedy gallery</a></p>
+
+  </main>
+</div>
+
+<footer class="site-footer" data-surface="dark">
+  <div class="site-footer__inner wrap">
+    <section aria-labelledby="footer-modules">
+      <h2 id="footer-modules">Modules</h2>
+      <ul>
+        <li><a href="../m0-foundations.html">M0 — Foundations &amp; Tooling</a></li>
+        <li><a href="../m1-algorithm-design.html">M1 — Algorithm Design &amp; Analysis</a></li>
+        <li><a href="../m2-probability.html">M2 — Probability &amp; Random Processes</a></li>
+        <li><a href="../m3-graphs.html">M3 — Graphs</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-modules-2">
+      <h2 id="footer-modules-2">Modules, continued</h2>
+      <ul>
+        <li><a href="../m4-image-processing.html">M4 — Image Processing</a></li>
+        <li><a href="../m5-data-mining.html">M5 — Data Mining</a></li>
+        <li><a href="../m6-computational-geometry.html">M6 — Computational Geometry</a></li>
+        <li><a href="../m7-discrete-optimization.html">M7 — Discrete Optimization</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-threads">
+      <h2 id="footer-threads">Cross-cutting threads</h2>
+      <ul>
+        <li><a href="complexity-comparator.html">Complexity comparator</a></li>
+        <li><a href="kmeans-everywhere.html">k-means everywhere</a></li>
+        <li><a href="greedy-gallery.html">Greedy gallery</a></li>
+        <li><a href="delaunay-thread.html">Delaunay thread</a></li>
+        <li><a href="exam-practice.html">Exam practice by type</a></li>
+        <li><a class="link-external" href="../../ACCESSIBILITY_STATEMENT.md">Accessibility statement<span class="visually-hidden"> (Markdown file, opens outside the dashboard)</span></a></li>
+      </ul>
+      <p class="site-footer__note">
+        ISC 4221C · Florida State University · Department of Scientific Computing.
+        Built to work offline: no external requests, no tracking, no account.
+      </p>
+    </section>
+  </div>
+</footer>
+
+<script defer src="../assets/js/core/gfx.js"></script>
+<script defer data-manual src="../assets/js/vendor/prism.js"></script>
+<script defer src="../assets/js/highlight.js"></script>
+<script defer src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/nav-map.js"></script>
+<script defer src="../assets/js/nav.js"></script>
+<script defer src="../assets/js/search-index.js"></script>
+<script defer src="../assets/js/search.js"></script>
+<script defer src="../assets/js/demo.js"></script>
+<script defer src="../assets/js/demos/cross-greedy-gallery.js"></script>
+</body>
+</html>

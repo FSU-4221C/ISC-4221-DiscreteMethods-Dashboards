@@ -1,0 +1,499 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "ear-clipping",
+  "module": "M6",
+  "topics": [
+    "6.3.3",
+    "6.3.4",
+    "6.3.5",
+    "6.3.6",
+    "6.3.7",
+    "6.3.8"
+  ],
+  "title": "Ear clipping an eight-vertex non-convex polygon",
+  "seed": null,
+  "determinism": "no randomness; the input is fixed",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "One step per vertex TESTED, not per ear removed. The rejected candidates are the content: 'polygons have ears' is only interesting once you have watched a reflex vertex fail the test."
+  ],
+  "input": {
+    "polygon": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        4.0,
+        0.0
+      ],
+      [
+        4.0,
+        2.0
+      ],
+      [
+        2.4,
+        2.0
+      ],
+      [
+        3.2,
+        3.6
+      ],
+      [
+        4.4,
+        4.6
+      ],
+      [
+        1.4,
+        4.6
+      ],
+      [
+        0.0,
+        2.6
+      ]
+    ],
+    "labels": [
+      "V1",
+      "V2",
+      "V3",
+      "V4",
+      "V5",
+      "V6",
+      "V7",
+      "V8"
+    ],
+    "orientation": "counter-clockwise",
+    "area": 14.88,
+    "centroid": [
+      1.944982078853,
+      2.075806451613
+    ]
+  },
+  "columns": [
+    {
+      "label": "Test",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Vertex",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Interior angle",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Vertices inside the triangle",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Decision",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Candidate triangle",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Vertices left",
+      "unit": "",
+      "numeric": true
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 7,
+  "steps": [
+    {
+      "index": 0,
+      "label": "Vertex V1 is convex and no other vertex lies inside triangle V8-V1-V2, so it is an ear. Clip it: that is triangle 1, and 7 vertices are left.",
+      "rows": [
+        [
+          1,
+          "V1",
+          "convex",
+          "none",
+          "ear clipped",
+          "V8-V1-V2",
+          7
+        ]
+      ],
+      "state": {
+        "vertex": 0,
+        "triangle": [
+          7,
+          0,
+          1
+        ],
+        "action": "clipped",
+        "remaining": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "triangles": [
+          [
+            7,
+            0,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "label": "Test V2 with neighbours V8 and V3: not an ear: vertex V4 lies inside the candidate triangle. Move to the next vertex.",
+      "rows": [
+        [
+          2,
+          "V2",
+          "convex",
+          "V4",
+          "rejected",
+          "V8-V2-V3",
+          7
+        ]
+      ],
+      "state": {
+        "vertex": 1,
+        "triangle": [
+          7,
+          1,
+          2
+        ],
+        "action": "rejected",
+        "reason": "convex",
+        "intruders": [
+          3
+        ],
+        "remaining": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "triangles": [
+          [
+            7,
+            0,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "label": "Vertex V3 is convex and no other vertex lies inside triangle V2-V3-V4, so it is an ear. Clip it: that is triangle 2, and 6 vertices are left.",
+      "rows": [
+        [
+          3,
+          "V3",
+          "convex",
+          "none",
+          "ear clipped",
+          "V2-V3-V4",
+          6
+        ]
+      ],
+      "state": {
+        "vertex": 2,
+        "triangle": [
+          1,
+          2,
+          3
+        ],
+        "action": "clipped",
+        "remaining": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "triangles": [
+          [
+            7,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "label": "Vertex V2 is convex and no other vertex lies inside triangle V8-V2-V4, so it is an ear. Clip it: that is triangle 3, and 5 vertices are left.",
+      "rows": [
+        [
+          4,
+          "V2",
+          "convex",
+          "none",
+          "ear clipped",
+          "V8-V2-V4",
+          5
+        ]
+      ],
+      "state": {
+        "vertex": 1,
+        "triangle": [
+          7,
+          1,
+          3
+        ],
+        "action": "clipped",
+        "remaining": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "triangles": [
+          [
+            7,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            7,
+            1,
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "label": "Vertex V4 is convex and no other vertex lies inside triangle V8-V4-V5, so it is an ear. Clip it: that is triangle 4, and 4 vertices are left.",
+      "rows": [
+        [
+          5,
+          "V4",
+          "convex",
+          "none",
+          "ear clipped",
+          "V8-V4-V5",
+          4
+        ]
+      ],
+      "state": {
+        "vertex": 3,
+        "triangle": [
+          7,
+          3,
+          4
+        ],
+        "action": "clipped",
+        "remaining": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "triangles": [
+          [
+            7,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            7,
+            1,
+            3
+          ],
+          [
+            7,
+            3,
+            4
+          ]
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "label": "Vertex V5 is convex and no other vertex lies inside triangle V8-V5-V6, so it is an ear. Clip it: that is triangle 5, and 3 vertices are left.",
+      "rows": [
+        [
+          6,
+          "V5",
+          "convex",
+          "none",
+          "ear clipped",
+          "V8-V5-V6",
+          3
+        ]
+      ],
+      "state": {
+        "vertex": 4,
+        "triangle": [
+          7,
+          4,
+          5
+        ],
+        "action": "clipped",
+        "remaining": [
+          5,
+          6,
+          7
+        ],
+        "triangles": [
+          [
+            7,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            7,
+            1,
+            3
+          ],
+          [
+            7,
+            3,
+            4
+          ],
+          [
+            7,
+            4,
+            5
+          ]
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "label": "Three vertices are left — V6, V7 and V8 — so they form the last triangle. An n-vertex polygon always ends with n minus 2 triangles: 6 here.",
+      "rows": [
+        [
+          7,
+          "—",
+          "final",
+          "none",
+          "last triangle",
+          "V6-V7-V8",
+          0
+        ]
+      ],
+      "state": {
+        "vertex": null,
+        "triangle": [
+          5,
+          6,
+          7
+        ],
+        "action": "final",
+        "remaining": [],
+        "triangles": [
+          [
+            7,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            7,
+            1,
+            3
+          ],
+          [
+            7,
+            3,
+            4
+          ],
+          [
+            7,
+            4,
+            5
+          ],
+          [
+            5,
+            6,
+            7
+          ]
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "triangles": [
+      [
+        8,
+        1,
+        2
+      ],
+      [
+        2,
+        3,
+        4
+      ],
+      [
+        8,
+        2,
+        4
+      ],
+      [
+        8,
+        4,
+        5
+      ],
+      [
+        8,
+        5,
+        6
+      ],
+      [
+        6,
+        7,
+        8
+      ]
+    ],
+    "triangleCount": 6,
+    "expected": 6,
+    "rejections": 1,
+    "polygonArea": 14.88,
+    "triangleAreaSum": 14.88,
+    "theorem": "every simple polygon with more than three vertices has at least two ears, so this loop can always make progress"
+  },
+  "alt": {
+    "first": "The first vertex tested is examined with its two neighbours: the test is whether the interior angle is convex and whether any other vertex falls inside the candidate triangle.",
+    "last": "Three vertices remain, so they form the final triangle. The eight-vertex polygon is cut into 6 triangles — always n minus 2 — after 1 candidate were rejected for being reflex or for containing another vertex."
+  }
+}

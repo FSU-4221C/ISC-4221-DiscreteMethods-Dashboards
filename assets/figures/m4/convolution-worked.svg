@@ -1,0 +1,163 @@
+<!--
+  Generated file — do not edit by hand.
+
+    Regenerate:  python3 Dashboard/tools/build.py
+    Generator:   Dashboard/tools/generate_figures.py  (figure id 'convolution-worked')
+
+  Topics: 4.4.1, 4.4.10, 4.5.1, 4.5.3
+
+  Colour comes from fsu-tokens.css when this file is inlined into a dashboard
+  page; the var() fallbacks are the same values as standards/color-palette.md
+  and only apply when the file is opened on its own. The white plot panel is
+  deliberate and theme-independent — see Dashboard/tools/fsu_palette.py.
+
+  The non-visual equivalent of this figure is the table in the sibling file
+  convolution-worked.table.html. Ship them together.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 470" width="780" height="470" role="img" aria-labelledby="fig-convolution-worked-title fig-convolution-worked-desc" class="fsu-figure" data-figure="convolution-worked">
+  <title id="fig-convolution-worked-title">Centred on the step edge at row 3, column 3, the Sobel X kernel&#x27;s nine products sum to 515 — a large response, because the neighbourhood changes from dark to bright across it.</title>
+  <desc id="fig-convolution-worked-desc">A seven-by-seven grid of grey values with a three-by-three window outlined on the cell at row 3, column 3. Beside it, the Sobel X kernel and the nine products of overlapping pixel and weight, written out and summed. The left column of the window holds values of 10 and the right column holds values of 200, so the negative left weights and the positive right weights do not cancel and the sum is 515. Away from the edge, where all nine neighbours are equal, the same kernel sums to zero.</desc>
+  <style>
+    /* Reflow: the figure scales with its container instead of forcing
+       a horizontal page scrollbar at 320px or at 400% zoom (1.4.10). */
+    svg.fsu-figure { max-width: 100%; height: auto; }
+  </style>
+  <text x="24" y="30" fill="var(--fsu-black, #161514)" font-size="17" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700">One convolution, arithmetic and all</text>
+  <text x="34" y="66" fill="var(--fsu-slate, #2c2a29)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">Input patch, 7 by 7 grey values</text>
+  <rect x="34" y="76" width="266" height="266" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <rect x="34" y="76" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="53" y="100" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="72" y="76" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="91" y="100" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="110" y="76" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="129" y="100" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="148" y="76" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="167" y="100" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="186" y="76" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="205" y="100" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="224" y="76" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="243" y="100" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="262" y="76" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="281" y="100" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="34" y="114" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="53" y="138" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="72" y="114" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="91" y="138" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="110" y="114" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="129" y="138" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="148" y="114" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="167" y="138" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="186" y="114" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="205" y="138" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="224" y="114" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="243" y="138" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="262" y="114" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="281" y="138" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="34" y="152" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="53" y="176" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="72" y="152" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="91" y="176" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="110" y="152" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="129" y="176" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">255</text>
+  <rect x="148" y="152" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="167" y="176" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="186" y="152" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="205" y="176" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="224" y="152" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="243" y="176" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="262" y="152" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="281" y="176" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="34" y="190" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="53" y="214" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="72" y="190" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="91" y="214" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="110" y="190" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="129" y="214" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="148" y="190" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="167" y="214" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="186" y="190" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="205" y="214" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="224" y="190" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="243" y="214" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="262" y="190" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="281" y="214" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="34" y="228" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="53" y="252" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="72" y="228" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="91" y="252" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="110" y="228" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="129" y="252" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="148" y="228" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="167" y="252" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="186" y="228" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="205" y="252" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">200</text>
+  <rect x="224" y="228" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="243" y="252" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="262" y="228" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="281" y="252" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="34" y="266" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="53" y="290" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="72" y="266" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="91" y="290" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="110" y="266" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="129" y="290" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="148" y="266" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="167" y="290" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="186" y="266" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="205" y="290" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="224" y="266" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="243" y="290" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="262" y="266" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="281" y="290" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="34" y="304" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="53" y="328" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="72" y="304" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="91" y="328" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="110" y="304" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="129" y="328" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="148" y="304" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="167" y="328" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="186" y="304" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="205" y="328" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">10</text>
+  <rect x="224" y="304" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="243" y="328" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="262" y="304" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="281" y="328" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" text-anchor="middle">120</text>
+  <rect x="110" y="152" width="114" height="114" fill="none" stroke="var(--fsu-garnet, #782f40)" stroke-width="3" />
+  <g><text x="34" y="368" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">The thick box is the window, centred</text>
+  <text x="34" y="387" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">on row 3, column 3.</text></g>
+  <text x="348" y="66" fill="var(--fsu-slate, #2c2a29)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">Sobel X kernel</text>
+  <rect x="348" y="76" width="114" height="114" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <rect x="348" y="76" width="38" height="38" fill="none" stroke="var(--fsu-slate, #2c2a29)" stroke-width="1.6" stroke-dasharray="3 2" />
+  <text x="367" y="100" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700" text-anchor="middle">-1</text>
+  <rect x="386" y="76" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="405" y="100" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700" text-anchor="middle">0</text>
+  <rect x="424" y="76" width="38" height="38" fill="none" stroke="var(--fsu-slate, #2c2a29)" stroke-width="1.6" />
+  <text x="443" y="100" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700" text-anchor="middle">1</text>
+  <rect x="348" y="114" width="38" height="38" fill="none" stroke="var(--fsu-slate, #2c2a29)" stroke-width="1.6" stroke-dasharray="3 2" />
+  <text x="367" y="138" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700" text-anchor="middle">-2</text>
+  <rect x="386" y="114" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="405" y="138" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700" text-anchor="middle">0</text>
+  <rect x="424" y="114" width="38" height="38" fill="none" stroke="var(--fsu-slate, #2c2a29)" stroke-width="1.6" />
+  <text x="443" y="138" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700" text-anchor="middle">2</text>
+  <rect x="348" y="152" width="38" height="38" fill="none" stroke="var(--fsu-slate, #2c2a29)" stroke-width="1.6" stroke-dasharray="3 2" />
+  <text x="367" y="176" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700" text-anchor="middle">-1</text>
+  <rect x="386" y="152" width="38" height="38" fill="none" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <text x="405" y="176" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700" text-anchor="middle">0</text>
+  <rect x="424" y="152" width="38" height="38" fill="none" stroke="var(--fsu-slate, #2c2a29)" stroke-width="1.6" />
+  <text x="443" y="176" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700" text-anchor="middle">1</text>
+  <text x="348" y="224" fill="var(--fsu-slate, #2c2a29)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">Nine products</text>
+  <text x="348" y="246" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace"> 255 ×  -1 =    -255</text>
+  <text x="348" y="264" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace"> 200 ×   0 =       0</text>
+  <text x="348" y="282" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace"> 200 ×   1 =     200</text>
+  <text x="348" y="300" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace">  10 ×  -2 =     -20</text>
+  <text x="348" y="318" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace"> 200 ×   0 =       0</text>
+  <text x="348" y="336" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace"> 200 ×   2 =     400</text>
+  <text x="348" y="354" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace">  10 ×  -1 =     -10</text>
+  <text x="348" y="372" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace"> 200 ×   0 =       0</text>
+  <text x="348" y="390" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace"> 200 ×   1 =     200</text>
+  <line x1="348" y1="404" x2="498" y2="404" stroke="var(--fsu-slate, #2c2a29)" stroke-width="1.4" />
+  <text x="348" y="426" fill="var(--fsu-black, #161514)" font-size="14" font-family="ui-monospace, &#x27;DejaVu Sans Mono&#x27;, &#x27;Cascadia Mono&#x27;, Consolas, monospace" font-weight="700">sum = 515</text>
+  <g><text x="24" y="448" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif">Sobel X weights sum to zero, so a flat neighbourhood always gives zero. Only a left-to-right change</text>
+  <text x="24" y="467" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif">survives.</text></g>
+</svg>

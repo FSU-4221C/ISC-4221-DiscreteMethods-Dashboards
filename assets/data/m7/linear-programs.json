@@ -1,0 +1,506 @@
+{
+  "schema": "isc4221c-dataset/1",
+  "id": "m7-linear-programs",
+  "module": "M7",
+  "topics": [
+    "7.1.1",
+    "7.1.3",
+    "7.2.1",
+    "7.2.4",
+    "7.2.5",
+    "7.2.6",
+    "7.2.7",
+    "7.3.1",
+    "7.3.2",
+    "7.4.1",
+    "7.4.4",
+    "7.4.6",
+    "7.4.9",
+    "7.5.3",
+    "7.5.8"
+  ],
+  "title": "Five linear programs, solved by enumerating their feasible corners",
+  "provenance": "the five problems of the 2025 LP Visualizer, with their scenarios kept",
+  "generator": "Dashboard/tools/generate_datasets.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "The scenarios are kept because the staged reveal — read the situation, formulate it, look at the geometry, check your answer — is the pedagogy, and it needs the words as much as the numbers.",
+    "Every optimum here is found by enumerating the feasible basic solutions, which is the brute-force method of topics 7.4.6 to 7.4.9. The count of candidate intersections against the count that turn out feasible is the argument for simplex.",
+    "The diet problem's >= constraints cannot go straight into the tableau builder in algorithms.py: a >= row needs a surplus and an artificial variable, and a phase-1 problem to drive the artificial out (topic 7.4.3). It is here for the graphical view."
+  ],
+  "problems": [
+    {
+      "id": "furniture",
+      "title": "The Furniture Factory",
+      "sense": "max",
+      "scenario": "A workshop makes chairs and tables. A chair takes 2 hours of machine time and 1 hour of finishing; a table takes 1 hour of each. There are 10 machine hours and 6 finishing hours available. A chair yields 40 dollars of profit and a table 30.",
+      "objective": "maximise 40x + 30y",
+      "variables": [
+        "x = chairs per day",
+        "y = tables per day"
+      ],
+      "constraints": [
+        "2x + y <= 10 (machine hours)",
+        "x + y <= 6 (finishing hours)"
+      ],
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "b": [
+        10,
+        6
+      ],
+      "c": [
+        40,
+        30
+      ],
+      "bounds": [
+        0,
+        10
+      ],
+      "vertices": [
+        {
+          "x": 4.0,
+          "y": 2.0,
+          "z": 220.0,
+          "optimal": true,
+          "from": [
+            "2x + 1y = 10",
+            "1x + 1y = 6"
+          ]
+        },
+        {
+          "x": 5.0,
+          "y": 0.0,
+          "z": 200.0,
+          "optimal": false,
+          "from": [
+            "2x + 1y = 10",
+            "y = 0"
+          ]
+        },
+        {
+          "x": 0.0,
+          "y": 6.0,
+          "z": 180.0,
+          "optimal": false,
+          "from": [
+            "1x + 1y = 6",
+            "x = 0"
+          ]
+        },
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "optimal": false,
+          "from": [
+            "x = 0",
+            "y = 0"
+          ]
+        }
+      ],
+      "optimum": {
+        "x": 4.0,
+        "y": 2.0,
+        "z": 220.0
+      },
+      "vertexCount": 4
+    },
+    {
+      "id": "diet",
+      "title": "The Diet Problem",
+      "sense": "min",
+      "scenario": "Two foods must supply at least 100 units of each of two nutrients. Food X gives 10 units of the first and 20 of the second; food Y gives 20 and 10. Food X costs 0.60 a serving and food Y 0.50.",
+      "objective": "minimise 0.6x + 0.5y",
+      "variables": [
+        "x = servings of food X",
+        "y = servings of food Y"
+      ],
+      "constraints": [
+        "10x + 20y >= 100 (nutrient 1)",
+        "20x + 10y >= 100 (nutrient 2)"
+      ],
+      "a": [
+        [
+          10,
+          20
+        ],
+        [
+          20,
+          10
+        ]
+      ],
+      "b": [
+        100,
+        100
+      ],
+      "c": [
+        0.6,
+        0.5
+      ],
+      "sensePerConstraint": [
+        ">=",
+        ">="
+      ],
+      "bounds": [
+        0,
+        15
+      ],
+      "note": "The historically first large LP, and the one that motivated the simplex method. Note the >= constraints: the feasible region is unbounded above, which is fine for a minimisation.",
+      "vertices": [
+        {
+          "x": 3.3333333333333335,
+          "y": 3.3333333333333335,
+          "z": 3.666666666666667,
+          "optimal": true,
+          "from": [
+            "10x + 20y = 100",
+            "20x + 10y = 100"
+          ]
+        },
+        {
+          "x": 0.0,
+          "y": 10.0,
+          "z": 5.0,
+          "optimal": false,
+          "from": [
+            "20x + 10y = 100",
+            "x = 0"
+          ]
+        },
+        {
+          "x": 10.0,
+          "y": 0.0,
+          "z": 6.0,
+          "optimal": false,
+          "from": [
+            "10x + 20y = 100",
+            "y = 0"
+          ]
+        }
+      ],
+      "optimum": {
+        "x": 3.3333333333333335,
+        "y": 3.3333333333333335,
+        "z": 3.666666666666667
+      },
+      "vertexCount": 3
+    },
+    {
+      "id": "investment",
+      "title": "Investment Strategy",
+      "sense": "max",
+      "scenario": "Ten thousand dollars is to be split between a fund returning 10 per cent and a bond returning 5 per cent. At least 2,000 must go into the bond, and no more than 6,000 into the fund.",
+      "objective": "maximise 0.10x + 0.05y",
+      "variables": [
+        "x = dollars in the fund",
+        "y = dollars in the bond"
+      ],
+      "constraints": [
+        "x + y <= 10000",
+        "y >= 2000",
+        "x <= 6000"
+      ],
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "b": [
+        10000,
+        2000,
+        6000
+      ],
+      "c": [
+        0.1,
+        0.05
+      ],
+      "sensePerConstraint": [
+        "<=",
+        ">=",
+        "<="
+      ],
+      "bounds": [
+        0,
+        12000
+      ],
+      "vertices": [
+        {
+          "x": 6000.0,
+          "y": 4000.0,
+          "z": 800.0,
+          "optimal": true,
+          "from": [
+            "1x + 1y = 10000",
+            "1x + 0y = 6000"
+          ]
+        },
+        {
+          "x": 6000.0,
+          "y": 2000.0,
+          "z": 700.0,
+          "optimal": false,
+          "from": [
+            "0x + 1y = 2000",
+            "1x + 0y = 6000"
+          ]
+        },
+        {
+          "x": 0.0,
+          "y": 10000.0,
+          "z": 500.0,
+          "optimal": false,
+          "from": [
+            "1x + 1y = 10000",
+            "x = 0"
+          ]
+        },
+        {
+          "x": 0.0,
+          "y": 2000.0,
+          "z": 100.0,
+          "optimal": false,
+          "from": [
+            "0x + 1y = 2000",
+            "x = 0"
+          ]
+        }
+      ],
+      "optimum": {
+        "x": 6000.0,
+        "y": 4000.0,
+        "z": 800.0
+      },
+      "vertexCount": 4
+    },
+    {
+      "id": "crops",
+      "title": "Crop Planting",
+      "sense": "max",
+      "scenario": "A hundred acres can be planted with two crops. Crop A needs 2 units of labour per acre and crop B needs 1; 160 units of labour are available. Crop A returns 200 per acre and crop B returns 300.",
+      "objective": "maximise 200x + 300y",
+      "variables": [
+        "x = acres of crop A",
+        "y = acres of crop B"
+      ],
+      "constraints": [
+        "x + y <= 100 (acres)",
+        "2x + y <= 160 (labour)"
+      ],
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "b": [
+        100,
+        160
+      ],
+      "c": [
+        200,
+        300
+      ],
+      "bounds": [
+        0,
+        120
+      ],
+      "vertices": [
+        {
+          "x": 0.0,
+          "y": 100.0,
+          "z": 30000.0,
+          "optimal": true,
+          "from": [
+            "1x + 1y = 100",
+            "x = 0"
+          ]
+        },
+        {
+          "x": 60.0,
+          "y": 40.0,
+          "z": 24000.0,
+          "optimal": false,
+          "from": [
+            "1x + 1y = 100",
+            "2x + 1y = 160"
+          ]
+        },
+        {
+          "x": 80.0,
+          "y": 0.0,
+          "z": 16000.0,
+          "optimal": false,
+          "from": [
+            "2x + 1y = 160",
+            "y = 0"
+          ]
+        },
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "optimal": false,
+          "from": [
+            "x = 0",
+            "y = 0"
+          ]
+        }
+      ],
+      "optimum": {
+        "x": 0.0,
+        "y": 100.0,
+        "z": 30000.0
+      },
+      "vertexCount": 4
+    },
+    {
+      "id": "cargo",
+      "title": "Cargo Shipping",
+      "sense": "max",
+      "scenario": "A hold has 100 cubic metres of volume and a 6,000 kilogram weight limit. Crate A takes 1 cubic metre and 100 kilograms; crate B takes 2 cubic metres and 50 kilograms. Crate A is worth 500 and crate B 800.",
+      "objective": "maximise 500x + 800y",
+      "variables": [
+        "x = crates of type A",
+        "y = crates of type B"
+      ],
+      "constraints": [
+        "x + 2y <= 100 (volume)",
+        "100x + 50y <= 6000 (weight)"
+      ],
+      "a": [
+        [
+          1,
+          2
+        ],
+        [
+          100,
+          50
+        ]
+      ],
+      "b": [
+        100,
+        6000
+      ],
+      "c": [
+        500,
+        800
+      ],
+      "bounds": [
+        0,
+        80
+      ],
+      "vertices": [
+        {
+          "x": 46.666666666666664,
+          "y": 26.666666666666668,
+          "z": 44666.66666666667,
+          "optimal": true,
+          "from": [
+            "1x + 2y = 100",
+            "100x + 50y = 6000"
+          ]
+        },
+        {
+          "x": 0.0,
+          "y": 50.0,
+          "z": 40000.0,
+          "optimal": false,
+          "from": [
+            "1x + 2y = 100",
+            "x = 0"
+          ]
+        },
+        {
+          "x": 60.0,
+          "y": 0.0,
+          "z": 30000.0,
+          "optimal": false,
+          "from": [
+            "100x + 50y = 6000",
+            "y = 0"
+          ]
+        },
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "optimal": false,
+          "from": [
+            "x = 0",
+            "y = 0"
+          ]
+        }
+      ],
+      "optimum": {
+        "x": 46.666666666666664,
+        "y": 26.666666666666668,
+        "z": 44666.66666666667
+      },
+      "vertexCount": 4
+    }
+  ],
+  "standardForm": {
+    "note": "The running simplex example in standard form. Each <= constraint gains one slack variable, so two constraints in two unknowns become two equations in four — an underdetermined system whose basic solutions are the corners (topics 7.4.1, 7.4.4, 7.4.5).",
+    "original": [
+      "maximise z = 120 x1 + 100 x2",
+      "2 x1 + 2 x2 <= 8",
+      "5 x1 + 3 x2 <= 15",
+      "x1, x2 >= 0"
+    ],
+    "withSlack": [
+      "maximise z = 120 x1 + 100 x2",
+      "2 x1 + 2 x2 + x3 = 8",
+      "5 x1 + 3 x2 + x4 = 15",
+      "x1, x2, x3, x4 >= 0"
+    ],
+    "matrixA": [
+      [
+        2,
+        2,
+        1,
+        0
+      ],
+      [
+        5,
+        3,
+        0,
+        1
+      ]
+    ],
+    "vectorB": [
+      8,
+      15
+    ],
+    "vectorC": [
+      120,
+      100,
+      0,
+      0
+    ],
+    "basicSolutionCount": 6,
+    "feasibleBasicSolutionCount": 4,
+    "slackMeaning": "x3 is unused capacity in the first constraint and x4 in the second. A slack variable that is zero at the optimum means that constraint is binding — it is what stops you doing better."
+  }
+}

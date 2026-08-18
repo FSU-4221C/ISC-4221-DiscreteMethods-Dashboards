@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Thread: k-means everywhere — ISC 4221C Discrete Algorithms</title>
+<meta name="description" content="One algorithm taught three times: colour quantization in M4, Lloyd's method in M5, and centroidal Voronoi tessellation in M5 and M6.">
+
+<link rel="stylesheet" href="../assets/css/fsu-tokens.css">
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+
+<!-- Theme bootstrap. Copy verbatim. Runs before first paint so a stored dark
+     preference does not flash light; theme.js agrees with whatever it set. -->
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('isc4221c.theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) { /* storage unavailable; fall through to the OS preference */ }
+  })();
+</script>
+</head>
+
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <!-- ROW 1 — identity and utilities. Scrolls away with the page. -->
+  <div class="site-header__bar">
+    <div class="site-header__bar-inner wrap">
+      <a class="brand" href="../index.html">
+        <span>
+          <span class="brand__code">ISC 4221C</span>
+          <span class="brand__name">Discrete Algorithms · Spring 2026</span>
+        </span>
+      </a>
+
+      <!-- Pushed to the right edge by margin-inline-start:auto, not by a
+           spacer element. Ships `hidden`; theme.js reveals it, so a reader
+           without the script never sees a control that cannot work. -->
+      <fieldset class="theme-switch" hidden>
+        <legend class="theme-switch__legend">Theme</legend>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-system" value="system" checked>
+          <label class="theme-switch__label" for="theme-system">Auto</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-light" value="light">
+          <label class="theme-switch__label" for="theme-light">Light</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-dark" value="dark">
+          <label class="theme-switch__label" for="theme-dark">Dark</label>
+        </span>
+      </fieldset>
+    </div>
+  </div>
+
+</header>
+
+<!-- ROW 2 — modules. Sticky, and it never wraps: every module is visible at
+     once, its sections behind a dropdown rather than spilled onto the strip.
+     nav.js fills each .chapter-nav__menu from window.NAV_MAP.
+
+     OUTSIDE <header> on purpose. A sticky element cannot leave its parent's
+     box, so while this lived inside the two-row <header> it stuck for the
+     header's own 85px of height and then scrolled away with it. Its parent has
+     to be <body>. -->
+<nav class="chapter-nav" aria-label="Modules">
+  <div class="chapter-nav__inner wrap">
+    <ul class="chapter-nav__list">
+        <li class="chapter-nav__item chapter-nav__item--plain">
+          <a class="chapter-nav__link" href="../index.html">Home</a>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m0">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m0"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m0"
+                  data-chapter-file="../m0-foundations.html">
+            <span class="chapter-nav__full">Module 0</span>
+            <span class="chapter-nav__short" aria-hidden="true">M0</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m0" role="group"
+               aria-labelledby="chapbtn-m0" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m1">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m1"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m1"
+                  data-chapter-file="../m1-algorithm-design.html">
+            <span class="chapter-nav__full">Module 1</span>
+            <span class="chapter-nav__short" aria-hidden="true">M1</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m1" role="group"
+               aria-labelledby="chapbtn-m1" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m2">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m2"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m2"
+                  data-chapter-file="../m2-probability.html">
+            <span class="chapter-nav__full">Module 2</span>
+            <span class="chapter-nav__short" aria-hidden="true">M2</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m2" role="group"
+               aria-labelledby="chapbtn-m2" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m3">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m3"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m3"
+                  data-chapter-file="../m3-graphs.html">
+            <span class="chapter-nav__full">Module 3</span>
+            <span class="chapter-nav__short" aria-hidden="true">M3</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m3" role="group"
+               aria-labelledby="chapbtn-m3" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m4">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m4"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m4"
+                  data-chapter-file="../m4-image-processing.html">
+            <span class="chapter-nav__full">Module 4</span>
+            <span class="chapter-nav__short" aria-hidden="true">M4</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m4" role="group"
+               aria-labelledby="chapbtn-m4" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m5">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m5"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m5"
+                  data-chapter-file="../m5-data-mining.html">
+            <span class="chapter-nav__full">Module 5</span>
+            <span class="chapter-nav__short" aria-hidden="true">M5</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m5" role="group"
+               aria-labelledby="chapbtn-m5" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m6">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m6"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m6"
+                  data-chapter-file="../m6-computational-geometry.html">
+            <span class="chapter-nav__full">Module 6</span>
+            <span class="chapter-nav__short" aria-hidden="true">M6</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m6" role="group"
+               aria-labelledby="chapbtn-m6" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m7">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m7"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m7"
+                  data-chapter-file="../m7-discrete-optimization.html">
+            <span class="chapter-nav__full">Module 7</span>
+            <span class="chapter-nav__short" aria-hidden="true">M7</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m7" role="group"
+               aria-labelledby="chapbtn-m7" hidden></div>
+        </li>
+        <li class="chapter-nav__item chapter-nav__item--plain chapter-nav__item--sep"
+            data-chapter="threads">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-threads"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-threads">
+            <span class="chapter-nav__full">Threads</span>
+            <span class="chapter-nav__short" aria-hidden="true">Thr</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-threads" role="group"
+               aria-labelledby="chapbtn-threads" hidden></div>
+        </li>
+      </ul>
+    </div>
+</nav>
+
+<nav class="breadcrumb wrap" aria-label="Breadcrumb">
+  <ol class="breadcrumb__list">
+    <li><a href="../index.html">Course home</a></li>
+    <li><a href="../index.html#threads">Cross-cutting threads</a></li>
+    <li><span aria-current="page">k-means everywhere</span></li>
+  </ol>
+</nav>
+
+<div class="layout">
+
+  <div class="layout__sidebar">
+
+    <nav class="module-nav" aria-label="On this page">
+      <p class="module-nav__title">On this page</p>
+
+      <button class="module-nav__toggle btn btn--ghost" type="button"
+              aria-expanded="true" aria-controls="module-nav-list" hidden>
+        <span data-nav-label>Page contents</span>
+      </button>
+
+      <ul class="module-nav__list" id="module-nav-list">
+        <li><a class="module-nav__link" href="#section-one-loop"><span>One loop, four steps</span></a></li>
+        <li><a class="module-nav__link" href="#section-mapping"><span>The same symbols in three places</span></a></li>
+        <li><a class="module-nav__link" href="#section-demo"><span>Run the one algorithm in all three</span></a></li>
+        <li><a class="module-nav__link" href="#section-cost"><span>Cost, initialisation and choosing k</span></a></li>
+        <li><a class="module-nav__link" href="#section-into-modules"><span>Into the modules</span></a></li>
+      </ul>
+    </nav>
+
+    <nav class="module-nav" aria-label="Cross-cutting threads">
+      <p class="module-nav__title">Other threads</p>
+      <ul class="module-nav__list">
+        <li><a class="module-nav__link" href="complexity-comparator.html"><span>Complexity comparator</span></a></li>
+        <li><a class="module-nav__link" href="greedy-gallery.html"><span>Greedy gallery</span></a></li>
+        <li><a class="module-nav__link" href="delaunay-thread.html"><span>Delaunay thread</span></a></li>
+        <li><a class="module-nav__link" href="exam-practice.html"><span>Exam practice by type</span></a></li>
+        <li><a class="module-nav__link" href="../index.html#search"><span>Search all topics</span></a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main class="layout__main" id="main" tabindex="-1">
+    <!-- Search. Every page carries one; a reader who lands here from a link
+         should not have to go back to the home page to look something up.
+         Ids are page-unique because two [data-search] blocks on one page
+         would otherwise share a label target. -->
+    <section class="search search--inline" data-search data-search-limit="8"
+             data-search-base="../"
+             aria-label="Search the course">
+      <form class="search__form" role="search">
+        <div class="search__field">
+          <label class="search__label" for="kmeans-everywhere-search">Search all topics</label>
+          <input class="search__input" id="kmeans-everywhere-search" name="q" type="search"
+                 autocomplete="off" spellcheck="false" data-search-input>
+        </div>
+      </form>
+      <p class="search__status" role="status" aria-live="polite" data-search-status></p>
+      <ul class="search__results" data-search-results aria-label="Search results"></ul>
+      <p class="search__nojs">Search is not running. JavaScript is switched off,
+         or a script file is missing.</p>
+    </section>
+
+
+    <div class="page-header">
+      <p class="eyebrow">Cross-cutting thread</p>
+      <h1>k-means everywhere</h1>
+      <p class="lede">
+        The course teaches this algorithm three times under three names: choosing
+        printable shades of grey in M4, clustering records in M5, and moving Voronoi
+        generators to their centres of mass in M5 and M6. It is one loop. Only the
+        words for &ldquo;point&rdquo; and &ldquo;centre&rdquo; change.
+      </p>
+      <p class="page-header__meta">
+        <span><strong>3</strong> modules</span>
+        <span><strong>1</strong> algorithm</span>
+        <span>Topics 4.3.4, 4.3.5, 5.4.1–5.4.11, 5.5.4–5.5.7</span>
+        <span>Labs 10, 11</span>
+      </p>
+    </div>
+
+    <div class="coverage-legend">
+      <p class="coverage-legend__intro" id="coverage-legend-intro">Coverage markers</p>
+      <dl aria-labelledby="coverage-legend-intro">
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-kmeans-everywhere-full" class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Full</span></dt>
+            <dd id="legend-kmeans-everywhere-full">Taught in full in the named source</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-kmeans-everywhere-partial" class="pill pill--partial"><span class="pill__glyph" aria-hidden="true">◐</span> Partial</span></dt>
+            <dd id="legend-kmeans-everywhere-partial">Mentioned, or covered only in passing</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-kmeans-everywhere-lab" class="pill pill--lab"><span class="pill__glyph" aria-hidden="true">▣</span> Lab</span></dt>
+            <dd id="legend-kmeans-everywhere-lab">Implemented in the named lab</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-kmeans-everywhere-new" class="pill pill--new"><span class="pill__glyph" aria-hidden="true">✚</span> New</span></dt>
+            <dd id="legend-kmeans-everywhere-new">Built for 2026 — no interactive version existed before</dd>
+          </div>
+      </dl>
+    </div>
+
+    <!-- ============================================================ SECTION 1 -->
+    <section class="topic-group" id="section-one-loop" aria-labelledby="section-one-loop-title">
+      <div class="topic-group__header">
+        <h2 id="section-one-loop-title">One loop, four steps</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Slides, M5</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Tutorial</span></li>
+          <li><span class="pill pill--lab"><span class="pill__glyph" aria-hidden="true">▣</span> Lab 10, Lab 11</span></li>
+        </ul>
+
+        <p>
+          M5 states the algorithm as four numbered steps and calls it
+          <em>k-means</em>, or <em>Lloyd's method</em>. Every appearance of it elsewhere
+          in the course is these same four steps with the nouns swapped.
+        </p>
+
+        <ol>
+          <li><strong>Initialise.</strong> Choose <var>k</var> points
+            <var>c</var><sub>1</sub>&hellip;<var>c</var><sub>k</sub>, called the
+            <dfn>centres</dfn> or <dfn>generators</dfn>.</li>
+          <li><strong>Assign.</strong> Give every data point to the nearest centre. The
+            set of points nearest <var>c</var><sub>j</sub> is cluster
+            <var>C</var><sub>j</sub>.</li>
+          <li><strong>Move.</strong> Replace each centre by the average of the points
+            that were assigned to it.</li>
+          <li><strong>Test.</strong> If the centres have stopped moving, stop. Otherwise
+            go back to step 2.</li>
+        </ol>
+
+        <p>
+          Step 3 is not a guess. M5 proves a small lemma first: for a set of numbers, the
+          value that minimises the sum of squared distances to all of them <em>is</em>
+          their average. That is why moving a centre to the mean is the right move, and
+          it is why the whole loop is a descent on one energy.
+        </p>
+
+        <div class="formula" role="math"
+             aria-label="Energy E equals one half times the sum over j from 1 to k of the sum over points x i in cluster C j of the squared norm of c j minus x i">
+          <span class="formula__label">The energy every version minimises (M5 topic 5.4.1)</span>
+          <p class="formula__expr">
+            <var>E</var> =
+            <span aria-hidden="true">&frac12;</span>
+            <span class="visually-hidden">one half</span>
+            &sum;<sub><var>j</var>=1</sub><sup><var>k</var></sup>
+            &nbsp;&sum;<sub><var>x</var><sub><var>i</var></sub> &isin; <var>C</var><sub><var>j</var></sub></sub>
+            &Vert;<var>c</var><sub><var>j</var></sub> &minus; <var>x</var><sub><var>i</var></sub>&Vert;<sup>2</sup>
+          </p>
+          <dl class="formula__where">
+            <dt><var>k</var></dt><dd>how many centres you asked for — you choose this, the algorithm does not</dd>
+            <dt><var>c</var><sub><var>j</var></sub></dt><dd>the <var>j</var>th centre, generator, or representative shade</dd>
+            <dt><var>C</var><sub><var>j</var></sub></dt><dd>every data point closer to <var>c</var><sub><var>j</var></sub> than to any other centre</dd>
+            <dt><var>x</var><sub><var>i</var></sub></dt><dd>one data point: a record, a pixel's grey level, or a sample of the region</dd>
+            <dt>&Vert;&nbsp;&Vert;</dt><dd>the distance function, Euclidean unless the problem says otherwise</dd>
+          </dl>
+        </div>
+
+        <div class="formula" role="math"
+             aria-label="Stop when the maximum over j of the norm of c j at iteration k plus 1 minus c j at iteration k is less than or equal to the tolerance">
+          <span class="formula__label">The termination test (M5 topic 5.4.5)</span>
+          <p class="formula__expr">
+            max<sub><var>j</var></sub>
+            &Vert;<var>c</var><sub><var>j</var></sub><sup>(<var>t</var>+1)</sup>
+            &minus; <var>c</var><sub><var>j</var></sub><sup>(<var>t</var>)</sup>&Vert;
+            &le; tolerance
+          </p>
+          <dl class="formula__where">
+            <dt><var>t</var></dt><dd>the iteration number</dd>
+            <dt>tolerance</dt><dd>a small number you choose; the loop also needs a maximum iteration count as a safety net</dd>
+          </dl>
+        </div>
+
+        <div class="callout callout--key">
+          <p class="callout__title">Key idea</p>
+          <p>
+            Each pass through steps 2 and 3 lowers the energy, and there are finitely many
+            ways to assign the points, so the loop always stops. It does not follow that it
+            stops at the best answer — only at one it cannot improve by moving a single
+            centre.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 2 -->
+    <section class="topic-group" id="section-mapping" aria-labelledby="section-mapping-title">
+      <div class="topic-group__header">
+        <h2 id="section-mapping-title">The same symbols in three places</h2>
+      </div>
+
+      <div class="prose">
+        <p>
+          Read this table across a row and you are reading one idea in three dialects.
+          Read it down a column and you are reading one module's version of the whole
+          algorithm.
+        </p>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-mapping-label">
+          <p class="visually-hidden" id="table-mapping-label">The shared structure of k-means across M4, M5 and M6</p>
+          <table class="data-table">
+            <caption>
+              One algorithm, three appearances: what each symbol means in colour
+              quantization, in clustering, and in centroidal Voronoi tessellation
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Shared idea</th>
+                <th scope="col">M4 §4.3.4–4.3.5 — colour quantization</th>
+                <th scope="col">M5 §5.4 — clustering, Lloyd's method</th>
+                <th scope="col">M5 §5.5 and M6 — centroidal Voronoi tessellation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">The data point <var>x</var><sub><var>i</var></sub></th>
+                <td>one pixel's grey level, an integer from 0 to 255</td>
+                <td>one record, a point in <var>d</var> dimensions</td>
+                <td>one sample of the region — the region has infinitely many points, so you sample it</td>
+              </tr>
+              <tr>
+                <th scope="row">The centre <var>c</var><sub><var>j</var></sub></th>
+                <td>one of the <var>k</var> shades the printer can actually produce</td>
+                <td>a cluster centre</td>
+                <td>a generator <var>z</var><sub><var>i</var></sub> of the Voronoi diagram</td>
+              </tr>
+              <tr>
+                <th scope="row">Step 2, assign</th>
+                <td>each pixel takes the nearest available shade</td>
+                <td>each record joins the nearest centre's cluster</td>
+                <td>each sample falls in the Voronoi cell of its nearest generator</td>
+              </tr>
+              <tr>
+                <th scope="row">Step 3, move</th>
+                <td>each shade becomes the mean grey level of the pixels using it</td>
+                <td>each centre becomes the centroid of its cluster</td>
+                <td>each generator moves to the centre of mass of its cell</td>
+              </tr>
+              <tr>
+                <th scope="row">Step 4, stop when</th>
+                <td>no pixel changes shade</td>
+                <td>no centre moves further than the tolerance</td>
+                <td><var>z</var><sub><var>i</var></sub> equals <var>z</var><sub><var>i</var></sub><sup>*</sup>, the cell's centre of mass — which is the <em>definition</em> of a CVT</td>
+              </tr>
+              <tr>
+                <th scope="row">Weights</th>
+                <td>how many pixels share that grey level</td>
+                <td>importance of a record — weighted k-means, topic 5.4.9</td>
+                <td>a density <var>&rho;</var> over the region</td>
+              </tr>
+              <tr>
+                <th scope="row">What you get</th>
+                <td>the same picture in <var>k</var> shades, so it compresses</td>
+                <td><var>k</var> clusters and their centres</td>
+                <td>a CVT — with a hexagonal lattice in the interior of a uniform region</td>
+              </tr>
+              <tr>
+                <th scope="row">Named there as</th>
+                <td>K-means quantization, colour depth reduction</td>
+                <td>k-means, Lloyd's method</td>
+                <td>Lloyd's algorithm for a CVT; the sampled version is MacQueen's or probabilistic Lloyd's</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout--definition">
+          <p class="callout__title">Definition</p>
+          <dl>
+            <dt>Voronoi cell</dt>
+            <dd>Every point of the region that is closer to generator
+              <var>z</var><sub><var>j</var></sub> than to any other generator. This is
+              step 2 of k-means, stated geometrically.</dd>
+            <dt>Centroidal Voronoi tessellation</dt>
+            <dd>A Voronoi diagram in which every generator already sits at the centre of
+              mass of its own cell. This is the fixed point of the k-means loop, stated
+              geometrically.</dd>
+          </dl>
+        </div>
+
+        <div class="callout callout--note">
+          <p class="callout__title">Note</p>
+          <p>
+            M5 says it outright at the end of the geometric clustering section: for
+            discrete data, computing a CVT <em>is</em> clustering, and the algorithm is
+            Lloyd's. The two halves of M5 — statistical clustering and geometric
+            clustering — meet at exactly this sentence.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 3 -->
+    <section class="topic-group" id="section-demo" aria-labelledby="section-demo-title">
+      <div class="topic-group__header">
+        <h2 id="section-demo-title">Run the one algorithm in all three</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--new"><span class="pill__glyph" aria-hidden="true">✚</span> New for 2026</span></li>
+          <li><span class="pill pill--lab"><span class="pill__glyph" aria-hidden="true">▣</span> Lab 10, Lab 11</span></li>
+        </ul>
+
+        <h3 id="sub-demo">One implementation, three settings</h3>
+
+        <p>
+          The tool below runs a single Lloyd loop. The <em>setting</em> control changes
+          only what the data points mean — grey levels, records, or samples of a square
+          region. The assign step, the move step and the stopping test are literally the
+          same code in all three. Step through the iterations and watch the energy fall.
+        </p>
+
+        <div id="demo-lloyd-everywhere-mount">
+          <div class="demo__fallback">
+            <p><strong>Lloyd's method in three settings — interactive version not running.</strong>
+               Either JavaScript is off, or this page was opened directly from a folder.
+               The result at the default settings — clustering, <var>k</var> = 3, seed 42,
+               evenly spaced records as the starting centres — is below. It converges after
+               two iterations, with the energy falling from 118.5 to 65.6.</p>
+            <div class="table-scroll" role="region" tabindex="0"
+                 aria-label="Lloyd's method final state at the default settings">
+              <table class="data-table">
+                <caption>Final centres after Lloyd's method converges on the 48-record default data set</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Centre</th>
+                    <th scope="col">Marker shape</th>
+                    <th scope="col">Position (x, y)</th>
+                    <th scope="col" class="is-numeric">Records owned</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">c1</th><td>circle</td><td>(2.02, 1.92)</td><td class="is-numeric">12</td></tr>
+                  <tr><th scope="row">c2</th><td>square</td><td>(7.65, 1.93)</td><td class="is-numeric">12</td></tr>
+                  <tr><th scope="row">c3</th><td>triangle</td><td>(5.05, 8.05)</td><td class="is-numeric">24</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              With <var>k</var> = 3 on data built from four groups, two groups have to
+              share a centre — c3 sits between them at (5.05, 8.05) and owns 24 of the 48
+              records. That is the point of topic 5.4.8, choosing <var>k</var>. Raise
+              <var>k</var> to 4 in the interactive version and each group gets its own
+              centre.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 4 -->
+    <section class="topic-group" id="section-cost" aria-labelledby="section-cost-title">
+      <div class="topic-group__header">
+        <h2 id="section-cost-title">Cost, initialisation and choosing <em>k</em></h2>
+      </div>
+
+      <div class="prose">
+        <h3 id="sub-cost">What it costs</h3>
+
+        <div class="formula" role="math"
+             aria-label="cost is order k times the number of records times the number of iterations">
+          <span class="formula__label">Cost of Lloyd's method (M5 topic 5.4.7)</span>
+          <p class="formula__expr">
+            cost = O(<var>k</var> &times; records &times; iterations)
+          </p>
+          <dl class="formula__where">
+            <dt><var>k</var></dt><dd>number of centres</dd>
+            <dt>records</dt><dd>number of data points — pixels, records, or samples</dd>
+            <dt>iterations</dt><dd>how many times the loop runs before it converges; not known in advance</dd>
+          </dl>
+        </div>
+
+        <p>
+          The work is dominated by step 2: for every data point, compute the distance to
+          every centre and take the smallest. That is why quantizing an image is
+          expensive — the record count is the pixel count — and why M5 points forward to
+          computational geometry for faster ways to find the nearest generator. Compare
+          this row against the rest of the course on the
+          <a href="complexity-comparator.html#section-reference">complexity comparator</a>.
+        </p>
+
+        <h3 id="sub-init">Initialisation decides which answer you get</h3>
+
+        <div class="callout callout--warning">
+          <p class="callout__title">Common mistake</p>
+          <p>
+            Treating the output as <em>the</em> clustering. k-means is guaranteed to
+            converge and is <strong>not</strong> guaranteed to converge to the global
+            minimum: the same data with different starting centres can settle on
+            different clusterings with different energies. The standard remedy is to run
+            it several times from different starts and keep the lowest energy — not to
+            trust one run.
+          </p>
+        </div>
+
+        <p>
+          The demo above exposes this directly: change the initialisation control from
+          &ldquo;first <var>k</var> data points&rdquo; to a random start, change the
+          seed, and read the final energy in the summary. If two runs on the same data
+          give two different energies, you have just reproduced topic 5.4.6.
+        </p>
+
+        <h3 id="sub-choosing-k">Choosing <em>k</em></h3>
+
+        <p>
+          Nothing in the algorithm chooses <var>k</var>. M5's advice is to run it for
+          several values and watch the total cluster variance: it always falls as
+          <var>k</var> rises, so you look for the elbow — the point after which adding
+          another centre buys very little. On the four-group data used by the demo, the
+          elbow sits at three to five.
+        </p>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-k-label">
+          <p class="visually-hidden" id="table-k-label">How k is chosen in each of the three settings</p>
+          <table class="data-table">
+            <caption>What fixes <var>k</var> in each appearance</caption>
+            <thead>
+              <tr>
+                <th scope="col">Setting</th>
+                <th scope="col">What <var>k</var> is</th>
+                <th scope="col">Who chooses it</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Colour quantization</th>
+                <td>the number of shades available</td>
+                <td>the hardware — 32 greys on the printer, 16 colours in the compressed image</td>
+              </tr>
+              <tr>
+                <th scope="row">Clustering</th>
+                <td>the number of groups you believe are there</td>
+                <td>you, guided by the elbow in the variance-versus-<var>k</var> plot</td>
+              </tr>
+              <tr>
+                <th scope="row">Centroidal Voronoi tessellation</th>
+                <td>the number of generators, so the number of cells</td>
+                <td>you, from the resolution the mesh or the sampling needs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 5 -->
+    <section class="topic-group" id="section-into-modules" aria-labelledby="section-into-modules-title">
+      <div class="topic-group__header">
+        <h2 id="section-into-modules-title">Into the modules</h2>
+      </div>
+
+      <div class="prose">
+        <h3 id="sub-m4">M4 — colour quantization</h3>
+        <p>
+          M4 arrives at k-means from a printing problem: you have an image with 256 grey
+          levels and a device that can print 32. Manual thresholding works but is not an
+          algorithm; k-means is the automatic version. Replacing every pixel by its
+          cluster centre is the compression.
+        </p>
+        <ul>
+          <li><a href="../m4-image-processing.html#section-4-3">M4 §4.3 Global operations</a></li>
+          <li><a href="../m4-image-processing.html#topic-4-3-4">Topic 4.3.4 — colour quantization and depth reduction</a></li>
+          <li><a href="../m4-image-processing.html#topic-4-3-5">Topic 4.3.5 — k-means for quantization, k = 3 and k = 10</a></li>
+        </ul>
+
+        <h3 id="sub-m5">M5 — clustering and Lloyd's method</h3>
+        <p>
+          M5 is where the algorithm is derived, proved to descend on an energy, costed,
+          and extended with weights. It is also where its failure mode — the local
+          minimum — is shown honestly.
+        </p>
+        <ul>
+          <li><a href="../m5-data-mining.html#section-5-4">M5 §5.4 K-means</a></li>
+          <li><a href="../m5-data-mining.html#topic-5-4-1">Topic 5.4.1 — averages as energy minimisers, with the proof</a></li>
+          <li><a href="../m5-data-mining.html#topic-5-4-6">Topic 5.4.6 — sensitivity to the initial generators</a></li>
+          <li><a href="../m5-data-mining.html#topic-5-4-9">Topic 5.4.9 — weighted k-means</a></li>
+          <li><a href="../m5-data-mining.html#topic-5-4-11">Topic 5.4.11 — k-means for image compression, the link back to M4</a></li>
+        </ul>
+
+        <h3 id="sub-m6">M5 §5.5 and M6 — Voronoi, CVT and the geometry</h3>
+        <p>
+          The geometric half renames the pieces and adds one fact: the assignment step
+          <em>is</em> a Voronoi diagram, so the converged state is a Voronoi diagram
+          whose generators are its own centres of mass.
+        </p>
+        <ul>
+          <li><a href="../m5-data-mining.html#section-5-5">M5 §5.5 Geometric clustering</a></li>
+          <li><a href="../m5-data-mining.html#topic-5-5-4">Topic 5.5.4 — centroidal Voronoi tessellation</a></li>
+          <li><a href="../m5-data-mining.html#topic-5-5-7">Topic 5.5.7 — probabilistic Lloyd's, or MacQueen's algorithm</a></li>
+          <li><a href="../m6-computational-geometry.html#section-6-5">M6 §6.5 Delaunay triangulation and quadrature</a></li>
+        </ul>
+
+        <h3 id="sub-threads">The other threads</h3>
+        <ul>
+          <li><a href="delaunay-thread.html">Delaunay thread</a> — the triangulation that comes with every Voronoi diagram</li>
+          <li><a href="complexity-comparator.html">Complexity comparator</a> — where O(<var>k n i</var>) sits against the rest of the course</li>
+          <li><a href="greedy-gallery.html">Greedy gallery</a> — another pattern that shows up in four places</li>
+          <li><a href="exam-practice.html">Exam practice by problem type</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <p><a href="#main" data-back-to-top>Back to the top of k-means everywhere</a></p>
+
+  </main>
+</div>
+
+<footer class="site-footer" data-surface="dark">
+  <div class="site-footer__inner wrap">
+    <section aria-labelledby="footer-modules">
+      <h2 id="footer-modules">Modules</h2>
+      <ul>
+        <li><a href="../m0-foundations.html">M0 — Foundations &amp; Tooling</a></li>
+        <li><a href="../m1-algorithm-design.html">M1 — Algorithm Design &amp; Analysis</a></li>
+        <li><a href="../m2-probability.html">M2 — Probability &amp; Random Processes</a></li>
+        <li><a href="../m3-graphs.html">M3 — Graphs</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-modules-2">
+      <h2 id="footer-modules-2">Modules, continued</h2>
+      <ul>
+        <li><a href="../m4-image-processing.html">M4 — Image Processing</a></li>
+        <li><a href="../m5-data-mining.html">M5 — Data Mining</a></li>
+        <li><a href="../m6-computational-geometry.html">M6 — Computational Geometry</a></li>
+        <li><a href="../m7-discrete-optimization.html">M7 — Discrete Optimization</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-threads">
+      <h2 id="footer-threads">Cross-cutting threads</h2>
+      <ul>
+        <li><a href="complexity-comparator.html">Complexity comparator</a></li>
+        <li><a href="kmeans-everywhere.html">k-means everywhere</a></li>
+        <li><a href="greedy-gallery.html">Greedy gallery</a></li>
+        <li><a href="delaunay-thread.html">Delaunay thread</a></li>
+        <li><a href="exam-practice.html">Exam practice by type</a></li>
+        <li><a class="link-external" href="../../ACCESSIBILITY_STATEMENT.md">Accessibility statement<span class="visually-hidden"> (Markdown file, opens outside the dashboard)</span></a></li>
+      </ul>
+      <p class="site-footer__note">
+        ISC 4221C · Florida State University · Department of Scientific Computing.
+        Built to work offline: no external requests, no tracking, no account.
+      </p>
+    </section>
+  </div>
+</footer>
+
+<script defer src="../assets/js/core/gfx.js"></script>
+<script defer data-manual src="../assets/js/vendor/prism.js"></script>
+<script defer src="../assets/js/highlight.js"></script>
+<script defer src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/nav-map.js"></script>
+<script defer src="../assets/js/nav.js"></script>
+<script defer src="../assets/js/search-index.js"></script>
+<script defer src="../assets/js/search.js"></script>
+<script defer src="../assets/js/demo.js"></script>
+<script defer src="../assets/js/demos/cross-kmeans-everywhere.js"></script>
+</body>
+</html>

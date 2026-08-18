@@ -1,0 +1,104 @@
+<!--
+  Generated file — do not edit by hand.
+
+    Regenerate:  python3 Dashboard/tools/build.py
+    Generator:   Dashboard/tools/generate_figures.py  (figure id 'big-o-growth')
+
+  Topics: 1.4.1, 1.4.2, 1.4.4, 1.4.5
+
+  Colour comes from fsu-tokens.css when this file is inlined into a dashboard
+  page; the var() fallbacks are the same values as standards/color-palette.md
+  and only apply when the file is opened on its own. The white plot panel is
+  deliberate and theme-independent — see Dashboard/tools/fsu_palette.py.
+
+  The non-visual equivalent of this figure is the table in the sibling file
+  big-o-growth.table.html. Ship them together.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 478" width="760" height="478" role="img" aria-labelledby="fig-big-o-growth-title fig-big-o-growth-desc" class="fsu-figure" data-figure="big-o-growth">
+  <title id="fig-big-o-growth-title">Up to n = 100 the five growth curves separate sharply: n squared reaches 10,000 operations where n log n reaches 664 and n reaches 100.</title>
+  <desc id="fig-big-o-growth-desc">Operation count against input size n from 1 to 100, on linear axes. Five series, each with its own dash pattern and a label drawn at the end of its curve: constant stays flat at 1; logarithmic reaches about 6.6; linear is a straight line to 100; linearithmic curves gently to 664; quadratic climbs steeply to 10,000 and is clipped by the top of the panel at n = 100. Exponential is omitted from this panel because 2 to the power 100 is about 1.3 times 10 to the 30, which no shared axis can show; it appears in the log-log runtime figure instead.</desc>
+  <style>
+    /* Reflow: the figure scales with its container instead of forcing
+       a horizontal page scrollbar at 320px or at 400% zoom (1.4.10). */
+    svg.fsu-figure { max-width: 100%; height: auto; }
+  </style>
+  <rect x="76" y="54" width="564" height="294" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="76" y="30" fill="var(--fsu-black, #161514)" font-size="17" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700">Operations against input size, linear axes</text>
+  <g aria-hidden="true"><line x1="76" y1="348" x2="76" y2="54" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="188.8" y1="348" x2="188.8" y2="54" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="301.6" y1="348" x2="301.6" y2="54" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="414.4" y1="348" x2="414.4" y2="54" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="527.2" y1="348" x2="527.2" y2="54" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="640" y1="348" x2="640" y2="54" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="76" y1="348" x2="640" y2="348" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="76" y1="289.2" x2="640" y2="289.2" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="76" y1="230.4" x2="640" y2="230.4" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="76" y1="171.6" x2="640" y2="171.6" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="76" y1="112.8" x2="640" y2="112.8" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" />
+  <line x1="76" y1="54" x2="640" y2="54" stroke="var(--fsu-neutral-2w, #d5d4d4)" stroke-width="1" /></g>
+  <line x1="76" y1="348" x2="640" y2="348" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <line x1="76" y1="348" x2="76" y2="54" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <line x1="76" y1="348" x2="76" y2="353" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="76" y="367" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">0</text>
+  <line x1="188.8" y1="348" x2="188.8" y2="353" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="188.8" y="367" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">20</text>
+  <line x1="301.6" y1="348" x2="301.6" y2="353" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="301.6" y="367" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">40</text>
+  <line x1="414.4" y1="348" x2="414.4" y2="353" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="414.4" y="367" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">60</text>
+  <line x1="527.2" y1="348" x2="527.2" y2="353" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="527.2" y="367" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">80</text>
+  <line x1="640" y1="348" x2="640" y2="353" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="640" y="367" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">100</text>
+  <line x1="71" y1="348" x2="76" y2="348" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="67" y="352.5" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="end">0</text>
+  <line x1="71" y1="289.2" x2="76" y2="289.2" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="67" y="293.7" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="end">2K</text>
+  <line x1="71" y1="230.4" x2="76" y2="230.4" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="67" y="234.9" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="end">4K</text>
+  <line x1="71" y1="171.6" x2="76" y2="171.6" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="67" y="176.1" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="end">6K</text>
+  <line x1="71" y1="112.8" x2="76" y2="112.8" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="67" y="117.3" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="end">8K</text>
+  <line x1="71" y1="54" x2="76" y2="54" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.5" />
+  <text x="67" y="58.5" fill="var(--fsu-neutral-2s, #565554)" font-size="13" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="end">10K</text>
+  <text x="358" y="388" fill="var(--fsu-slate, #2c2a29)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">Input size n</text>
+  <text x="0" y="0" fill="var(--fsu-slate, #2c2a29)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle" transform="translate(30,201) rotate(-90)">Operations</text>
+  <polyline points="81.64,347.97 87.28,347.97 92.92,347.97 98.56,347.97 104.2,347.97 109.84,347.97 115.48,347.97 121.12,347.97 126.76,347.97 132.4,347.97 138.04,347.97 143.68,347.97 149.32,347.97 154.96,347.97 160.6,347.97 166.24,347.97 171.88,347.97 177.52,347.97 183.16,347.97 188.8,347.97 194.44,347.97 200.08,347.97 205.72,347.97 211.36,347.97 217,347.97 222.64,347.97 228.28,347.97 233.92,347.97 239.56,347.97 245.2,347.97 250.84,347.97 256.48,347.97 262.12,347.97 267.76,347.97 273.4,347.97 279.04,347.97 284.68,347.97 290.32,347.97 295.96,347.97 301.6,347.97 307.24,347.97 312.88,347.97 318.52,347.97 324.16,347.97 329.8,347.97 335.44,347.97 341.08,347.97 346.72,347.97 352.36,347.97 358,347.97 363.64,347.97 369.28,347.97 374.92,347.97 380.56,347.97 386.2,347.97 391.84,347.97 397.48,347.97 403.12,347.97 408.76,347.97 414.4,347.97 420.04,347.97 425.68,347.97 431.32,347.97 436.96,347.97 442.6,347.97 448.24,347.97 453.88,347.97 459.52,347.97 465.16,347.97 470.8,347.97 476.44,347.97 482.08,347.97 487.72,347.97 493.36,347.97 499,347.97 504.64,347.97 510.28,347.97 515.92,347.97 521.56,347.97 527.2,347.97 532.84,347.97 538.48,347.97 544.12,347.97 549.76,347.97 555.4,347.97 561.04,347.97 566.68,347.97 572.32,347.97 577.96,347.97 583.6,347.97 589.24,347.97 594.88,347.97 600.52,347.97 606.16,347.97 611.8,347.97 617.44,347.97 623.08,347.97 628.72,347.97 634.36,347.97 640,347.97" fill="none" stroke="var(--fsu-garnet, #782f40)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" />
+  <circle cx="81.64" cy="347.97" r="4.6" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-garnet, #782f40)" />
+  <circle cx="222.64" cy="347.97" r="4.6" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-garnet, #782f40)" />
+  <circle cx="363.64" cy="347.97" r="4.6" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-garnet, #782f40)" />
+  <circle cx="504.64" cy="347.97" r="4.6" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-garnet, #782f40)" />
+  <text x="648" y="381.97" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">O(1) constant</text>
+  <polyline points="81.64,348 87.28,347.97 92.92,347.95 98.56,347.94 104.2,347.93 109.84,347.92 115.48,347.92 121.12,347.91 126.76,347.91 132.4,347.9 138.04,347.9 143.68,347.89 149.32,347.89 154.96,347.89 160.6,347.89 166.24,347.88 171.88,347.88 177.52,347.88 183.16,347.88 188.8,347.87 194.44,347.87 200.08,347.87 205.72,347.87 211.36,347.87 217,347.86 222.64,347.86 228.28,347.86 233.92,347.86 239.56,347.86 245.2,347.86 250.84,347.85 256.48,347.85 262.12,347.85 267.76,347.85 273.4,347.85 279.04,347.85 284.68,347.85 290.32,347.85 295.96,347.84 301.6,347.84 307.24,347.84 312.88,347.84 318.52,347.84 324.16,347.84 329.8,347.84 335.44,347.84 341.08,347.84 346.72,347.84 352.36,347.83 358,347.83 363.64,347.83 369.28,347.83 374.92,347.83 380.56,347.83 386.2,347.83 391.84,347.83 397.48,347.83 403.12,347.83 408.76,347.83 414.4,347.83 420.04,347.83 425.68,347.82 431.32,347.82 436.96,347.82 442.6,347.82 448.24,347.82 453.88,347.82 459.52,347.82 465.16,347.82 470.8,347.82 476.44,347.82 482.08,347.82 487.72,347.82 493.36,347.82 499,347.82 504.64,347.82 510.28,347.82 515.92,347.82 521.56,347.81 527.2,347.81 532.84,347.81 538.48,347.81 544.12,347.81 549.76,347.81 555.4,347.81 561.04,347.81 566.68,347.81 572.32,347.81 577.96,347.81 583.6,347.81 589.24,347.81 594.88,347.81 600.52,347.81 606.16,347.81 611.8,347.81 617.44,347.81 623.08,347.81 628.72,347.81 634.36,347.81 640,347.8" fill="none" stroke="var(--fsu-plaza-brick, #572932)" stroke-width="2.4" stroke-dasharray="7 4" stroke-linejoin="round" stroke-linecap="round" />
+  <rect x="77.04" y="343.4" width="9.2" height="9.2" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-plaza-brick, #572932)" />
+  <rect x="218.04" y="343.26" width="9.2" height="9.2" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-plaza-brick, #572932)" />
+  <rect x="359.04" y="343.23" width="9.2" height="9.2" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-plaza-brick, #572932)" />
+  <rect x="500.04" y="343.22" width="9.2" height="9.2" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-plaza-brick, #572932)" />
+  <text x="648" y="363.8" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">O(log n)</text>
+  <polyline points="81.64,347.97 87.28,347.94 92.92,347.91 98.56,347.88 104.2,347.85 109.84,347.82 115.48,347.79 121.12,347.76 126.76,347.74 132.4,347.71 138.04,347.68 143.68,347.65 149.32,347.62 154.96,347.59 160.6,347.56 166.24,347.53 171.88,347.5 177.52,347.47 183.16,347.44 188.8,347.41 194.44,347.38 200.08,347.35 205.72,347.32 211.36,347.29 217,347.26 222.64,347.24 228.28,347.21 233.92,347.18 239.56,347.15 245.2,347.12 250.84,347.09 256.48,347.06 262.12,347.03 267.76,347 273.4,346.97 279.04,346.94 284.68,346.91 290.32,346.88 295.96,346.85 301.6,346.82 307.24,346.79 312.88,346.77 318.52,346.74 324.16,346.71 329.8,346.68 335.44,346.65 341.08,346.62 346.72,346.59 352.36,346.56 358,346.53 363.64,346.5 369.28,346.47 374.92,346.44 380.56,346.41 386.2,346.38 391.84,346.35 397.48,346.32 403.12,346.29 408.76,346.27 414.4,346.24 420.04,346.21 425.68,346.18 431.32,346.15 436.96,346.12 442.6,346.09 448.24,346.06 453.88,346.03 459.52,346 465.16,345.97 470.8,345.94 476.44,345.91 482.08,345.88 487.72,345.85 493.36,345.82 499,345.8 504.64,345.77 510.28,345.74 515.92,345.71 521.56,345.68 527.2,345.65 532.84,345.62 538.48,345.59 544.12,345.56 549.76,345.53 555.4,345.5 561.04,345.47 566.68,345.44 572.32,345.41 577.96,345.38 583.6,345.35 589.24,345.32 594.88,345.3 600.52,345.27 606.16,345.24 611.8,345.21 617.44,345.18 623.08,345.15 628.72,345.12 634.36,345.09 640,345.06" fill="none" stroke="var(--fsu-legacy-blue, #425563)" stroke-width="2.4" stroke-dasharray="2 3" stroke-linejoin="round" stroke-linecap="round" />
+  <polygon points="81.64,342.45 86.7,351.65 76.58,351.65" fill="var(--fsu-legacy-blue, #425563)" stroke="var(--fsu-legacy-blue, #425563)" />
+  <polygon points="222.64,341.72 227.7,350.92 217.58,350.92" fill="var(--fsu-legacy-blue, #425563)" stroke="var(--fsu-legacy-blue, #425563)" />
+  <polygon points="363.64,340.98 368.7,350.18 358.58,350.18" fill="var(--fsu-legacy-blue, #425563)" stroke="var(--fsu-legacy-blue, #425563)" />
+  <polygon points="504.64,340.25 509.7,349.45 499.58,349.45" fill="var(--fsu-legacy-blue, #425563)" stroke="var(--fsu-legacy-blue, #425563)" />
+  <text x="648" y="343.06" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">O(n) linear</text>
+  <polyline points="81.64,348 87.28,347.94 92.92,347.86 98.56,347.76 104.2,347.66 109.84,347.54 115.48,347.42 121.12,347.29 126.76,347.16 132.4,347.02 138.04,346.88 143.68,346.74 149.32,346.59 154.96,346.43 160.6,346.28 166.24,346.12 171.88,345.96 177.52,345.79 183.16,345.63 188.8,345.46 194.44,345.29 200.08,345.12 205.72,344.94 211.36,344.76 217,344.59 222.64,344.41 228.28,344.23 233.92,344.04 239.56,343.86 245.2,343.67 250.84,343.48 256.48,343.3 262.12,343.11 267.76,342.91 273.4,342.72 279.04,342.53 284.68,342.33 290.32,342.14 295.96,341.94 301.6,341.74 307.24,341.54 312.88,341.34 318.52,341.14 324.16,340.94 329.8,340.73 335.44,340.53 341.08,340.32 346.72,340.12 352.36,339.91 358,339.7 363.64,339.49 369.28,339.29 374.92,339.07 380.56,338.86 386.2,338.65 391.84,338.44 397.48,338.23 403.12,338.01 408.76,337.8 414.4,337.58 420.04,337.36 425.68,337.15 431.32,336.93 436.96,336.71 442.6,336.49 448.24,336.27 453.88,336.05 459.52,335.83 465.16,335.61 470.8,335.39 476.44,335.16 482.08,334.94 487.72,334.72 493.36,334.49 499,334.27 504.64,334.04 510.28,333.81 515.92,333.59 521.56,333.36 527.2,333.13 532.84,332.9 538.48,332.67 544.12,332.44 549.76,332.21 555.4,331.98 561.04,331.75 566.68,331.52 572.32,331.29 577.96,331.06 583.6,330.82 589.24,330.59 594.88,330.36 600.52,330.12 606.16,329.89 611.8,329.65 617.44,329.41 623.08,329.18 628.72,328.94 634.36,328.7 640,328.47" fill="none" stroke="var(--fsu-slate, #2c2a29)" stroke-width="2.4" stroke-dasharray="10 3 2 3" stroke-linejoin="round" stroke-linecap="round" />
+  <polygon points="81.64,342.02 86.7,348 81.64,353.98 76.58,348" fill="var(--fsu-slate, #2c2a29)" stroke="var(--fsu-slate, #2c2a29)" />
+  <polygon points="222.64,338.43 227.7,344.41 222.64,350.39 217.58,344.41" fill="var(--fsu-slate, #2c2a29)" stroke="var(--fsu-slate, #2c2a29)" />
+  <polygon points="363.64,333.51 368.7,339.49 363.64,345.47 358.58,339.49" fill="var(--fsu-slate, #2c2a29)" stroke="var(--fsu-slate, #2c2a29)" />
+  <polygon points="504.64,328.06 509.7,334.04 504.64,340.02 499.58,334.04" fill="var(--fsu-slate, #2c2a29)" stroke="var(--fsu-slate, #2c2a29)" />
+  <text x="648" y="314.47" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">O(n log n)</text>
+  <polyline points="81.64,347.97 87.28,347.88 92.92,347.74 98.56,347.53 104.2,347.26 109.84,346.94 115.48,346.56 121.12,346.12 126.76,345.62 132.4,345.06 138.04,344.44 143.68,343.77 149.32,343.03 154.96,342.24 160.6,341.38 166.24,340.47 171.88,339.5 177.52,338.47 183.16,337.39 188.8,336.24 194.44,335.03 200.08,333.77 205.72,332.45 211.36,331.07 217,329.62 222.64,328.13 228.28,326.57 233.92,324.95 239.56,323.27 245.2,321.54 250.84,319.75 256.48,317.89 262.12,315.98 267.76,314.01 273.4,311.99 279.04,309.9 284.68,307.75 290.32,305.55 295.96,303.28 301.6,300.96 307.24,298.58 312.88,296.14 318.52,293.64 324.16,291.08 329.8,288.46 335.44,285.79 341.08,283.06 346.72,280.26 352.36,277.41 358,274.5 363.64,271.53 369.28,268.5 374.92,265.42 380.56,262.27 386.2,259.06 391.84,255.8 397.48,252.48 403.12,249.1 408.76,245.66 414.4,242.16 420.04,238.6 425.68,234.99 431.32,231.31 436.96,227.58 442.6,223.79 448.24,219.93 453.88,216.02 459.52,212.05 465.16,208.03 470.8,203.94 476.44,199.79 482.08,195.59 487.72,191.33 493.36,187.01 499,182.62 504.64,178.19 510.28,173.69 515.92,169.13 521.56,164.51 527.2,159.84 532.84,155.11 538.48,150.31 544.12,145.46 549.76,140.55 555.4,135.58 561.04,130.56 566.68,125.47 572.32,120.33 577.96,115.12 583.6,109.86 589.24,104.54 594.88,99.16 600.52,93.72 606.16,88.22 611.8,82.67 617.44,77.05 623.08,71.38 628.72,65.64 634.36,59.85 640,54" fill="none" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="2.4" stroke-dasharray="5 3" stroke-linejoin="round" stroke-linecap="round" />
+  <g><line x1="77.04" y1="343.37" x2="86.24" y2="352.57" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="2.2" />
+  <line x1="77.04" y1="352.57" x2="86.24" y2="343.37" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="2.2" /></g>
+  <g><line x1="218.04" y1="323.53" x2="227.24" y2="332.73" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="2.2" />
+  <line x1="218.04" y1="332.73" x2="227.24" y2="323.53" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="2.2" /></g>
+  <g><line x1="359.04" y1="266.93" x2="368.24" y2="276.13" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="2.2" />
+  <line x1="359.04" y1="276.13" x2="368.24" y2="266.93" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="2.2" /></g>
+  <g><line x1="500.04" y1="173.59" x2="509.24" y2="182.79" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="2.2" />
+  <line x1="500.04" y1="182.79" x2="509.24" y2="173.59" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="2.2" /></g>
+  <text x="648" y="58" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">O(n²) quadratic</text>
+  <g><text x="76" y="410" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif">O(2ⁿ) is not drawn here: at n = 100 it is about 1.3 × 10³⁰, which no shared axis can show.</text></g>
+  <g><text x="76" y="435" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif">Each curve carries a dash pattern and a marker shape as well as a colour, and is labelled where</text>
+  <text x="76" y="454" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif">it ends.</text></g>
+</svg>

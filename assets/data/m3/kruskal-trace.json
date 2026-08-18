@@ -1,0 +1,638 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "kruskal-union-find",
+  "module": "M3",
+  "topics": [
+    "3.6.1",
+    "3.6.2",
+    "3.6.3",
+    "3.6.4",
+    "3.6.5",
+    "3.6.6"
+  ],
+  "title": "Kruskal with union-find on the six-node campus graph",
+  "seed": null,
+  "determinism": "no randomness; the input is fixed",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "Real union-find with path compression and union by rank; the parent array is in every step's state. The 2025 view called its structure union-find but was a set-per-node with an O(n) merge, and could not show a parent array at all — which topic 3.6.5 asks for by name."
+  ],
+  "input": {
+    "name": "campus",
+    "nodes": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "edges": [
+      [
+        "A",
+        "B",
+        4
+      ],
+      [
+        "A",
+        "C",
+        2
+      ],
+      [
+        "B",
+        "C",
+        1
+      ],
+      [
+        "B",
+        "D",
+        5
+      ],
+      [
+        "C",
+        "D",
+        8
+      ],
+      [
+        "C",
+        "E",
+        6
+      ],
+      [
+        "D",
+        "E",
+        2
+      ],
+      [
+        "D",
+        "F",
+        6
+      ],
+      [
+        "E",
+        "F",
+        3
+      ]
+    ],
+    "weighted": true,
+    "positions": {
+      "A": [
+        0.1,
+        0.5
+      ],
+      "B": [
+        0.34,
+        0.16
+      ],
+      "C": [
+        0.34,
+        0.84
+      ],
+      "D": [
+        0.64,
+        0.3
+      ],
+      "E": [
+        0.64,
+        0.76
+      ],
+      "F": [
+        0.92,
+        0.52
+      ]
+    },
+    "layout": "fixed, authored — not force-directed, so every artefact draws the same picture",
+    "sortedEdges": [
+      [
+        "B",
+        "C",
+        1
+      ],
+      [
+        "A",
+        "C",
+        2
+      ],
+      [
+        "D",
+        "E",
+        2
+      ],
+      [
+        "E",
+        "F",
+        3
+      ],
+      [
+        "A",
+        "B",
+        4
+      ],
+      [
+        "B",
+        "D",
+        5
+      ],
+      [
+        "C",
+        "E",
+        6
+      ],
+      [
+        "D",
+        "F",
+        6
+      ],
+      [
+        "C",
+        "D",
+        8
+      ]
+    ]
+  },
+  "columns": [
+    {
+      "label": "Edge considered",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Edge",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Weight",
+      "unit": "km",
+      "numeric": true
+    },
+    {
+      "label": "Decision",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Edges in tree",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Tree weight",
+      "unit": "km",
+      "numeric": true
+    },
+    {
+      "label": "Components",
+      "unit": "",
+      "numeric": false
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 6,
+  "steps": [
+    {
+      "index": 0,
+      "label": "Edge 1 of 9: B-C weighs 1. B is in component B and C is in component C, so the edge joins two components and is added. The tree now has 1 of 5 edges and weighs 1.",
+      "rows": [
+        [
+          1,
+          "B-C",
+          1,
+          "added",
+          1,
+          1,
+          "{A} | {B,C} | {D} | {E} | {F}"
+        ]
+      ],
+      "state": {
+        "edge": [
+          "B",
+          "C",
+          1
+        ],
+        "action": "added",
+        "mst": [
+          [
+            "B",
+            "C",
+            1
+          ]
+        ],
+        "totalWeight": 1,
+        "parent": {
+          "A": "A",
+          "B": "B",
+          "C": "B",
+          "D": "D",
+          "E": "E",
+          "F": "F"
+        },
+        "components": [
+          [
+            "A"
+          ],
+          [
+            "B",
+            "C"
+          ],
+          [
+            "D"
+          ],
+          [
+            "E"
+          ],
+          [
+            "F"
+          ]
+        ],
+        "edgesPlaced": 1
+      }
+    },
+    {
+      "index": 1,
+      "label": "Edge 2 of 9: A-C weighs 2. A is in component A and C is in component B, so the edge joins two components and is added. The tree now has 2 of 5 edges and weighs 3.",
+      "rows": [
+        [
+          2,
+          "A-C",
+          2,
+          "added",
+          2,
+          3,
+          "{A,B,C} | {D} | {E} | {F}"
+        ]
+      ],
+      "state": {
+        "edge": [
+          "A",
+          "C",
+          2
+        ],
+        "action": "added",
+        "mst": [
+          [
+            "B",
+            "C",
+            1
+          ],
+          [
+            "A",
+            "C",
+            2
+          ]
+        ],
+        "totalWeight": 3,
+        "parent": {
+          "A": "B",
+          "B": "B",
+          "C": "B",
+          "D": "D",
+          "E": "E",
+          "F": "F"
+        },
+        "components": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "D"
+          ],
+          [
+            "E"
+          ],
+          [
+            "F"
+          ]
+        ],
+        "edgesPlaced": 2
+      }
+    },
+    {
+      "index": 2,
+      "label": "Edge 3 of 9: D-E weighs 2. D is in component D and E is in component E, so the edge joins two components and is added. The tree now has 3 of 5 edges and weighs 5.",
+      "rows": [
+        [
+          3,
+          "D-E",
+          2,
+          "added",
+          3,
+          5,
+          "{A,B,C} | {D,E} | {F}"
+        ]
+      ],
+      "state": {
+        "edge": [
+          "D",
+          "E",
+          2
+        ],
+        "action": "added",
+        "mst": [
+          [
+            "B",
+            "C",
+            1
+          ],
+          [
+            "A",
+            "C",
+            2
+          ],
+          [
+            "D",
+            "E",
+            2
+          ]
+        ],
+        "totalWeight": 5,
+        "parent": {
+          "A": "B",
+          "B": "B",
+          "C": "B",
+          "D": "D",
+          "E": "D",
+          "F": "F"
+        },
+        "components": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "D",
+            "E"
+          ],
+          [
+            "F"
+          ]
+        ],
+        "edgesPlaced": 3
+      }
+    },
+    {
+      "index": 3,
+      "label": "Edge 4 of 9: E-F weighs 3. E is in component D and F is in component F, so the edge joins two components and is added. The tree now has 4 of 5 edges and weighs 8.",
+      "rows": [
+        [
+          4,
+          "E-F",
+          3,
+          "added",
+          4,
+          8,
+          "{A,B,C} | {D,E,F}"
+        ]
+      ],
+      "state": {
+        "edge": [
+          "E",
+          "F",
+          3
+        ],
+        "action": "added",
+        "mst": [
+          [
+            "B",
+            "C",
+            1
+          ],
+          [
+            "A",
+            "C",
+            2
+          ],
+          [
+            "D",
+            "E",
+            2
+          ],
+          [
+            "E",
+            "F",
+            3
+          ]
+        ],
+        "totalWeight": 8,
+        "parent": {
+          "A": "B",
+          "B": "B",
+          "C": "B",
+          "D": "D",
+          "E": "D",
+          "F": "D"
+        },
+        "components": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "D",
+            "E",
+            "F"
+          ]
+        ],
+        "edgesPlaced": 4
+      }
+    },
+    {
+      "index": 4,
+      "label": "Edge 5 of 9: A-B weighs 4. Both ends already find root B, so adding it would close a cycle and it is rejected. The tree stays at 4 edges weighing 8.",
+      "rows": [
+        [
+          5,
+          "A-B",
+          4,
+          "rejected",
+          4,
+          8,
+          "{A,B,C} | {D,E,F}"
+        ]
+      ],
+      "state": {
+        "edge": [
+          "A",
+          "B",
+          4
+        ],
+        "action": "rejected",
+        "mst": [
+          [
+            "B",
+            "C",
+            1
+          ],
+          [
+            "A",
+            "C",
+            2
+          ],
+          [
+            "D",
+            "E",
+            2
+          ],
+          [
+            "E",
+            "F",
+            3
+          ]
+        ],
+        "totalWeight": 8,
+        "parent": {
+          "A": "B",
+          "B": "B",
+          "C": "B",
+          "D": "D",
+          "E": "D",
+          "F": "D"
+        },
+        "components": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "D",
+            "E",
+            "F"
+          ]
+        ],
+        "edgesPlaced": 4
+      }
+    },
+    {
+      "index": 5,
+      "label": "Edge 6 of 9: B-D weighs 5. B is in component B and D is in component D, so the edge joins two components and is added. The tree now has 5 of 5 edges and weighs 13. That is n minus 1 edges, so the spanning tree is complete.",
+      "rows": [
+        [
+          6,
+          "B-D",
+          5,
+          "added",
+          5,
+          13,
+          "{A,B,C,D,E,F}"
+        ]
+      ],
+      "state": {
+        "edge": [
+          "B",
+          "D",
+          5
+        ],
+        "action": "added",
+        "mst": [
+          [
+            "B",
+            "C",
+            1
+          ],
+          [
+            "A",
+            "C",
+            2
+          ],
+          [
+            "D",
+            "E",
+            2
+          ],
+          [
+            "E",
+            "F",
+            3
+          ],
+          [
+            "B",
+            "D",
+            5
+          ]
+        ],
+        "totalWeight": 13,
+        "parent": {
+          "A": "B",
+          "B": "B",
+          "C": "B",
+          "D": "B",
+          "E": "B",
+          "F": "B"
+        },
+        "components": [
+          [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ]
+        ],
+        "edgesPlaced": 5
+      }
+    }
+  ],
+  "summary": {
+    "mst": [
+      [
+        "B",
+        "C",
+        1
+      ],
+      [
+        "A",
+        "C",
+        2
+      ],
+      [
+        "D",
+        "E",
+        2
+      ],
+      [
+        "E",
+        "F",
+        3
+      ],
+      [
+        "B",
+        "D",
+        5
+      ]
+    ],
+    "totalWeight": 13,
+    "edgesConsidered": 6,
+    "edgesRejected": 1,
+    "parent": {
+      "A": "B",
+      "B": "B",
+      "C": "B",
+      "D": "B",
+      "E": "B",
+      "F": "B"
+    },
+    "nodeCount": 6,
+    "edgeCount": 9,
+    "shortestPathTreeDiffers": true,
+    "dijkstraDistances": {
+      "A": 0,
+      "B": 3,
+      "C": 2,
+      "D": 8,
+      "E": 8,
+      "F": 11
+    },
+    "contrast": "the minimum spanning tree and the shortest-path tree from A are different trees on this graph: the MST minimises total weight, Dijkstra minimises each individual distance from the source"
+  },
+  "alt": {
+    "first": "Edges are sorted by weight. The lightest, B to C at 1 kilometre, joins two separate components, so it is the first edge of the spanning tree.",
+    "last": "The spanning tree has 5 edges weighing 13 kilometres in total. 1 edge was rejected for closing a cycle, detected by both endpoints finding the same union-find root."
+  }
+}

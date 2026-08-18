@@ -1,0 +1,283 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "central-limit-theorem",
+  "module": "M2",
+  "topics": [
+    "2.3.11",
+    "2.4.1",
+    "2.4.2",
+    "2.4.3",
+    "2.4.4"
+  ],
+  "title": "Sampling distribution of the mean from an exponential parent",
+  "seed": 4221,
+  "determinism": "mulberry32 seeded 4221 plus 1000 per sample size; every histogram is reproducible from the seed printed in the demo",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "The exponential parent is chosen precisely because it is visibly non-normal, which is the claim being tested. Skewness replaces the 2025 app's three SciPy normality tests: it is closed-form, it is one number, and it is the number that visibly shrinks."
+  ],
+  "input": {
+    "parent": "Exponential, mean 1",
+    "populationMean": 1.0,
+    "populationSd": 1.0,
+    "sampleSizes": [
+      1,
+      2,
+      5,
+      30
+    ],
+    "samplesPerSize": 3000,
+    "bins": 18,
+    "range": [
+      -3.0,
+      5.0
+    ]
+  },
+  "columns": [
+    {
+      "label": "Sample size n",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Observed mean",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Predicted mean",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Observed spread",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Predicted spread",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Skewness",
+      "unit": "",
+      "numeric": true
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 4,
+  "steps": [
+    {
+      "index": 0,
+      "label": "Sample size n = 1: each 'sample mean' is a single draw, so the histogram is the parent distribution itself — a strongly right-skewed exponential with skewness 1.96. Nothing is normal yet.",
+      "rows": [
+        [
+          1,
+          0.9865,
+          1.0,
+          0.9961,
+          1.0,
+          1.958
+        ]
+      ],
+      "state": {
+        "n": 1,
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          330,
+          971,
+          617,
+          366,
+          272,
+          155,
+          108,
+          71,
+          34,
+          31,
+          15,
+          30
+        ],
+        "binLow": -3.0,
+        "binWidth": 0.444444444444,
+        "observedMean": 0.98646098298,
+        "observedSd": 0.996076032209,
+        "theoreticalSd": 1.0,
+        "skewness": 1.957515819077
+      }
+    },
+    {
+      "index": 1,
+      "label": "Sample size n = 2: averaging 2 draws pulls the skewness from 1.96 down to 1.42 and narrows the spread from 0.996 to 0.680. Theory predicts sigma over root n = 0.707.",
+      "rows": [
+        [
+          2,
+          0.9775,
+          1.0,
+          0.6803,
+          0.7071,
+          1.423
+        ]
+      ],
+      "state": {
+        "n": 2,
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          60,
+          846,
+          916,
+          584,
+          296,
+          151,
+          77,
+          40,
+          16,
+          9,
+          4,
+          1
+        ],
+        "binLow": -3.0,
+        "binWidth": 0.444444444444,
+        "observedMean": 0.977533955653,
+        "observedSd": 0.680340293144,
+        "theoreticalSd": 0.707106781187,
+        "skewness": 1.422673097863
+      }
+    },
+    {
+      "index": 2,
+      "label": "Sample size n = 5: averaging 5 draws pulls the skewness from 1.42 down to 0.92 and narrows the spread from 0.680 to 0.442. Theory predicts sigma over root n = 0.447.",
+      "rows": [
+        [
+          5,
+          0.9856,
+          1.0,
+          0.442,
+          0.4472,
+          0.919
+        ]
+      ],
+      "state": {
+        "n": 5,
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          459,
+          1250,
+          862,
+          311,
+          83,
+          29,
+          5,
+          0,
+          0,
+          0,
+          0
+        ],
+        "binLow": -3.0,
+        "binWidth": 0.444444444444,
+        "observedMean": 0.985601576492,
+        "observedSd": 0.441976491093,
+        "theoreticalSd": 0.4472135955,
+        "skewness": 0.918504304168
+      }
+    },
+    {
+      "index": 3,
+      "label": "Sample size n = 30: averaging 30 draws pulls the skewness from 0.92 down to 0.36 and narrows the spread from 0.442 to 0.184. Theory predicts sigma over root n = 0.183.",
+      "rows": [
+        [
+          30,
+          1.0015,
+          1.0,
+          0.1844,
+          0.1826,
+          0.364
+        ]
+      ],
+      "state": {
+        "n": 30,
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          8,
+          1571,
+          1370,
+          51,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "binLow": -3.0,
+        "binWidth": 0.444444444444,
+        "observedMean": 1.001495883078,
+        "observedSd": 0.184392646493,
+        "theoreticalSd": 0.182574185835,
+        "skewness": 0.364233076851
+      }
+    }
+  ],
+  "summary": {
+    "parent": "Exponential, mean 1",
+    "law": "SD of the sample mean equals sigma over the square root of n",
+    "skewnessStart": 1.957515819077,
+    "skewnessEnd": 0.364233076851,
+    "spreadStart": 0.996076032209,
+    "spreadEnd": 0.184392646493,
+    "series": [
+      {
+        "n": 1,
+        "observedSd": 0.996076032209,
+        "theoreticalSd": 1.0,
+        "skewness": 1.957515819077
+      },
+      {
+        "n": 2,
+        "observedSd": 0.680340293144,
+        "theoreticalSd": 0.707106781187,
+        "skewness": 1.422673097863
+      },
+      {
+        "n": 5,
+        "observedSd": 0.441976491093,
+        "theoreticalSd": 0.4472135955,
+        "skewness": 0.918504304168
+      },
+      {
+        "n": 30,
+        "observedSd": 0.184392646493,
+        "theoreticalSd": 0.182574185835,
+        "skewness": 0.364233076851
+      }
+    ]
+  },
+  "alt": {
+    "first": "At n = 1 the histogram of sample means is the exponential parent itself: a tall bar at the left and a long tail to the right, nothing like a bell.",
+    "last": "At n = 30 the histogram is symmetric and bell-shaped with skewness 0.36, and its spread 0.184 matches the predicted sigma over root n of 0.183. The parent was never normal; the means became normal anyway."
+  }
+}

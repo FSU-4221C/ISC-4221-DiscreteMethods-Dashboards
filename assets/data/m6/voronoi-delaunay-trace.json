@@ -1,0 +1,1218 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "voronoi-delaunay",
+  "module": "M6",
+  "topics": [
+    "5.5.1",
+    "5.5.2",
+    "5.5.3",
+    "6.5.1",
+    "6.5.2",
+    "6.5.3"
+  ],
+  "title": "Voronoi cells and their Delaunay dual on ten generators",
+  "seed": null,
+  "determinism": "no randomness; the input is fixed",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "Delaunay is computed by testing the empty-circumcircle property on every triple. That is O(n^4) and useless at scale, and exactly right here: it IS the definition, so the code can be checked against the slide.",
+    "Voronoi cells come from clipping the bounding box by perpendicular bisectors, so the cells provably tile the box — asserted in algorithms.py's self-check."
+  ],
+  "input": {
+    "points": [
+      [
+        1.0,
+        1.5
+      ],
+      [
+        2.6,
+        0.6
+      ],
+      [
+        4.4,
+        1.1
+      ],
+      [
+        5.6,
+        2.7
+      ],
+      [
+        5.0,
+        4.6
+      ],
+      [
+        3.2,
+        5.4
+      ],
+      [
+        1.4,
+        4.3
+      ],
+      [
+        0.6,
+        2.9
+      ],
+      [
+        2.9,
+        2.4
+      ],
+      [
+        3.9,
+        3.4
+      ]
+    ],
+    "labels": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5",
+      "P6",
+      "P7",
+      "P8",
+      "P9",
+      "P10"
+    ],
+    "bounds": [
+      0.0,
+      0.0,
+      6.2,
+      6.0
+    ],
+    "voronoiRule": "each cell is the set of points closer to its generator than to any other",
+    "delaunayRule": "a triangle is Delaunay when its circumcircle contains no other generator"
+  },
+  "columns": [
+    {
+      "label": "Generator or triangle",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "x or circumcentre x",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "y or circumcentre y",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Cell or triangle area",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Cell vertices or circumradius",
+      "unit": "",
+      "numeric": true
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 3,
+  "steps": [
+    {
+      "index": 0,
+      "label": "The 10 generators are placed. Every point of the plane belongs to whichever generator is nearest, and that is the only rule in the definition.",
+      "rows": [
+        [
+          "P1",
+          1.0,
+          1.5,
+          "—",
+          "—"
+        ],
+        [
+          "P2",
+          2.6,
+          0.6,
+          "—",
+          "—"
+        ],
+        [
+          "P3",
+          4.4,
+          1.1,
+          "—",
+          "—"
+        ],
+        [
+          "P4",
+          5.6,
+          2.7,
+          "—",
+          "—"
+        ],
+        [
+          "P5",
+          5.0,
+          4.6,
+          "—",
+          "—"
+        ],
+        [
+          "P6",
+          3.2,
+          5.4,
+          "—",
+          "—"
+        ],
+        [
+          "P7",
+          1.4,
+          4.3,
+          "—",
+          "—"
+        ],
+        [
+          "P8",
+          0.6,
+          2.9,
+          "—",
+          "—"
+        ],
+        [
+          "P9",
+          2.9,
+          2.4,
+          "—",
+          "—"
+        ],
+        [
+          "P10",
+          3.9,
+          3.4,
+          "—",
+          "—"
+        ]
+      ],
+      "state": {
+        "view": "sites",
+        "points": [
+          [
+            1.0,
+            1.5
+          ],
+          [
+            2.6,
+            0.6
+          ],
+          [
+            4.4,
+            1.1
+          ],
+          [
+            5.6,
+            2.7
+          ],
+          [
+            5.0,
+            4.6
+          ],
+          [
+            3.2,
+            5.4
+          ],
+          [
+            1.4,
+            4.3
+          ],
+          [
+            0.6,
+            2.9
+          ],
+          [
+            2.9,
+            2.4
+          ],
+          [
+            3.9,
+            3.4
+          ]
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "label": "Cutting the bounding box by the perpendicular bisector against every other generator gives 10 Voronoi cells. They tile the box exactly — the areas sum to 37.20 against the box's 37.20.",
+      "rows": [
+        [
+          "P1",
+          1.0,
+          1.5,
+          3.8817,
+          5
+        ],
+        [
+          "P2",
+          2.6,
+          0.6,
+          2.8535,
+          4
+        ],
+        [
+          "P3",
+          4.4,
+          1.1,
+          4.804,
+          6
+        ],
+        [
+          "P4",
+          5.6,
+          2.7,
+          3.2369,
+          4
+        ],
+        [
+          "P5",
+          5.0,
+          4.6,
+          4.438,
+          5
+        ],
+        [
+          "P6",
+          3.2,
+          5.4,
+          3.4849,
+          4
+        ],
+        [
+          "P7",
+          1.4,
+          4.3,
+          5.5286,
+          6
+        ],
+        [
+          "P8",
+          0.6,
+          2.9,
+          2.5601,
+          4
+        ],
+        [
+          "P9",
+          2.9,
+          2.4,
+          3.318,
+          6
+        ],
+        [
+          "P10",
+          3.9,
+          3.4,
+          3.0944,
+          6
+        ]
+      ],
+      "state": {
+        "view": "voronoi",
+        "cells": [
+          {
+            "site": 0,
+            "polygon": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.209375,
+                0.0
+              ],
+              [
+                2.112857,
+                1.60619
+              ],
+              [
+                1.708609,
+                2.459603
+              ],
+              [
+                0.0,
+                1.971429
+              ]
+            ],
+            "area": 3.881662414262,
+            "vertices": 5
+          },
+          {
+            "site": 1,
+            "polygon": [
+              [
+                1.209375,
+                0.0
+              ],
+              [
+                3.736111,
+                0.0
+              ],
+              [
+                3.347087,
+                1.400485
+              ],
+              [
+                2.112857,
+                1.60619
+              ]
+            ],
+            "area": 2.853458403163,
+            "vertices": 4
+          },
+          {
+            "site": 2,
+            "polygon": [
+              [
+                3.736111,
+                0.0
+              ],
+              [
+                6.2,
+                0.0
+              ],
+              [
+                6.2,
+                1.0
+              ],
+              [
+                4.447191,
+                2.314607
+              ],
+              [
+                4.067857,
+                2.232143
+              ],
+              [
+                3.347087,
+                1.400485
+              ]
+            ],
+            "area": 4.804037585863,
+            "vertices": 6
+          },
+          {
+            "site": 3,
+            "polygon": [
+              [
+                6.2,
+                1.0
+              ],
+              [
+                6.2,
+                3.934211
+              ],
+              [
+                4.951779,
+                3.540036
+              ],
+              [
+                4.447191,
+                2.314607
+              ]
+            ],
+            "area": 3.236910041332,
+            "vertices": 4
+          },
+          {
+            "site": 4,
+            "polygon": [
+              [
+                6.2,
+                3.934211
+              ],
+              [
+                6.2,
+                6.0
+              ],
+              [
+                4.544444,
+                6.0
+              ],
+              [
+                3.885526,
+                4.517434
+              ],
+              [
+                4.951779,
+                3.540036
+              ]
+            ],
+            "area": 4.437992383743,
+            "vertices": 5
+          },
+          {
+            "site": 5,
+            "polygon": [
+              [
+                4.544444,
+                6.0
+              ],
+              [
+                1.597222,
+                6.0
+              ],
+              [
+                2.746796,
+                4.118879
+              ],
+              [
+                3.885526,
+                4.517434
+              ]
+            ],
+            "area": 3.484854556001,
+            "vertices": 4
+          },
+          {
+            "site": 6,
+            "polygon": [
+              [
+                1.597222,
+                6.0
+              ],
+              [
+                0.0,
+                6.0
+              ],
+              [
+                0.0,
+                4.171429
+              ],
+              [
+                1.850829,
+                3.113812
+              ],
+              [
+                2.597059,
+                3.702941
+              ],
+              [
+                2.746796,
+                4.118879
+              ]
+            ],
+            "area": 5.528624268798,
+            "vertices": 6
+          },
+          {
+            "site": 7,
+            "polygon": [
+              [
+                0.0,
+                4.171429
+              ],
+              [
+                0.0,
+                1.971429
+              ],
+              [
+                1.708609,
+                2.459603
+              ],
+              [
+                1.850829,
+                3.113812
+              ]
+            ],
+            "area": 2.560091889377,
+            "vertices": 4
+          },
+          {
+            "site": 8,
+            "polygon": [
+              [
+                1.708609,
+                2.459603
+              ],
+              [
+                2.112857,
+                1.60619
+              ],
+              [
+                3.347087,
+                1.400485
+              ],
+              [
+                4.067857,
+                2.232143
+              ],
+              [
+                2.597059,
+                3.702941
+              ],
+              [
+                1.850829,
+                3.113812
+              ]
+            ],
+            "area": 3.31800947874,
+            "vertices": 6
+          },
+          {
+            "site": 9,
+            "polygon": [
+              [
+                4.067857,
+                2.232143
+              ],
+              [
+                4.447191,
+                2.314607
+              ],
+              [
+                4.951779,
+                3.540036
+              ],
+              [
+                3.885526,
+                4.517434
+              ],
+              [
+                2.746796,
+                4.118879
+              ],
+              [
+                2.597059,
+                3.702941
+              ]
+            ],
+            "area": 3.094358978721,
+            "vertices": 6
+          }
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "label": "Joining every pair of generators whose cells share an edge gives the Delaunay triangulation: 10 triangles, each with an empty circumcircle. The two diagrams are duals — one is the other read the other way round.",
+      "rows": [
+        [
+          "P1-P2-P9",
+          2.113,
+          1.606,
+          1.575,
+          1.1179
+        ],
+        [
+          "P1-P8-P9",
+          1.709,
+          2.46,
+          1.51,
+          1.1929
+        ],
+        [
+          "P2-P3-P9",
+          3.347,
+          1.4,
+          1.545,
+          1.095
+        ],
+        [
+          "P3-P4-P10",
+          4.447,
+          2.315,
+          1.78,
+          1.2155
+        ],
+        [
+          "P3-P9-P10",
+          4.068,
+          2.232,
+          1.4,
+          1.1799
+        ],
+        [
+          "P4-P5-P10",
+          4.952,
+          3.54,
+          1.405,
+          1.0611
+        ],
+        [
+          "P5-P6-P10",
+          3.886,
+          4.517,
+          1.52,
+          1.1175
+        ],
+        [
+          "P6-P7-P10",
+          2.747,
+          4.119,
+          2.185,
+          1.3589
+        ],
+        [
+          "P7-P8-P9",
+          1.851,
+          3.114,
+          1.81,
+          1.269
+        ],
+        [
+          "P7-P9-P10",
+          2.597,
+          3.703,
+          1.7,
+          1.3377
+        ]
+      ],
+      "state": {
+        "view": "delaunay",
+        "triangles": [
+          {
+            "vertices": [
+              0,
+              1,
+              8
+            ],
+            "circumcentre": [
+              2.112857142857,
+              1.60619047619
+            ],
+            "circumradius": 1.117912088512,
+            "area": 1.575
+          },
+          {
+            "vertices": [
+              0,
+              7,
+              8
+            ],
+            "circumcentre": [
+              1.708609271523,
+              2.459602649007
+            ],
+            "circumradius": 1.192880691297,
+            "area": 1.51
+          },
+          {
+            "vertices": [
+              1,
+              2,
+              8
+            ],
+            "circumcentre": [
+              3.347087378641,
+              1.400485436893
+            ],
+            "circumradius": 1.094950449108,
+            "area": 1.545
+          },
+          {
+            "vertices": [
+              2,
+              3,
+              9
+            ],
+            "circumcentre": [
+              4.447191011236,
+              2.314606741573
+            ],
+            "circumradius": 1.215523150012,
+            "area": 1.78
+          },
+          {
+            "vertices": [
+              2,
+              8,
+              9
+            ],
+            "circumcentre": [
+              4.067857142857,
+              2.232142857143
+            ],
+            "circumradius": 1.179858604465,
+            "area": 1.4
+          },
+          {
+            "vertices": [
+              3,
+              4,
+              9
+            ],
+            "circumcentre": [
+              4.951779359431,
+              3.540035587189
+            ],
+            "circumradius": 1.061060689406,
+            "area": 1.405
+          },
+          {
+            "vertices": [
+              4,
+              5,
+              9
+            ],
+            "circumcentre": [
+              3.885526315789,
+              4.517434210526
+            ],
+            "circumradius": 1.117527942554,
+            "area": 1.52
+          },
+          {
+            "vertices": [
+              5,
+              6,
+              9
+            ],
+            "circumcentre": [
+              2.746796338673,
+              4.118878718535
+            ],
+            "circumradius": 1.358920636557,
+            "area": 2.185
+          },
+          {
+            "vertices": [
+              6,
+              7,
+              8
+            ],
+            "circumcentre": [
+              1.850828729282,
+              3.113812154696
+            ],
+            "circumradius": 1.268971294984,
+            "area": 1.81
+          },
+          {
+            "vertices": [
+              6,
+              8,
+              9
+            ],
+            "circumcentre": [
+              2.597058823529,
+              3.702941176471
+            ],
+            "circumradius": 1.33769543086,
+            "area": 1.7
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "siteCount": 10,
+    "cellCount": 10,
+    "triangleCount": 10,
+    "totalCellArea": 37.2,
+    "boxArea": 37.2,
+    "largestCell": 7,
+    "smallestCell": 8,
+    "duality": "a Voronoi edge between two cells corresponds to a Delaunay edge between their generators, and a Voronoi vertex is a Delaunay circumcentre",
+    "cells": [
+      {
+        "site": 0,
+        "polygon": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            1.209375,
+            0.0
+          ],
+          [
+            2.112857,
+            1.60619
+          ],
+          [
+            1.708609,
+            2.459603
+          ],
+          [
+            0.0,
+            1.971429
+          ]
+        ],
+        "area": 3.881662414262,
+        "vertices": 5
+      },
+      {
+        "site": 1,
+        "polygon": [
+          [
+            1.209375,
+            0.0
+          ],
+          [
+            3.736111,
+            0.0
+          ],
+          [
+            3.347087,
+            1.400485
+          ],
+          [
+            2.112857,
+            1.60619
+          ]
+        ],
+        "area": 2.853458403163,
+        "vertices": 4
+      },
+      {
+        "site": 2,
+        "polygon": [
+          [
+            3.736111,
+            0.0
+          ],
+          [
+            6.2,
+            0.0
+          ],
+          [
+            6.2,
+            1.0
+          ],
+          [
+            4.447191,
+            2.314607
+          ],
+          [
+            4.067857,
+            2.232143
+          ],
+          [
+            3.347087,
+            1.400485
+          ]
+        ],
+        "area": 4.804037585863,
+        "vertices": 6
+      },
+      {
+        "site": 3,
+        "polygon": [
+          [
+            6.2,
+            1.0
+          ],
+          [
+            6.2,
+            3.934211
+          ],
+          [
+            4.951779,
+            3.540036
+          ],
+          [
+            4.447191,
+            2.314607
+          ]
+        ],
+        "area": 3.236910041332,
+        "vertices": 4
+      },
+      {
+        "site": 4,
+        "polygon": [
+          [
+            6.2,
+            3.934211
+          ],
+          [
+            6.2,
+            6.0
+          ],
+          [
+            4.544444,
+            6.0
+          ],
+          [
+            3.885526,
+            4.517434
+          ],
+          [
+            4.951779,
+            3.540036
+          ]
+        ],
+        "area": 4.437992383743,
+        "vertices": 5
+      },
+      {
+        "site": 5,
+        "polygon": [
+          [
+            4.544444,
+            6.0
+          ],
+          [
+            1.597222,
+            6.0
+          ],
+          [
+            2.746796,
+            4.118879
+          ],
+          [
+            3.885526,
+            4.517434
+          ]
+        ],
+        "area": 3.484854556001,
+        "vertices": 4
+      },
+      {
+        "site": 6,
+        "polygon": [
+          [
+            1.597222,
+            6.0
+          ],
+          [
+            0.0,
+            6.0
+          ],
+          [
+            0.0,
+            4.171429
+          ],
+          [
+            1.850829,
+            3.113812
+          ],
+          [
+            2.597059,
+            3.702941
+          ],
+          [
+            2.746796,
+            4.118879
+          ]
+        ],
+        "area": 5.528624268798,
+        "vertices": 6
+      },
+      {
+        "site": 7,
+        "polygon": [
+          [
+            0.0,
+            4.171429
+          ],
+          [
+            0.0,
+            1.971429
+          ],
+          [
+            1.708609,
+            2.459603
+          ],
+          [
+            1.850829,
+            3.113812
+          ]
+        ],
+        "area": 2.560091889377,
+        "vertices": 4
+      },
+      {
+        "site": 8,
+        "polygon": [
+          [
+            1.708609,
+            2.459603
+          ],
+          [
+            2.112857,
+            1.60619
+          ],
+          [
+            3.347087,
+            1.400485
+          ],
+          [
+            4.067857,
+            2.232143
+          ],
+          [
+            2.597059,
+            3.702941
+          ],
+          [
+            1.850829,
+            3.113812
+          ]
+        ],
+        "area": 3.31800947874,
+        "vertices": 6
+      },
+      {
+        "site": 9,
+        "polygon": [
+          [
+            4.067857,
+            2.232143
+          ],
+          [
+            4.447191,
+            2.314607
+          ],
+          [
+            4.951779,
+            3.540036
+          ],
+          [
+            3.885526,
+            4.517434
+          ],
+          [
+            2.746796,
+            4.118879
+          ],
+          [
+            2.597059,
+            3.702941
+          ]
+        ],
+        "area": 3.094358978721,
+        "vertices": 6
+      }
+    ],
+    "triangles": [
+      {
+        "vertices": [
+          0,
+          1,
+          8
+        ],
+        "circumcentre": [
+          2.112857142857,
+          1.60619047619
+        ],
+        "circumradius": 1.117912088512,
+        "area": 1.575
+      },
+      {
+        "vertices": [
+          0,
+          7,
+          8
+        ],
+        "circumcentre": [
+          1.708609271523,
+          2.459602649007
+        ],
+        "circumradius": 1.192880691297,
+        "area": 1.51
+      },
+      {
+        "vertices": [
+          1,
+          2,
+          8
+        ],
+        "circumcentre": [
+          3.347087378641,
+          1.400485436893
+        ],
+        "circumradius": 1.094950449108,
+        "area": 1.545
+      },
+      {
+        "vertices": [
+          2,
+          3,
+          9
+        ],
+        "circumcentre": [
+          4.447191011236,
+          2.314606741573
+        ],
+        "circumradius": 1.215523150012,
+        "area": 1.78
+      },
+      {
+        "vertices": [
+          2,
+          8,
+          9
+        ],
+        "circumcentre": [
+          4.067857142857,
+          2.232142857143
+        ],
+        "circumradius": 1.179858604465,
+        "area": 1.4
+      },
+      {
+        "vertices": [
+          3,
+          4,
+          9
+        ],
+        "circumcentre": [
+          4.951779359431,
+          3.540035587189
+        ],
+        "circumradius": 1.061060689406,
+        "area": 1.405
+      },
+      {
+        "vertices": [
+          4,
+          5,
+          9
+        ],
+        "circumcentre": [
+          3.885526315789,
+          4.517434210526
+        ],
+        "circumradius": 1.117527942554,
+        "area": 1.52
+      },
+      {
+        "vertices": [
+          5,
+          6,
+          9
+        ],
+        "circumcentre": [
+          2.746796338673,
+          4.118878718535
+        ],
+        "circumradius": 1.358920636557,
+        "area": 2.185
+      },
+      {
+        "vertices": [
+          6,
+          7,
+          8
+        ],
+        "circumcentre": [
+          1.850828729282,
+          3.113812154696
+        ],
+        "circumradius": 1.268971294984,
+        "area": 1.81
+      },
+      {
+        "vertices": [
+          6,
+          8,
+          9
+        ],
+        "circumcentre": [
+          2.597058823529,
+          3.702941176471
+        ],
+        "circumradius": 1.33769543086,
+        "area": 1.7
+      }
+    ]
+  },
+  "alt": {
+    "first": "Ten generators are scattered across a six-by-six region, with the interior ones clustered a little more tightly than the ring around them.",
+    "last": "The Delaunay dual has 10 triangles. Generator 7 owns the largest cell because it is the most isolated; the generators near the middle own the smallest ones."
+  }
+}

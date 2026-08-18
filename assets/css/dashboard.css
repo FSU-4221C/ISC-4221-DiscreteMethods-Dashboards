@@ -1,0 +1,3276 @@
+/* ==========================================================================
+   dashboard.css — layout and components for the ISC 4221C (2026) dashboard
+   ==========================================================================
+
+   LOAD ORDER (this is not optional)
+     1. assets/css/fsu-tokens.css
+     2. assets/css/dashboard.css      <- this file
+
+   Everything here is built on the custom properties defined in fsu-tokens.css.
+   There is exactly ONE literal colour in this file, `transparent`, and one
+   colour keyword, `currentColor`. If you find yourself reaching for a hex,
+   the token you want already exists — go and read section 2 of the tokens
+   file. If it genuinely does not exist, it has to be measured into
+   standards/color-palette.md first. Never estimate a ratio.
+
+   Sizes come from tokens too. Body-adjacent spacing is in rem so it tracks
+   the user's font size (1.4.4 Resize Text). The only px values below are
+   border widths, radii, and the two target-size floors — all of which are
+   token-defined and none of which surround text.
+
+   FILE MAP
+     0.  Component-local tokens (theme-aware, both directions)
+     1.  Document + base elements
+     2.  Utility / layout primitives
+     3.  Site header, brand, primary nav, theme switch
+     4.  Breadcrumb
+     5.  Page layout: sidebar + main
+     6.  Sidebar module nav
+     7.  Topic cards and card grid
+     8.  Topic section
+     9.  Demo panel (figure + controls + table equivalent)
+     10. Data table
+     11. Callouts
+     12. Code block
+     13. Formula block
+     14. Pills / tags
+     15. Buttons and form controls
+     16. Search box + results
+     17. Footer
+     18. Responsive (down to 320px)
+     19. forced-colors
+     20. Print
+   ========================================================================== */
+
+
+/* ==========================================================================
+   0. COMPONENT-LOCAL TOKENS
+
+   Two things the semantic layer does not give us, because they are layout
+   concerns rather than colour concerns:
+
+   --dash-accent  The interactive accent used for `accent-color` on native
+                  controls, active rails, and selected states. It cannot be a
+                  single value across themes: FSU Garnet has NO measured
+                  pairing on Stadium Night, and FSU Gold measures 1.94:1 on
+                  white. So it flips, and each value is a measured pairing:
+                    light  Garnet #782F40  9.21:1 on white
+                    dark   Gold   #CEB888  9.23:1 on Stadium Night
+                  Both clear 3:1 for 1.4.11 comfortably.
+
+   --dash-*-width Layout measurements. Kept here so a module page never has
+                  to invent one.
+
+   The dark block is duplicated for `prefers-color-scheme` and for the
+   explicit `data-theme` attribute, exactly as fsu-tokens.css does it, so the
+   toggle beats the OS preference in both directions. Edit one, edit the other.
+   ========================================================================== */
+
+:root {
+  --dash-accent:            var(--fsu-garnet);      /* 9.21:1 on white */
+  --dash-accent-on:         var(--fsu-on-brand);    /* white on Garnet, 9.21:1 */
+  --dash-accent-quiet:      var(--fsu-plaza-brick); /* 11.87:1 on white */
+
+  --dash-sidebar-width:     18rem;
+
+  /* The shell width.
+     ---------------------------------------------------------------------
+     This was min(80rem, 100%) = 1280px. On a 1440px display that left 96px
+     of dead gutter on each side, and the gap grew without bound as the
+     display did — at 1920px a third of the window was empty. Prose does not
+     want to be wider than its measure, but a chart does, and this cap was
+     charging the charts for the paragraphs.
+
+     But the first attempt at fixing it went too far the other way: capping the
+     shell at 112rem and uncapping the panels produced 1200px demos and
+     1175px tables, which is unreadable in a different direction. A table
+     stretched to 1175px for four columns is worse than one that fits.
+
+     So there are now THREE caps, not one:
+
+       --dash-content-max   the shell            88rem   1408px
+       --dash-panel-max     a demo, figure or table      60rem   960px
+       --fsu-measure-max    a line of prose              ~43rem  686px
+
+     Prose keeps the measure that makes it readable. A figure gets meaningfully
+     more than the 686px it used to be trapped at, without running the width
+     of a monitor. The page itself uses the screen. */
+  --dash-content-max:       min(88rem, 100%);
+
+  /* The widest a demo panel, figure, table or code block may be. This is the
+     cap that was missing: without it, uncapping the container let every panel
+     grow to the full main column. */
+  --dash-panel-max:         min(60rem, 100%);
+
+  /* The widest a DRAWING may be — the svg or canvas itself, not the panel
+     around it. Separate from --dash-panel-max because a viewBox'd SVG scales
+     its type with its width, so the drawing needs a tighter ceiling than the
+     box it sits in. */
+  --dash-figure-max:        min(38rem, 100%);
+  --dash-gutter:            var(--fsu-space-3);
+  --dash-header-rule:       var(--fsu-border-width);
+
+  /* The height of the sticky chapter strip. Everything that has to clear it
+     reads THIS, so there is one number rather than four that drift:
+       - .layout__sidebar's sticky offset
+       - scroll-margin-block-start on every anchor target (2.4.11)
+       - the back-to-top button's landing position
+     Measured, not guessed: a 44px min target plus 2px of underline plus the
+     1px bottom hairline. */
+  --dash-sticky-h:          3rem;
+  --dash-z-header:          40;
+
+  /* fsu-tokens.css declares this as 0px, correctly, for a header that scrolls
+     away. The chapter strip is sticky now, so it has to be its height —
+     otherwise the browser scrolls an anchor target to the top of the viewport
+     and the strip is sitting on it (2.4.11 Focus Not Obscured). Setting the
+     existing token rather than inventing a parallel one means the four places
+     that already read it need no change. */
+  --fsu-sticky-offset:      var(--dash-sticky-h);
+
+  /* The demo control rail (Law 1). Wide enough for a labelled slider plus its
+     number input, narrow enough that it never competes with the stage. Inside
+     a 60rem panel, 17rem leaves the stage about 650px — which is the width
+     the figures were designed against. */
+  --dash-demo-rail:         17rem;
+
+  /* The tallest a stage may be, and therefore the tallest a control rail may
+     be. ONE number for both: the rail cannot out-grow the stage's maximum, so
+     the row can never be stretched by the rail.
+
+     `max-block-size: 100%` on the rail looks like it does this job and does
+     not — the percentage resolves against the grid AREA, whose height is
+     partly determined by the rail itself. It is circular, so it constrains
+     nothing, and the first demo with nine controls quietly turned a 429px
+     figure into a 739px row. An absolute cap is not elegant; it is the thing
+     that actually holds. */
+  --dash-stage-max:         min(34rem, 60vh);
+
+  /* `section-y` — the vertical rhythm of a band. */
+  --dash-section-y:         3.5rem;
+}
+
+@media (min-width: 64rem) {
+  :root { --dash-section-y: 4.5rem; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --dash-accent:       var(--fsu-gold);      /* 9.23:1 on Stadium Night */
+    --dash-accent-on:    var(--fsu-on-gold);   /* black on Gold, 9.41:1 */
+    --dash-accent-quiet: var(--fsu-gold);      /* 9.23:1 on Stadium Night */
+  }
+}
+
+:root[data-theme="dark"] {
+  --dash-accent:       var(--fsu-gold);
+  --dash-accent-on:    var(--fsu-on-gold);
+  --dash-accent-quiet: var(--fsu-gold);
+}
+
+
+/* ==========================================================================
+   1. DOCUMENT + BASE ELEMENTS
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* --- Focus ring: repair the composite token --------------------------------
+   fsu-tokens.css §6 defines a convenience shorthand:
+
+     --fsu-focus-ring: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+
+   and uses it as `outline: var(--fsu-focus-ring)` in `:focus-visible` and
+   `.fsu-focus-ring`. That shorthand cannot do what it is meant to do.
+
+   Custom properties are substituted at computed-value time on the element that
+   DECLARES them. `--fsu-focus-ring` is declared on `:root`, so its inner
+   `var(--fsu-focus-ring-color)` resolves against :root and the result — the
+   literal string "3px solid #782f40" — is what inherits down. A descendant
+   that overrides `--fsu-focus-ring-color` therefore changes the ring colour
+   token and has no effect whatsoever on the shorthand.
+
+   That silently breaks the one case the token file was designed around.
+   `[data-surface="dark"]` (the garnet header, the Stadium Night footer) sets
+   the ring to FSU Gold precisely because Garnet has no measured pairing on
+   those fills. Measured on the header, the broken version draws:
+
+     ring  FSU Garnet on FSU Garnet  ......  1:1, invisible
+     halo  Stadium Night on FSU Garnet  ...  1.92:1, below the 3:1 floor
+
+   — an invisible focus indicator on the site header, which is 2.4.7 Focus
+   Visible and 1.4.11 Non-text Contrast at the same time.
+
+   The halo is unaffected: `box-shadow` references `--fsu-focus-ring-halo`
+   directly rather than through a shorthand, which is why it correctly turned
+   Stadium Night on the dark band while the ring did not turn Gold.
+
+   The repair is to expand the shorthand everywhere it is used, so the colour
+   resolves against the element being focused. dashboard.css loads after
+   fsu-tokens.css and these selectors have identical specificity, so these
+   declarations win. Every `outline:` in this file is written out longhand for
+   the same reason — do not "tidy" them back into the shorthand.
+
+   Longer term `--fsu-focus-ring` should be deleted from fsu-tokens.css; a
+   shorthand that cannot be themed is a trap rather than a convenience. */
+:focus-visible,
+.fsu-focus-ring {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+  box-shadow: 0 0 0 var(--fsu-focus-ring-offset) var(--fsu-focus-ring-halo);
+}
+
+/* The `hidden` attribute must win.
+   The UA stylesheet gives [hidden] `display: none` at the lowest possible
+   specificity, so ANY component rule that sets `display` — and this file sets
+   it on nav lists, pill lists, button groups, and toolbars — silently defeats
+   it. The symptom is a "collapsed" menu that is still on screen and still in
+   the tab order, which is a 2.4.3 Focus Order failure that looks like a
+   styling glitch. One rule, stated once, at the top. */
+[hidden] { display: none !important; }
+
+html {
+  /* Never `scroll-behavior: smooth` unconditionally — see the reduced-motion
+     block at the end of section 2. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--fsu-surface);
+  color: var(--fsu-color-body);
+  font-family: var(--fsu-font-sans);
+  font-size: var(--fsu-text-body);
+  font-weight: var(--fsu-weight-regular);
+  line-height: var(--fsu-leading-body);
+  /* 1.4.12 Text Spacing: nothing below sets a fixed height on a text box, so
+     forcing line-height 1.5 / letter-spacing 0.12em cannot clip anything. */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--fsu-space-2);
+  color: var(--fsu-color-heading);
+  font-weight: var(--fsu-weight-bold);
+  line-height: var(--fsu-leading-heading);
+  text-wrap: balance;
+  /* Anchor targets land clear of anything above them — including the sticky
+     chapter strip, which would otherwise cover any heading scrolled to by a
+     fragment link or by keyboard focus. */
+  scroll-margin-block-start: calc(var(--fsu-sticky-offset) + var(--fsu-space-3));
+}
+
+h1 { font-size: var(--fsu-text-h1); line-height: var(--fsu-leading-tight); }
+h2 { font-size: var(--fsu-text-h2); line-height: var(--fsu-leading-snug); }
+h3 { font-size: var(--fsu-text-h3); font-weight: var(--fsu-weight-medium); }
+h4 { font-size: var(--fsu-text-h4); font-weight: var(--fsu-weight-medium); }
+h5, h6 {
+  font-size: var(--fsu-text-body);
+  font-weight: var(--fsu-weight-bold);
+}
+
+p, ul, ol, dl, figure, pre, table, blockquote {
+  margin: 0 0 var(--fsu-space-2);
+}
+
+ul, ol { padding-inline-start: var(--fsu-space-3); }
+li { margin-block-end: var(--fsu-space-05); }
+
+strong, b { font-weight: var(--fsu-weight-bold); color: var(--fsu-color-strong); }
+
+small { font-size: var(--fsu-text-small); }
+
+hr {
+  border: 0;
+  border-block-start: var(--fsu-rule-width) solid var(--fsu-rule);
+  margin-block: var(--fsu-space-4);
+}
+
+/* --- Links ---------------------------------------------------------------
+   The underline is permanent in body copy: colour alone is not a link cue
+   (1.4.1 Use of Color). Hover changes hue AND thickens the underline, so the
+   hover cue is not colour-only either. */
+a {
+  color: var(--fsu-link);
+  text-decoration: underline;
+  text-decoration-thickness: var(--fsu-link-underline);
+  text-underline-offset: var(--fsu-link-underline-offset);
+}
+
+a:hover {
+  color: var(--fsu-link-hover);
+  text-decoration-thickness: var(--fsu-link-underline-hover);
+}
+
+a:visited { color: var(--fsu-link-visited); }
+
+/* An external link is always marked in text — see .link-external. Students
+   deserve to know before they lose the offline dashboard. */
+.link-external::after {
+  content: " ↗";
+  /* The arrow is decoration; the words "opens an external site" live in a
+     .visually-hidden span in the markup. Never rely on the glyph. */
+}
+
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+svg { display: block; }
+
+table { border-collapse: collapse; }
+
+code, kbd, samp, pre {
+  font-family: var(--fsu-font-mono);
+  font-size: 0.9375em;   /* relative: tracks the surrounding text size */
+}
+
+kbd {
+  display: inline-block;
+  padding: 0 var(--fsu-space-05);
+  border: var(--fsu-border-width) solid var(--fsu-border-strong);
+  border-block-end-width: var(--fsu-border-width-strong);
+  border-radius: var(--fsu-radius);
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-strong-on-warm);
+  font-size: var(--fsu-text-small);
+  line-height: var(--fsu-leading-normal);
+  white-space: nowrap;
+}
+
+:target {
+  /* A link into a topic should be obvious without relying on colour: the gold
+     rule on the inline-start edge is a shape change, and the heading colour is
+     unchanged. */
+  scroll-margin-block-start: calc(var(--fsu-sticky-offset) + var(--fsu-space-3));
+}
+
+
+/* ==========================================================================
+   2. UTILITY / LAYOUT PRIMITIVES
+   (.visually-hidden, .sr-only and .skip-link are defined in fsu-tokens.css)
+   ========================================================================== */
+
+.wrap {
+  inline-size: 100%;
+  max-inline-size: var(--dash-content-max);
+  margin-inline: auto;
+  padding-inline: var(--dash-gutter);
+}
+
+/* --- Bands (design-system.md §6.1) ---------------------------------------
+   Alternating section surfaces separated by a hairline. Two adjacent bands
+   never take the same step, so put .band and .band-alt on alternating
+   <section>s and let the hairline do the separating.
+
+   `section-y` is 3.5rem, 4.5rem from lg up. Depth is the surface step, never
+   a shadow. */
+.band,
+.band-alt {
+  padding-block: var(--dash-section-y);
+  border-block-end: var(--fsu-border-width) solid var(--fsu-line);
+}
+
+.band     { background: var(--fsu-surf-page); }
+.band-alt { background: var(--fsu-surf-band); }
+
+.band:last-child,
+.band-alt:last-child { border-block-end: 0; }
+
+/* Body copy is capped at a comfortable measure (60–75ch). Apply to prose
+   only — never to a table, a figure, or a control row. */
+.prose > * { max-inline-size: var(--fsu-measure-max); }
+.prose > .table-scroll,
+.prose > figure,
+.prose > .demo,
+.prose > .demo-mount,
+.prose > [id$="-mount"],
+.prose > .code-block { max-inline-size: var(--dash-panel-max); }
+
+.lede {
+  font-size: var(--fsu-text-body-lg);
+  line-height: var(--fsu-leading-normal);
+  max-inline-size: var(--fsu-measure-max);
+}
+
+.eyebrow {
+  display: block;
+  margin-block-end: var(--fsu-space-05);
+  color: var(--fsu-color-eyebrow);
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.caption {
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-small);
+  line-height: var(--fsu-leading-normal);
+  max-inline-size: var(--fsu-measure-narrow);
+}
+
+.stack > * + * { margin-block-start: var(--fsu-space-2); }
+.stack-lg > * + * { margin-block-start: var(--fsu-space-4); }
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fsu-space-1);
+  align-items: center;
+}
+
+/* Every horizontally scrollable region is a labelled, focusable region so a
+   keyboard-only user can actually reach the scrollbar (1.4.10 + 2.1.1).
+   Author must supply role="region" tabindex="0" aria-label on the wrapper. */
+.table-scroll,
+.scroll-x {
+  overflow-x: auto;
+  max-inline-size: 100%;
+  /* A visible edge tells a sighted user the region scrolls. */
+  border: var(--fsu-border-width) solid var(--fsu-border);
+  border-radius: var(--fsu-radius);
+}
+
+.table-scroll:focus-visible,
+.scroll-x:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+}
+
+/* Smooth scrolling only when the user has not asked for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+
+/* ==========================================================================
+   3. SITE HEADER, BRAND, PRIMARY NAV, THEME SWITCH
+
+   The header is deliberately NOT sticky. A sticky banner is the most common
+   way to fail 2.4.11 Focus Not Obscured (Minimum): tab far enough down a long
+   module page and the focused control parks underneath it. If a future
+   revision makes it sticky, set --fsu-sticky-offset to its height so the
+   focus scroll-margin in fsu-tokens.css compensates.
+   ========================================================================== */
+
+/* GARNET IS INK, NOT PAINT (design-system.md §1.1).
+   Until 2026-07 this was a saturated FSU Garnet slab with a 4px gold rule
+   under it. It passed every contrast check and read as a departmental flyer.
+   The masthead now sits on paper with a single hairline, and the brand is
+   carried by garnet TYPE. The ≥70% primary rule is still met — more honestly,
+   because white is doing the work FSU's own guidance says it should. */
+.site-header {
+  background: var(--fsu-surf-chrome);
+  color: var(--fsu-color-body);
+  border-block-end: var(--fsu-border-width) solid var(--fsu-line);
+}
+
+/* --- ROW 1: identity and utilities ---------------------------------------
+   Scrolls away. The theme switch is pushed to the right edge by an auto
+   margin on the brand, which is why there is no spacer element: an auto
+   margin cannot fall out of sync with the number of things in the row. */
+.site-header__bar {
+  background: var(--fsu-surf-chrome);
+  border-block-end: var(--fsu-border-width) solid var(--fsu-line-soft);
+}
+
+.site-header__bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--fsu-space-2);
+  padding-block: var(--fsu-space-2);
+}
+
+/* Retained for any page still on the one-row header. */
+.site-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--fsu-space-2);
+  padding-block: var(--fsu-space-2);
+}
+
+/* A search block sitting in the flow of a page rather than in a sidebar or a
+   hero. Bounded so a full-width results list does not run to 1800px. */
+.search--inline {
+  max-inline-size: var(--fsu-measure-max);
+  margin-block-end: var(--fsu-space-4);
+}
+
+/* ==========================================================================
+   ROW 2: the chapter strip
+
+   Sticky, and it never wraps. Every chapter is present at once; its sections
+   are behind a dropdown rather than on the strip.
+
+   STICKY AND 2.4.11 (Focus Not Obscured). A sticky bar is the classic way to
+   hide the element a keyboard user just moved to: the browser scrolls the
+   target to the top of the viewport, and the bar is sitting there. The fix is
+   `scroll-margin-block-start` on every focusable landing target, set from the
+   same variable as the bar's height, applied near the bottom of this file.
+   ========================================================================== */
+.chapter-nav {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--dash-z-header, 40);
+  background: var(--fsu-surf-chrome);
+  border-block-end: var(--fsu-border-width) solid var(--fsu-line);
+  min-inline-size: 0;
+}
+
+.chapter-nav__inner { min-inline-size: 0; }
+
+/* LAW 2: one line, centred while it fits, never wrapped.
+   `safe center` is the detail people get wrong — plain `center` centres the
+   overflow too, pushing the FIRST item off the start edge where no amount of
+   scrolling reaches it. `safe` falls back to start alignment on overflow. */
+.chapter-nav__list {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: safe center;
+  align-items: stretch;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.chapter-nav__item {
+  position: relative;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+/* A hairline before "Home"'s neighbour group and before Threads, so a dozen
+   items do not read as one undifferentiated run. */
+.chapter-nav__item--sep { border-inline-start: var(--fsu-border-width) solid var(--fsu-line); }
+
+.chapter-nav__button,
+.chapter-nav__link {
+  display: flex;
+  align-items: center;
+  gap: var(--fsu-space-05);
+  min-block-size: var(--fsu-target-min);
+  padding: var(--fsu-space-1) var(--fsu-space-2);
+  border: 0;
+  border-block-end: var(--fsu-rule-width) solid transparent;
+  background: none;
+  color: var(--fsu-color-body);
+  font: inherit;
+  font-size: var(--fsu-text-small);
+  font-weight: var(--fsu-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chapter-nav__button:hover,
+.chapter-nav__link:hover {
+  background: var(--fsu-surf-band);
+  color: var(--fsu-color-strong);
+}
+
+.chapter-nav__link:visited { color: var(--fsu-color-body); }
+
+/* "You are here" is the same 2px underline the rest of the site uses for it —
+   one mark used consistently, not a fill invented per component. The weight
+   change and the visually-hidden note carry it where colour cannot (1.4.1). */
+.chapter-nav__button[aria-current="page"],
+.chapter-nav__link[aria-current="page"] {
+  border-block-end-color: var(--dash-accent);
+  color: var(--fsu-color-strong);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.chapter-nav__button:focus-visible,
+.chapter-nav__link:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: calc(-1 * var(--fsu-focus-ring-width));
+}
+
+/* The caret is drawn, not typed: a "▾" glyph is missing from enough fonts
+   that it renders as a box, and it inherits text colour badly at small
+   sizes. A rotated border triangle is always available. */
+.chapter-nav__caret {
+  inline-size: 0;
+  block-size: 0;
+  margin-inline-start: var(--fsu-space-05);
+  border-inline: 4px solid transparent;
+  border-block-start: 5px solid currentColor;
+  opacity: 0.65;
+  transition: transform var(--fsu-motion-fast, 120ms) ease;
+}
+
+.chapter-nav__item[data-open="true"] > .chapter-nav__button {
+  background: var(--fsu-surf-band);
+  color: var(--fsu-color-strong);
+}
+
+.chapter-nav__item[data-open="true"] .chapter-nav__caret {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* Both labels are present; CSS picks by width so the strip shortens before it
+   ever needs to scroll. */
+.chapter-nav__short { display: none; }
+
+/* --- the dropdown panel --------------------------------------------------
+   FIXED, not absolute, and that is not a style choice.
+
+   `.chapter-nav__list` sets `overflow-x: auto` so the strip can scroll on a
+   narrow screen. Setting overflow-x to anything but `visible` forces
+   overflow-y to compute to `auto` as well, which makes the list a scroll
+   container — and a scroll container clips its absolutely-positioned
+   descendants. The menu was 301px tall with 0px of it visible: it was being
+   cut off at the bottom edge of the strip it hangs from, which is exactly
+   "appearing below the header because it's inside the container".
+
+   A fixed element is positioned against the viewport and is not clipped by an
+   ancestor's overflow, so it escapes. The cost is that `top`/`left` have to be
+   computed from the button's rect — nav.js does that in placeMenu(), on open
+   and on scroll and on resize.
+
+   `hidden` when closed, not merely off-screen: an off-screen menu still puts
+   all forty of its links in the tab order. */
+.chapter-nav__menu {
+  position: fixed;
+  inset-block-start: auto;
+  inset-inline-start: auto;
+  z-index: 60;
+  min-inline-size: 17rem;
+  max-inline-size: min(26rem, calc(100vw - 2rem));
+  max-block-size: min(70vh, 34rem);
+  overflow-y: auto;
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surf-panel);
+  border: var(--fsu-border-width) solid var(--fsu-line-strong);
+  border-radius: var(--fsu-radius);
+}
+
+.chapter-nav__menu[hidden] { display: none; }
+
+.chapter-menu__title {
+  margin: 0 0 var(--fsu-space-1);
+  padding-block-end: var(--fsu-space-05);
+  border-block-end: var(--fsu-border-width) solid var(--fsu-line);
+  color: var(--fsu-color-eyebrow);
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.chapter-menu__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chapter-menu__list li { margin: 0; }
+
+.chapter-menu__link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--fsu-space-2);
+  min-block-size: var(--fsu-target-min);
+  padding: var(--fsu-space-05) var(--fsu-space-1);
+  border-radius: var(--fsu-radius);
+  color: var(--fsu-color-body);
+  text-decoration: none;
+  font-size: var(--fsu-text-small);
+}
+
+.chapter-menu__link:hover {
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-strong);
+  text-decoration: underline;
+}
+
+.chapter-menu__link:visited { color: var(--fsu-color-body); }
+
+.chapter-menu__link:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+}
+
+.chapter-menu__link[aria-current] {
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-strong);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.chapter-menu__label { min-inline-size: 0; }
+
+.chapter-menu__meta {
+  flex: 0 0 auto;
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-eyebrow);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Narrow: shorten the labels first, then let the strip scroll. */
+@media (max-width: 70rem) {
+  .chapter-nav__short { display: inline; }
+  .chapter-nav__full:not(:focus):not(:focus-within) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Hover-opening is a pointer affordance. On a touch device the menu opens on
+   tap, which nav.js already handles; the delays would only add latency. */
+@media (hover: none) {
+  .chapter-nav__caret { opacity: 1; }
+}
+
+@media print {
+  .chapter-nav { position: static; }
+  .chapter-nav__menu { display: none !important; }
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--fsu-space-1);
+  margin-inline-end: auto;
+  color: var(--fsu-color-heading);   /* FSU Garnet, 9.21:1 on white */
+  text-decoration: none;
+  font-weight: var(--fsu-weight-bold);
+  line-height: var(--fsu-leading-snug);
+}
+
+.brand:hover,
+.brand:visited {
+  color: var(--fsu-color-heading);
+  text-decoration: underline;
+  text-decoration-thickness: var(--fsu-link-underline-hover);
+}
+
+.brand__code {
+  color: var(--fsu-color-heading);           /* FSU Garnet, 9.21:1 */
+  font-size: var(--fsu-text-h4);
+  letter-spacing: var(--fsu-tracking-tight);
+}
+
+.brand__name {
+  display: block;
+  font-size: var(--fsu-text-small);
+  font-weight: var(--fsu-weight-regular);
+  color: var(--fsu-color-caption);           /* Neutral +2 Slate, 7.44:1 */
+}
+
+/* --- Primary nav ---------------------------------------------------------
+   Plain links with aria-current="page" on the active one. No tablist: these
+   are page navigations, not view switches. */
+/* --- LAW 2: navigation gets its own row, and cannot wrap ------------------
+   design-system.md §6.3. Row 1 (.site-header__inner) is identity and
+   utilities. Row 2 (.primary-nav) is a full-width strip of module links,
+   centred, nowrap.
+
+   `safe center` is the detail people get wrong: plain `center` centres the
+   overflow too, which pushes the FIRST item off the start edge where no
+   amount of scrolling reaches it. `safe` falls back to start-alignment the
+   moment the row overflows.
+
+   nav.js adds .is-scrollable when the strip overflows, which turns on the
+   edge fades, scrolls the current item into view, and maps vertical wheel to
+   horizontal scroll. Everything degrades to a plain scrollable row with JS
+   off. */
+.primary-nav {
+  flex-basis: 100%;
+  min-inline-size: 0;
+  border-block-start: var(--fsu-border-width) solid var(--fsu-line-soft);
+}
+
+.primary-nav__list {
+  display: flex;
+  flex-wrap: nowrap;                 /* the whole point of Law 2 */
+  justify-content: safe center;
+  align-items: stretch;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+
+.primary-nav__list li { margin: 0; flex: 0 0 auto; }
+
+/* A hairline group separator, so a dozen items do not read as one
+   undifferentiated run. Put class="primary-nav__sep" on the <li> that STARTS
+   a new group. */
+.primary-nav__sep {
+  border-inline-start: var(--fsu-border-width) solid var(--fsu-line-soft);
+  margin-inline: var(--fsu-space-1);
+}
+
+.primary-nav__link {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--fsu-target-enhanced); /* 44px — 2.5.5, above the 24px floor */
+  padding-inline: var(--fsu-space-1);
+  color: var(--fsu-link);                     /* Plaza Brick, 11.87:1 on white */
+  font-weight: var(--fsu-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  border-block-end: var(--fsu-rule-width) solid transparent;
+}
+
+.primary-nav__link:hover {
+  color: var(--fsu-link-hover);               /* FSU Garnet, 9.21:1 */
+  text-decoration: underline;
+  text-decoration-thickness: var(--fsu-link-underline-hover);
+}
+
+.primary-nav__link:visited { color: var(--fsu-link); }
+
+/* Current page carries THREE cues, not one: the word "Current page" in a
+   visually-hidden span in the markup, aria-current="page" for assistive tech,
+   and a 2px gold underline for sighted users (1.4.1). Gold as a MARK, which
+   is the only job §2 gives it. */
+.primary-nav__link[aria-current="page"] {
+  border-block-end-color: var(--fsu-rule);
+  color: var(--fsu-color-heading);            /* FSU Garnet */
+  font-weight: var(--fsu-weight-bold);
+}
+
+/* --- Two labels per item -------------------------------------------------
+     <span class="primary-nav__short" aria-hidden="true">M3</span>
+     <span class="primary-nav__full">M3 · Graphs</span>
+
+   The strip shortens before it ever needs to scroll. The SHORT form is
+   aria-hidden decoration and the FULL form is only ever hidden *visually* —
+   never with display:none — so the accessible name is "M3 · Graphs" at every
+   viewport width. A nav link whose accessible name collapses to "M3" when the
+   window narrows fails 2.4.4 at exactly the width where it matters most. */
+.primary-nav__short { display: none; }
+
+/* 86rem, not the 68rem you would guess from the layout breakpoints. The
+   trigger for shortening is "do the full labels still fit on one line", and
+   nine module names plus "Course home" need about 1370px to do that. Measured,
+   not estimated: below this the strip overflows and has to scroll, which is
+   the fallback, not the plan. */
+@media (max-width: 86rem) {
+  .primary-nav__short { display: inline; }
+
+  .primary-nav__full:not(:focus):not(:focus-within) {
+    position: absolute !important;
+    inline-size: 1px !important;
+    block-size: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+}
+
+/* --- Edge fades ----------------------------------------------------------
+   Only when the strip actually overflows, and only on the side that has
+   more to show, so a fade is never a lie about scrollable content. */
+.primary-nav.is-scrollable { position: relative; }
+
+.primary-nav.is-scrollable::before,
+.primary-nav.is-scrollable::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inline-size: var(--fsu-space-3);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--fsu-duration) var(--fsu-easing);
+}
+
+.primary-nav.is-scrollable::before {
+  inset-inline-start: 0;
+  background: linear-gradient(to right, var(--fsu-paper), transparent);
+}
+
+.primary-nav.is-scrollable::after {
+  inset-inline-end: 0;
+  background: linear-gradient(to left, var(--fsu-paper), transparent);
+}
+
+.primary-nav.has-overflow-start::before { opacity: 1; }
+.primary-nav.has-overflow-end::after    { opacity: 1; }
+
+/* A fade is decoration. In forced-colors it would paint over real text. */
+@media (forced-colors: active) {
+  .primary-nav.is-scrollable::before,
+  .primary-nav.is-scrollable::after { display: none; }
+}
+
+/* --- Nav toggle (narrow viewports) ---------------------------------------
+   Hidden by default and revealed by nav.js, so that with JavaScript off the
+   nav is simply always visible rather than permanently unreachable. */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  gap: var(--fsu-space-05);
+  min-block-size: var(--fsu-target-enhanced);
+  min-inline-size: var(--fsu-target-enhanced);
+  padding: var(--fsu-space-05) var(--fsu-space-1);
+  background: transparent;
+  color: var(--fsu-color-body);
+  border: var(--fsu-border-width-strong) solid var(--fsu-line-strong); /* 7.44:1 boundary */
+  border-radius: var(--fsu-radius);
+  font: inherit;
+  font-weight: var(--fsu-weight-medium);
+  cursor: pointer;
+}
+
+.nav-toggle[hidden] { display: none; }
+
+/* --- Theme switch --------------------------------------------------------
+   A three-value radio group, not a two-state button: "System" has to be
+   reachable, and aria-pressed cannot express three states honestly.
+   The <fieldset> is hidden in markup and un-hidden by theme.js — with no JS
+   the control would do nothing, and a dead control is worse than none. */
+/* Right-aligned in row 1. The auto margin does it, so nothing has to know
+   how many other things are in the row.
+
+   The legend is visible, not hidden: a bare Auto/Light/Dark trio in the
+   corner of a masthead is three unexplained words, and `visually-hidden` on a
+   <legend> means only screen-reader users get told what the group is. */
+.theme-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--fsu-space-05);
+  margin: 0;
+  margin-inline-start: auto;
+  padding: var(--fsu-space-05);
+  border: var(--fsu-border-width) solid var(--fsu-line-strong);
+  border-radius: var(--fsu-radius);
+}
+
+.theme-switch__legend {
+  float: none;      /* a <legend> in a flex container needs this in Firefox */
+  inline-size: auto;
+  padding: 0 var(--fsu-space-1) 0 var(--fsu-space-05);
+  color: var(--fsu-color-eyebrow);
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.theme-switch[hidden] { display: none; }
+
+.theme-switch__option { position: relative; display: flex; }
+
+.theme-switch__input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;          /* the INPUT is transparent, never the label text */
+  cursor: pointer;
+}
+
+.theme-switch__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--fsu-target-min);
+  min-inline-size: var(--fsu-target-enhanced);
+  padding-inline: var(--fsu-space-1);
+  border-radius: var(--fsu-radius);
+  color: var(--fsu-color-body);
+  font-size: var(--fsu-text-small);
+  font-weight: var(--fsu-weight-medium);
+  line-height: var(--fsu-leading-normal);
+  cursor: pointer;
+}
+
+/* Selected state: a filled chip AND a bold weight. The fill alone would be
+   colour-only (1.4.1). Gold marks "you are here", which is the job §2 gives
+   it — the same job as the current-page underline in the nav strip. */
+.theme-switch__input:checked + .theme-switch__label {
+  background: var(--fsu-surface-gold);   /* FSU Gold */
+  color: var(--fsu-on-gold);             /* black on Gold, 9.41:1 */
+  font-weight: var(--fsu-weight-bold);
+}
+
+.theme-switch__input:focus-visible + .theme-switch__label {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+  box-shadow: 0 0 0 var(--fsu-focus-ring-offset) var(--fsu-focus-ring-halo);
+}
+
+
+/* ==========================================================================
+   4. BREADCRUMB
+   Wrapped in <nav aria-label="Breadcrumb"> with an <ol>. The separator is a
+   CSS ::before on the list item so it is never read out as content.
+   ========================================================================== */
+
+.breadcrumb {
+  padding-block: var(--fsu-space-1);
+  border-block-end: var(--fsu-border-width) solid var(--fsu-border);
+}
+
+.breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fsu-space-05);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fsu-text-small);
+}
+
+.breadcrumb__list li {
+  display: flex;
+  align-items: center;
+  gap: var(--fsu-space-05);
+  margin: 0;
+}
+
+.breadcrumb__list li + li::before {
+  content: "/";
+  color: var(--fsu-color-caption);   /* 7.44:1 — decorative but legible anyway */
+  speak: never;
+}
+
+.breadcrumb a {
+  min-block-size: var(--fsu-target-min);
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb [aria-current="page"] {
+  color: var(--fsu-color-caption);
+  font-weight: var(--fsu-weight-medium);
+}
+
+
+/* ==========================================================================
+   5. PAGE LAYOUT: SIDEBAR + MAIN
+   ========================================================================== */
+
+.layout {
+  flex: 1 1 auto;
+  inline-size: 100%;
+  max-inline-size: var(--dash-content-max);
+  margin-inline: auto;
+  padding-inline: var(--dash-gutter);
+  padding-block: var(--fsu-space-3) var(--fsu-space-5);
+  display: grid;
+  grid-template-columns: var(--dash-sidebar-width) minmax(0, 1fr);
+  gap: var(--fsu-space-4);
+  align-items: start;
+}
+
+/* Single-column pages (the home page) just drop the sidebar column. */
+.layout--full { grid-template-columns: minmax(0, 1fr); }
+
+.layout__sidebar {
+  position: sticky;
+  /* Sticky in the inline-start column only; it never overlays main content,
+     so 2.4.11 is not at risk here. The offset clears the sticky chapter
+     strip — without it the sidebar's own heading parks underneath it. */
+  inset-block-start: calc(var(--dash-sticky-h) + var(--fsu-space-2));
+  max-block-size: calc(100vh - var(--dash-sticky-h) - var(--fsu-space-4));
+  overflow-y: auto;
+  /* min-width:0 stops a long nav label forcing 2-D scrolling (1.4.10). */
+  min-inline-size: 0;
+}
+
+.layout__main { min-inline-size: 0; }
+
+/* <main id="main" tabindex="-1"> is the skip-link target. It must not show a
+   focus ring when focused programmatically, but it MUST still be reachable. */
+.layout__main:focus { outline: none; }
+.layout__main:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+}
+
+/* Eyebrow → h-page → body-lead → stat strip. No fill, no gold rule, no arch
+   (design-system.md §7.2). */
+.page-header {
+  padding-block: var(--fsu-space-3) var(--fsu-space-2);
+  margin-block-end: var(--fsu-space-3);
+  border-block-end: var(--fsu-border-width) solid var(--fsu-line);
+}
+
+.page-header > h1 { margin-block-end: var(--fsu-space-1); }
+
+.page-header .lede { margin-block-end: var(--fsu-space-3); }
+
+/* --- Stat strip (design-system.md §7.3) -----------------------------------
+   ONE bordered strip divided by hairlines, never a row of separate floating
+   cards. Number on top in mono tabular figures, term underneath.
+
+   The markup stays a <p> of <span>s so no page has to be re-authored; each
+   <span> becomes a cell and its <strong> becomes the number. */
+.page-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  align-items: stretch;
+  margin-block-start: var(--fsu-space-2);
+  border: var(--fsu-border-width) solid var(--fsu-line);
+  border-radius: var(--fsu-radius);
+  font-size: var(--fsu-text-small);
+  color: var(--fsu-color-caption);
+}
+
+.page-header__meta > span {
+  display: flex;
+  flex-direction: column-reverse;   /* number renders above the term */
+  justify-content: center;
+  gap: var(--fsu-space-05);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  padding: var(--fsu-space-1) var(--fsu-space-2);
+  border-inline-start: var(--fsu-border-width) solid var(--fsu-line-soft);
+  text-transform: uppercase;
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.page-header__meta > span:first-child { border-inline-start: 0; }
+
+.page-header__meta strong {
+  font-family: var(--fsu-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fsu-text-h3);
+  font-weight: var(--fsu-weight-bold);
+  line-height: var(--fsu-leading-snug);
+  letter-spacing: var(--fsu-tracking-normal);
+  text-transform: none;
+  color: var(--fsu-color-strong);
+}
+
+
+/* ==========================================================================
+   6. SIDEBAR MODULE NAV
+   <nav class="module-nav" aria-label="On this page">
+   The sidebar carries NO headings: it precedes <main> in source order, and
+   two <h2>s above the page's only <h1> would be a mess of an outline. Its
+   landmarks are named with aria-label; the current topic gets
+   aria-current="true" (set by nav.js from the scroll position).
+   ========================================================================== */
+
+.module-nav {
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surf-panel);
+  border: var(--fsu-border-width) solid var(--fsu-line);
+  /* A 2px garnet rail marks the rail as structure. Gold here would be the
+     third gold rule on one screen (design-system.md §1.1). */
+  border-inline-start: var(--fsu-rule-width) solid var(--dash-accent);
+  border-radius: var(--fsu-radius);
+  font-size: var(--fsu-text-small);
+}
+
+.module-nav__title {
+  margin-block-end: var(--fsu-space-1);
+  color: var(--fsu-color-heading);
+  font-size: var(--fsu-text-h4);
+}
+
+.module-nav__list,
+.module-nav__sublist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.module-nav__sublist {
+  margin-block-start: var(--fsu-space-05);
+  padding-inline-start: var(--fsu-space-1);
+  border-inline-start: var(--fsu-border-width) solid var(--fsu-border);
+}
+
+.module-nav__list li { margin: 0; }
+
+.module-nav__group-title {
+  margin-block: var(--fsu-space-1) var(--fsu-space-05);
+  color: var(--fsu-color-caption-on-warm);   /* 6.38:1 on Gold +3 Canvas */
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.module-nav__link {
+  display: flex;
+  gap: var(--fsu-space-05);
+  min-block-size: var(--fsu-target-min);
+  align-items: center;
+  padding: var(--fsu-space-05);
+  border-inline-start: var(--fsu-border-width-strong) solid transparent;
+  color: var(--fsu-link);
+  line-height: var(--fsu-leading-normal);
+  text-decoration: none;
+}
+
+.module-nav__link:hover {
+  color: var(--fsu-link-hover);
+  text-decoration: underline;
+  text-decoration-thickness: var(--fsu-link-underline-hover);
+}
+
+.module-nav__link:visited { color: var(--fsu-link); }
+
+/* Current topic: a solid inline-start rail (shape) + bold weight (weight) +
+   aria-current in the markup (semantics). Three cues, no colour dependence. */
+.module-nav__link[aria-current] {
+  border-inline-start-color: var(--dash-accent);
+  background: var(--fsu-surface);
+  font-weight: var(--fsu-weight-bold);
+  color: var(--fsu-color-strong);
+}
+
+.module-nav__num {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  color: var(--fsu-color-caption-on-warm);
+}
+
+/* Narrow-viewport disclosure button. Hidden until nav.js reveals it. */
+.module-nav__toggle {
+  display: none;
+}
+
+
+/* ==========================================================================
+   7. TOPIC CARDS AND CARD GRID
+   ========================================================================== */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  gap: var(--fsu-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card-grid > li { margin: 0; }
+
+.topic-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fsu-space-1);
+  block-size: 100%;
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surf-panel);
+  /* No gold top rule. It was the same device as the header's, twice on one
+     screen (design-system.md §7.4). The card is a discrete object because it
+     has an edge, not because it has a stripe. */
+  border: var(--fsu-border-width) solid var(--fsu-line);
+  border-radius: var(--fsu-radius);
+  transition: border-color var(--fsu-duration) var(--fsu-easing);
+}
+
+.topic-card:hover {
+  border-color: var(--fsu-line-strong);
+}
+
+.topic-card__title {
+  margin: 0;
+  font-size: var(--fsu-text-h3);
+}
+
+/* The whole card is NOT a link. One real link in the heading keeps the
+   accessible name honest and keeps the card's text selectable
+   (2.4.4 Link Purpose). The ::after below just extends the hit area. */
+.topic-card__link {
+  text-decoration: none;
+}
+
+.topic-card__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.topic-card { position: relative; }
+
+.topic-card__link:hover {
+  text-decoration: underline;
+  text-decoration-thickness: var(--fsu-link-underline-hover);
+}
+
+/* Focus is drawn on the card, not on the bare text, so the indicator is not
+   a thin sliver in the corner (2.4.13). */
+.topic-card:focus-within {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+  box-shadow: 0 0 0 var(--fsu-focus-ring-offset) var(--fsu-focus-ring-halo);
+}
+
+.topic-card__desc {
+  margin: 0;
+  color: var(--fsu-color-body);
+}
+
+.topic-card__meta {
+  margin-block-start: auto;
+  padding-block-start: var(--fsu-space-1);
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-small);
+}
+
+.topic-card__count {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fsu-weight-bold);
+  color: var(--fsu-color-strong);
+}
+
+
+/* ==========================================================================
+   8. TOPIC SECTION
+   One <section class="topic-section" id="topic-3-5-5"> per numbered topic in
+   COURSE_TOPIC_MAP.md. See AUTHORING-CONTRACT.md §4.
+   ========================================================================== */
+
+.topic-section {
+  padding-block: var(--fsu-space-3);
+  border-block-start: var(--fsu-border-width) solid var(--fsu-border);
+  scroll-margin-block-start: calc(var(--fsu-sticky-offset) + var(--fsu-space-3));
+}
+
+.topic-section:first-of-type { border-block-start: 0; }
+
+.topic-section__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--fsu-space-1);
+  margin-block-end: var(--fsu-space-1);
+}
+
+.topic-section__header > h3,
+.topic-section__header > h4 { margin: 0; }
+
+/* The topic number is real text inside the heading, never a ::before —
+   generated content is not reliably announced and is not selectable. */
+.topic-section__number {
+  font-variant-numeric: tabular-nums;
+  color: var(--fsu-color-caption);
+  font-weight: var(--fsu-weight-bold);
+}
+
+/* CAP THE CHILDREN, NEVER THE CONTAINER — AND CAP THEM ALL.
+   ------------------------------------------------------------------------
+   Two mistakes, in opposite directions, both worth recording.
+
+   First this read `.topic-section__body { max-inline-size: var(--fsu-measure-max) }`,
+   which capped the BOX. Once the container is 686px wide no child can be
+   wider — `max-inline-size: none` on a demo inside it changes nothing, because
+   there is no space to grow into. Every figure was 686px regardless of window
+   size, and widening the shell did nothing.
+
+   Then the cap moved to the children and the exempt list said `none`, which
+   let a demo panel and a data table grow to the full main column: 1209px demos
+   and 1175px tables. A four-column table stretched to 1175px is worse than one
+   that fits, and an SVG scaled to 1175px renders its 11px labels at 36px,
+   which is what made the figures look broken.
+
+   `none` was the error. The exempt elements do not want NO cap; they want a
+   BIGGER one. --dash-panel-max is that cap. */
+.topic-section__body > * { max-inline-size: var(--fsu-measure-max); }
+
+/* The MOUNT is the direct child, not the panel — demo.js replaces the mount's
+   children, it does not replace the mount. Without the two mount selectors
+   here every demo on the site is silently capped at the prose measure, which
+   is why the control rail once had no room to sit beside the stage. */
+.topic-section__body > .demo,
+.topic-section__body > .demo-mount,
+.topic-section__body > [id$="-mount"],
+.topic-section__body > .table-scroll,
+.topic-section__body > figure,
+.topic-section__body > .code-block { max-inline-size: var(--dash-panel-max); }
+
+/* A permalink to the topic anchor. Visible on hover/focus, always present in
+   the accessibility tree with a full accessible name. */
+.topic-section__anchor {
+  min-block-size: var(--fsu-target-min);
+  min-inline-size: var(--fsu-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--fsu-link);
+  opacity: 1;   /* never faded — a faded control silently drops its ratio */
+}
+
+/* Group heading for a numbered sub-group such as 3.5 "Weighted graphs". */
+.topic-group {
+  margin-block-start: var(--fsu-space-4);
+  scroll-margin-block-start: calc(var(--fsu-sticky-offset) + var(--fsu-space-3));
+}
+
+/* A 2px garnet rail, not a gold band. Gold is a mark; garnet is structure
+   (design-system.md §2). */
+.topic-group__header {
+  padding-block-end: var(--fsu-space-1);
+  border-block-end: var(--fsu-rule-width) solid var(--dash-accent);
+}
+
+
+/* ==========================================================================
+   9. DEMO PANEL — figure + controls + table equivalent
+
+   Structure produced by assets/js/demo.js. The class names are part of the
+   authoring contract; do not rename them in a module page.
+
+     .demo
+       .demo__header      h3 + description
+       .demo__toolbar     copy-CSV + reset          <- right rail, above controls
+       .demo__controls    fieldset of labelled controls   <- right rail
+       .demo__stage
+         .demo__figure    the SVG / canvas, aria-hidden="false", labelled
+       .demo__readout     the live values, full width
+       .demo__steps       play / pause / step controls (only if steps declared)
+       .demo__explain
+         .demo__summary   role="status" aria-live="polite"  <- ALWAYS present
+         .demo__data      the <table> equivalent            <- ALWAYS present
+       .demo__error       hard failure notice from the runtime
+
+   THERE IS NO VIEW TOGGLE. The figure and the table are both always rendered,
+   always visible, on every demo without exception. The previous
+   figure/table/both switch is gone: it put a three-radio control in every one
+   of eighty panels to offer a choice nobody needed, and its "Figure only"
+   state pushed the numbers off-screen for sighted readers while claiming to
+   keep them for screen readers — two different pages depending on who you
+   were. One page, both representations, no state.
+   ========================================================================== */
+
+/* --- LAW 1: prose goes UNDER the visualization, never beside it -----------
+   design-system.md §6.2. Four regions, in this order:
+
+     head                     title + one-line description + badge
+     stage | controls         the figure gets the height; controls are a rail
+     readout                  live numbers, FULL WIDTH
+     explain                  prose + the data table, FULL WIDTH
+
+   Why this is a grid and not a discipline: a paragraph in a 17rem rail runs
+   about six lines. Three of them make the rail taller than the figure, grid
+   stretches the row to match, and the reader scrolls past a mostly-empty
+   stage to reach an explanation that would have been three lines wide
+   underneath. `.demo__controls` is therefore capped to the stage height and
+   scrolls internally, so the failure is structurally impossible rather than
+   left to whoever writes the next widget.
+
+   The panel sits on PAPER, not on the warm step. Forty-seven cream boxes on a
+   white page is two competing backgrounds; one warm region inside an
+   otherwise-paper panel is a hierarchy. */
+.demo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--dash-demo-rail));
+  /* Settings live beside the figure, not above or below it.
+     ---------------------------------------------------------------------
+     The toolbar and the control rail share the right column, toolbar first,
+     so everything that ADJUSTS the figure is in one place at eye level with
+     it. Before this, the buttons sat in the `readout` row under the stage
+     and the reader scrolled down to press Reset, then back up to see what
+     it did.
+
+     Everything that READS OUT stays full width below: the live values, then
+     the table, then the explanation. */
+  grid-template-areas:
+    "head    head"
+    "stage   tools"
+    "stage   controls"
+    "readout readout"
+    "explain explain";
+  grid-template-rows: auto auto 1fr auto auto;
+  gap: var(--fsu-space-2);
+  margin-block: var(--fsu-space-4);
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surf-panel);
+  color: var(--fsu-color-body);
+  border: var(--fsu-border-width) solid var(--fsu-line);
+  border-radius: var(--fsu-radius);
+}
+
+/* A demo with no controls gives the stage the whole width. The class is set
+   by demo.js; the :has() form is the no-JS/no-demo.js equivalent for
+   hand-authored panels. Engines without :has() still get the class. */
+.demo--no-controls,
+.demo:not(:has(.demo__controls)) {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "head" "tools" "stage" "readout" "explain";
+  grid-template-rows: auto auto auto auto auto;
+}
+
+.demo__header  { grid-area: head; margin-block-end: 0; }
+.demo__stage   { grid-area: stage; min-inline-size: 0; }
+.demo__controls{ grid-area: controls; }
+.demo__readout { grid-area: readout; }
+.demo__explain { grid-area: explain; min-inline-size: 0; }
+
+/* The toolbar takes the readout row. Everything else below the stage — the
+   live summary, the step controls, the key hints, the data table — is a child
+   of .demo__explain, so it inherits that area rather than fighting for it.
+   .demo__error is not inside .demo at all: it replaces the whole mount. */
+.demo__toolbar {
+  grid-area: tools;
+  margin-block-end: 0;
+  align-self: start;
+}
+
+.demo__title {
+  margin: 0 0 var(--fsu-space-05);
+  color: var(--fsu-color-heading);
+  font-size: var(--fsu-text-h4);
+}
+
+.demo__desc {
+  margin: 0;
+  max-inline-size: var(--fsu-measure);
+}
+
+/* --- Controls: a rail, capped to the stage -------------------------------
+   Never taller than the figure it drives. If yours needs to be, it has too
+   many controls — demo.js warns past seven. */
+.demo__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fsu-space-2);
+  margin: 0;
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-body);
+  border: var(--fsu-border-width) solid var(--fsu-line);
+  border-radius: var(--fsu-radius);
+  align-self: start;                        /* do not stretch the row */
+  max-block-size: var(--dash-stage-max);    /* the same cap the stage has */
+  overflow-y: auto;
+  overscroll-behavior-block: contain;
+}
+
+/* --- When the rail stops sitting beside the stage -------------------------
+   A CONTAINER query, not a media query. Whether there is room for a rail
+   depends on how wide the PANEL is: a module page carries an 18rem sidebar,
+   so a 1280px viewport leaves a demo about 650px, and a viewport query cannot
+   see that. Splitting 650px into a 364px stage and a 272px rail gives the
+   rail 42% of the panel to hold four sliders — the stage stops being the
+   thing that gets the height, which is the failure Law 1 exists to prevent.
+
+   demo.js puts .demo-mount on the mount element; hand-authored panels need it
+   on their wrapper. */
+.demo-mount {
+  container-type: inline-size;
+  container-name: demo;
+}
+
+@container demo (max-width: 48rem) {
+  .demo {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "head" "stage" "controls" "readout" "explain";
+  }
+
+  .demo__controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    max-block-size: none;
+    overflow-y: visible;
+  }
+}
+
+/* Fallback for engines without container queries, and for a demo that is not
+   inside a .demo-mount. Same rule, keyed to the viewport. */
+@supports not (container-type: inline-size) {
+  @media (max-width: 75rem) {
+    .demo {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "head" "stage" "controls" "readout" "explain";
+    }
+
+    .demo__controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+      max-block-size: none;
+      overflow-y: visible;
+    }
+  }
+}
+
+.demo__controls-legend {
+  padding-inline: var(--fsu-space-05);
+  color: var(--fsu-color-eyebrow);
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fsu-space-05);
+  min-inline-size: 0;
+}
+
+.control__label {
+  font-weight: var(--fsu-weight-medium);
+  color: var(--fsu-color-strong);
+  line-height: var(--fsu-leading-normal);
+}
+
+/* Help text is wired with aria-describedby, never with title=. */
+.control__help {
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-small);
+  line-height: var(--fsu-leading-normal);
+}
+
+/* A slider is always paired with a number input so a value can be typed
+   exactly. Sliders alone are miserable with a screen reader and impossible
+   with a tremor. Both inputs carry the same accessible name. */
+.control__row {
+  display: flex;
+  align-items: center;
+  gap: var(--fsu-space-1);
+  flex-wrap: wrap;
+}
+
+.control__range {
+  flex: 1 1 8rem;
+  min-inline-size: 6rem;
+  block-size: var(--fsu-target-min);
+  accent-color: var(--dash-accent);
+  cursor: pointer;
+}
+
+.control__number {
+  flex: 0 0 auto;
+  inline-size: 6rem;
+}
+
+.control__readout {
+  font-variant-numeric: tabular-nums;
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-small);
+}
+
+/* --- Toolbar (copy CSV, reset) -------------------------------------------
+   Two buttons, stacked in the rail above the controls. There is no view
+   toggle: the figure and the table are both always present. Stacked rather
+   than in a row because the rail is 20rem and "Copy data as CSV" beside
+   "Reset settings" wraps mid-label at that width, which reads as broken. */
+.demo__toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--fsu-space-1);
+  margin-block-end: 0;
+}
+
+.demo__toolbar .btn {
+  justify-content: center;
+  inline-size: 100%;
+}
+
+/* When the rail collapses under the stage the buttons have the full width, so
+   put them back on one row. */
+@container demo (max-width: 48rem) {
+  .demo__toolbar { flex-direction: row; flex-wrap: wrap; }
+  .demo__toolbar .btn { inline-size: auto; }
+}
+
+/* The figure/table/both view toggle used to live here. It is gone: both are
+   now always rendered, so there is no state to switch and nothing to style.
+   Removed rather than hidden — a hidden control still takes a tab stop. */
+
+
+/* --- Readout: the live numbers, as a stat strip --------------------------
+   FULL WIDTH, never in the control rail (Law 1). One bordered strip divided
+   by hairlines — the same recipe as the page-header stats (§7.3). demo.js
+   warns past six values, because a seventh turns a glanceable strip into a
+   table that is not labelled as one. */
+.demo__readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0;
+  border: var(--fsu-border-width) solid var(--fsu-line);
+  border-radius: var(--fsu-radius);
+}
+
+.demo__readout > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  gap: var(--fsu-space-05);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  padding: var(--fsu-space-1) var(--fsu-space-2);
+  border-inline-start: var(--fsu-border-width) solid var(--fsu-line-soft);
+}
+
+.demo__readout > div:first-child { border-inline-start: 0; }
+
+.demo__readout dt,
+.demo__readout .demo__readout-label {
+  margin: 0;
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.demo__readout dd,
+.demo__readout .demo__readout-value {
+  margin: 0;
+  font-family: var(--fsu-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fsu-text-h4);
+  font-weight: var(--fsu-weight-bold);
+  line-height: var(--fsu-leading-snug);
+  color: var(--fsu-color-strong);
+}
+
+/* --- Explain: the prose and the data table, full width -------------------
+   Everything you would call a sentence lands here. The warm step marks it as
+   the reading region without turning the whole panel cream. */
+.demo__explain {
+  padding-block-start: var(--fsu-space-2);
+  border-block-start: var(--fsu-border-width) solid var(--fsu-line-soft);
+}
+
+.demo__explain > p {
+  max-inline-size: var(--fsu-measure);
+}
+
+.demo__explain > p:last-child { margin-block-end: 0; }
+
+/* --- Stage: figure + live summary ---------------------------------------- */
+.demo__stage {
+  display: grid;
+  gap: var(--fsu-space-2);
+  align-content: start;
+  min-inline-size: 0;
+}
+
+.demo__figure {
+  margin: 0;
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surf-page);
+  border: var(--fsu-border-width) solid var(--fsu-line-soft);
+  border-radius: var(--fsu-radius);
+  overflow-x: auto;
+}
+
+/* EVERY DRAWING HAS A MAXIMUM WIDTH, whatever its container does.
+   ------------------------------------------------------------------------
+   An SVG with a viewBox and `inline-size: 100%` scales its whole coordinate
+   system to the box it is given. So an 11px label in a 360-unit viewBox
+   renders at 11px when the box is 360px and at 36px when the box is 1175px —
+   the figure does not get more detailed, it gets shouty. That is what a
+   figure looks like when it is "too wide": giant axis labels, giant nodes,
+   two words filling a third of the panel.
+
+   The container cap alone cannot prevent it, because the container is sized by
+   the layout and the layout changes. So the drawing carries its own ceiling.
+   38rem = 608px, which is the scale these figures were drawn against.
+
+   Centred rather than left-aligned: a 608px drawing in a 650px stage reads as
+   a mistake if it is flush left. */
+.demo__figure svg,
+.demo__figure canvas:not(.demo__canvas-el),
+.demo__figure img,
+figure > svg,
+figure > img {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: var(--dash-figure-max);
+  margin-inline: auto;
+  block-size: auto;
+  max-block-size: var(--dash-stage-max);
+}
+
+.demo__figcaption {
+  margin-block-start: var(--fsu-space-1);
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-small);
+}
+
+/* --- the canvas stage ------------------------------------------------------
+   A Gfx.Stage sizes its own canvas: it reads the host's width, multiplies by
+   the declared aspect, and writes both the backing-store size (× DPR) and the
+   CSS height. So the canvas must NOT inherit the max-block-size cap above —
+   that would squash the drawing without telling the stage its height changed,
+   and every world coordinate would land in the wrong place. Cap the host
+   instead and let the stage recompute.  */
+/* The HOST carries the width cap, not the canvas.
+
+   A Gfx.Stage measures `host.clientWidth`, multiplies by the aspect, and
+   writes both the backing-store size and the CSS height. Capping the canvas
+   element in CSS would narrow it AFTER the stage had already committed to a
+   height computed from the wider host — so the drawing would stretch. Capping
+   the host means the stage measures the capped width and stays square. */
+.demo__canvas {
+  inline-size: 100%;
+  max-inline-size: var(--dash-figure-max);
+  margin-inline: auto;
+  max-block-size: var(--dash-stage-max);
+  overflow: hidden;
+  border-radius: var(--fsu-radius);
+}
+
+.demo__canvas-el {
+  /* Deliberately NOT capped — see the note on .demo__canvas above. */
+  max-inline-size: none;
+  max-block-size: none;
+  display: block;
+  /* The whole point is that this thing is grabbable. Say so with the cursor
+     before the reader has read anything. */
+  cursor: grab;
+  touch-action: none;
+}
+
+.demo__canvas-el:active { cursor: grabbing; }
+
+/* 2.4.7 / 2.4.11. The canvas is one tab stop and draws its own indicator on
+   the selected handle; this ring marks the figure as the focused element. */
+.demo__canvas-el:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+}
+
+/* --- "drag the points" -----------------------------------------------------
+   The gesture label. Quiet: it is an instruction, not a heading, and it sits
+   above a picture that should hold the attention. It is not a chip and not a
+   badge — the page has enough outlined boxes. */
+.demo__grab {
+  display: flex;
+  align-items: center;
+  gap: var(--fsu-space-1);
+  margin: 0 0 var(--fsu-space-1);
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-small);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.06em;
+}
+
+.demo__grab-icon {
+  color: var(--fsu-fig-accent);
+  font-size: 1em;
+  line-height: 1;
+}
+
+/* The keyboard-operable figure region. It takes focus so arrow keys can drive
+   the step controls; the shortcut list is announced through aria-describedby
+   and printed visibly in .demo__keys. */
+.demo__figure[tabindex]:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+}
+
+.demo__keys {
+  margin: 0;
+  color: var(--fsu-color-caption-on-warm);
+  font-size: var(--fsu-text-small);
+}
+
+/* The live summary. This is the element that makes a figure mean something
+   to a non-visual user, so it is styled to be read, not tucked away. */
+.demo__summary {
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surface);
+  color: var(--fsu-color-body);
+  border: var(--fsu-border-width) solid var(--fsu-border-strong);
+  border-inline-start: var(--fsu-rule-width) solid var(--dash-accent);
+  border-radius: var(--fsu-radius);
+  max-inline-size: var(--fsu-measure-max);
+}
+
+.demo__summary p { margin: 0; }
+.demo__summary p + p { margin-block-start: var(--fsu-space-1); }
+
+.demo__summary-title {
+  display: block;
+  margin-block-end: var(--fsu-space-05);
+  color: var(--fsu-color-eyebrow);
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+/* --- Step controls -------------------------------------------------------
+   Autoplay defaults to OFF everywhere (2.2.2). Play/Pause is a single button
+   whose label and aria-pressed both change. */
+.demo__steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--fsu-space-1);
+  margin-block-end: var(--fsu-space-2);
+  padding: var(--fsu-space-1);
+  background: var(--fsu-surface);
+  border: var(--fsu-border-width) solid var(--fsu-border);
+  border-radius: var(--fsu-radius);
+}
+
+.demo__step-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fsu-weight-bold);
+  color: var(--fsu-color-strong);
+  margin-inline-end: auto;
+}
+
+.demo__step-speed {
+  display: flex;
+  align-items: center;
+  gap: var(--fsu-space-05);
+  font-size: var(--fsu-text-small);
+}
+
+/* Progress rail. Decorative — the real progress is the "Step 4 of 7" text. */
+.demo__progress {
+  inline-size: 100%;
+  block-size: var(--fsu-border-width-strong);
+  background: var(--fsu-border);
+  border-radius: var(--fsu-radius-pill);
+  overflow: hidden;
+}
+
+.demo__progress-fill {
+  block-size: 100%;
+  background: var(--dash-accent);
+  transition: inline-size var(--fsu-duration) var(--fsu-easing);
+}
+
+/* --- Data equivalent ----------------------------------------------------- */
+.demo__data { margin: 0; }
+
+.demo__data-title {
+  margin: 0 0 var(--fsu-space-1);
+  font-size: var(--fsu-text-body);
+  font-weight: var(--fsu-weight-bold);
+  color: var(--fsu-color-strong-on-warm);
+}
+
+/* --- Runtime error notice ------------------------------------------------
+   demo.js renders this when an author omits a required text equivalent. It is
+   deliberately loud: a missing table is a 1.1.1 failure, not a style nit. */
+.demo__error {
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surface);
+  color: var(--fsu-status-error-text);
+  border: var(--fsu-border-width-strong) solid var(--fsu-status-error-accent);
+  border-radius: var(--fsu-radius);
+  font-weight: var(--fsu-weight-medium);
+}
+
+.demo__error code { color: var(--fsu-color-strong); }
+
+/* --- Pre-JavaScript fallback ----------------------------------------------
+   This markup lives INSIDE the demo mount, not in a <noscript>. demo.js
+   replaces the mount's children on success, so the fallback is what a reader
+   sees whenever the runtime did not run — and <noscript> only covers one of
+   the two ways that happens:
+
+     scripting disabled ......... <noscript> fires
+     module script blocked ...... <noscript> does NOT fire
+
+   The second case is the common one: `<script type="module">` is refused from
+   a file:// origin by Chrome and Firefox, which is exactly how a student opens
+   a dashboard copied to a USB stick. A <noscript> twin would leave them
+   staring at an empty box. In-mount fallback content covers both.
+
+   See AUTHORING-CONTRACT.md §6.4. */
+.demo__fallback,
+.demo__noscript {
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surface);
+  border: var(--fsu-border-width-strong) solid var(--fsu-border-strong);
+  border-radius: var(--fsu-radius);
+}
+
+.demo__fallback > :last-child,
+.demo__noscript > :last-child { margin-block-end: 0; }
+
+/* Same reasoning for the search box: a note that sits in the page and is
+   removed by search.js once it has actually wired itself up. */
+.search__nojs {
+  padding: var(--fsu-space-1) var(--fsu-space-2);
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-body-on-warm);
+  border: var(--fsu-border-width) solid var(--fsu-border-strong);
+  border-inline-start: var(--fsu-rule-width) solid var(--fsu-rule);
+  border-radius: var(--fsu-radius);
+  font-size: var(--fsu-text-small);
+  max-inline-size: var(--fsu-measure-max);
+}
+
+
+/* ==========================================================================
+   10. DATA TABLE
+   Real <table> with <caption>, <thead>, and <th scope>. Never a grid of divs.
+   ========================================================================== */
+
+/* `inline-size: 100%` made every table as wide as whatever contained it, so
+   uncapping the containers stretched a four-column table to 1175px with a
+   hand's width of empty space in each cell. `auto` + a minimum lets a table be
+   as wide as it needs and no wider; `.table-scroll` still handles the ones
+   that genuinely overflow. */
+.data-table {
+  inline-size: auto;
+  min-inline-size: min(100%, 28rem);
+  max-inline-size: 100%;
+  border-collapse: collapse;
+  background: var(--fsu-surface);
+  font-size: var(--fsu-text-small);
+  line-height: var(--fsu-leading-normal);
+}
+
+.data-table caption {
+  padding: var(--fsu-space-1);
+  color: var(--fsu-color-body);
+  font-size: var(--fsu-text-small);
+  font-weight: var(--fsu-weight-medium);
+  text-align: start;
+  caption-side: top;
+}
+
+.data-table th,
+.data-table td {
+  padding: var(--fsu-space-05) var(--fsu-space-1);
+  border: var(--fsu-border-width) solid var(--fsu-border);
+  text-align: start;
+  vertical-align: top;
+}
+
+/* A header band, not a gold slab. A table on a module page can run for forty
+   rows, and a saturated FSU Gold bar across the top of each one was the single
+   biggest source of gold on the site. The ramp separates the header from the
+   body; the bottom rule and the bold weight say "these are the labels". */
+.data-table thead th {
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-strong);
+  border-block-end: var(--fsu-border-width-strong) solid var(--fsu-line-strong);
+  font-weight: var(--fsu-weight-bold);
+  white-space: nowrap;
+}
+
+.data-table tbody th {
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-strong-on-warm);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.data-table td.is-numeric,
+.data-table th.is-numeric {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The current row of a trace. aria-current="step" is the semantic cue; the
+   rail and the bold weight are the visual cues; the row also carries a
+   literal "current step" marker cell in the markup. Never colour alone. */
+.data-table tr[aria-current] > * {
+  background: var(--fsu-surf-inset);
+  font-weight: var(--fsu-weight-bold);
+  color: var(--fsu-color-strong-on-warm);
+}
+
+.data-table tr[aria-current] > *:first-child {
+  border-inline-start: var(--fsu-rule-width) solid var(--dash-accent);
+}
+
+/* Zebra striping is decoration only; it must never be the way a reader tells
+   two rows apart semantically. */
+.data-table--striped tbody tr:nth-child(even) > td {
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-body-on-warm);
+}
+
+.data-table--compact th,
+.data-table--compact td { padding: var(--fsu-space-05); }
+
+
+/* ==========================================================================
+   11. CALLOUTS
+   .callout--key         key idea
+   .callout--definition  definition
+   .callout--warning     warning / common mistake
+   .callout--note        aside / context
+
+   Every variant carries a WORD in .callout__title ("Key idea", "Definition",
+   "Warning", "Note") plus a distinct border treatment. The accent colour is
+   the third cue, never the first (1.4.1). Screen readers get the word.
+   ========================================================================== */
+
+/* A callout is a surface step plus ONE coloured rail — not a box outlined on
+   all four sides in a strong colour. A page carries a lot of these, and four
+   heavy edges each is what makes a module page read as a grid of boxes rather
+   than as prose with asides in it. The rail says which kind it is; the step
+   says it is an aside. */
+.callout {
+  margin-block: var(--fsu-space-3);
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surf-panel);
+  color: var(--fsu-color-body);
+  border: var(--fsu-border-width) solid var(--fsu-line-soft);
+  border-inline-start: var(--fsu-border-width-strong) solid var(--fsu-line-strong);
+  border-radius: var(--fsu-radius);
+  max-inline-size: var(--fsu-measure-max);
+}
+
+.callout > :last-child { margin-block-end: 0; }
+
+.callout__title {
+  display: flex;
+  align-items: center;
+  gap: var(--fsu-space-05);
+  margin: 0 0 var(--fsu-space-1);
+  font-size: var(--fsu-text-body);
+  font-weight: var(--fsu-weight-bold);
+  color: var(--fsu-color-strong);
+}
+
+/* Icons are decorative: aria-hidden="true" focusable="false" in the markup.
+   The title text alone must carry the meaning. */
+.callout__icon {
+  flex: 0 0 auto;
+  inline-size: 1.25em;
+  block-size: 1.25em;
+  fill: currentColor;
+}
+
+.callout--key {
+  border-inline-start-color: var(--dash-accent);
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-body-on-warm);
+}
+.callout--key .callout__title { color: var(--fsu-color-heading-on-warm); }
+
+.callout--definition {
+  border-inline-start-color: var(--fsu-status-info-accent);
+  border-inline-start-style: double;
+  border-inline-start-width: var(--fsu-space-05);
+}
+.callout--definition .callout__title { color: var(--fsu-status-info-text); }
+
+.callout--warning {
+  border-inline-start-color: var(--fsu-status-error-accent);
+  border-inline-start-style: solid;
+}
+.callout--warning .callout__title { color: var(--fsu-status-error-text); }
+
+.callout--note {
+  border-inline-start-color: var(--fsu-border-strong);
+  border-inline-start-style: dashed;
+}
+
+.callout dt {
+  font-weight: var(--fsu-weight-bold);
+  color: var(--fsu-color-strong);
+}
+
+.callout dd { margin-inline-start: 0; margin-block-end: var(--fsu-space-1); }
+
+
+/* ==========================================================================
+   12. CODE BLOCK
+   Real text in <pre><code>, never a screenshot (1.4.5 Images of Text).
+   The <pre> is a focusable labelled region so a keyboard user can scroll it.
+   ========================================================================== */
+
+/* Code is set INTO the page: a step along the ramp and a hairline, rather
+   than the same surface as the prose with a heavy outline around it. */
+.code-block {
+  margin-block: var(--fsu-space-3);
+  border: var(--fsu-border-width) solid var(--fsu-line);
+  border-radius: var(--fsu-radius);
+  overflow: hidden;
+  background: var(--fsu-surf-inset);
+}
+
+.code-block__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--fsu-space-1);
+  padding: var(--fsu-space-05) var(--fsu-space-1);
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-strong-on-warm);
+  border-block-end: var(--fsu-border-width) solid var(--fsu-border);
+  font-size: var(--fsu-text-small);
+  font-weight: var(--fsu-weight-medium);
+}
+
+.code-block__lang {
+  margin-inline-end: auto;
+  font-family: var(--fsu-font-mono);
+  font-size: var(--fsu-text-eyebrow);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.code-block pre {
+  margin: 0;
+  padding: var(--fsu-space-2);
+  overflow-x: auto;
+  /* Wrapping is off so indentation survives; the region scrolls instead, which
+     1.4.10 explicitly permits for code. */
+  white-space: pre;
+  tab-size: 4;
+  color: var(--fsu-color-body);
+  line-height: var(--fsu-leading-normal);
+}
+
+.code-block pre:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: calc(-1 * var(--fsu-focus-ring-width));
+}
+
+.code-block code { color: inherit; background: none; }
+
+/* Prism tokens. Colour is a supplement: keywords are also bold, comments
+   also italic, so hue is never the only way to tell two things apart (1.4.1).
+   Every colour is an existing measured token, never a raw hex. */
+.code-block .token.comment,
+.code-block .token.prolog,
+.code-block .token.doctype,
+.code-block .token.cdata {
+  color: var(--fsu-color-caption-on-warm);
+  font-style: italic;
+}
+
+.code-block .token.punctuation,
+.code-block .token.operator,
+.code-block .token.entity,
+.code-block .token.url {
+  color: var(--fsu-color-body);
+}
+
+.code-block .token.keyword,
+.code-block .token.atrule,
+.code-block .token.important {
+  color: var(--fsu-color-heading-on-warm);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.code-block .token.function,
+.code-block .token.class-name,
+.code-block .token.builtin {
+  color: var(--fsu-link);
+  font-weight: var(--fsu-weight-medium);
+}
+
+.code-block .token.string,
+.code-block .token.char,
+.code-block .token.attr-value,
+.code-block .token.regex {
+  color: var(--fsu-link);
+}
+
+.code-block .token.number,
+.code-block .token.boolean,
+.code-block .token.constant,
+.code-block .token.symbol {
+  color: var(--fsu-color-strong-on-warm);
+  font-weight: var(--fsu-weight-medium);
+}
+
+.code-block .token.variable,
+.code-block .token.property,
+.code-block .token.attr-name,
+.code-block .token.parameter {
+  color: var(--fsu-color-body);
+}
+
+.code-block .token.tag,
+.code-block .token.selector {
+  color: var(--fsu-color-heading-on-warm);
+  font-weight: var(--fsu-weight-semibold);
+}
+
+/* Inline code inside prose. */
+:not(pre) > code {
+  padding: 0 var(--fsu-space-05);
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-strong-on-warm);
+  border-radius: var(--fsu-radius);
+}
+
+
+/* ==========================================================================
+   13. FORMULA BLOCK
+
+   Maths is real text (or MathML), never a raster. The pattern is:
+     .formula          the container, role="math" aria-label="<spoken form>"
+     .formula__expr    the visual expression
+     .formula__where   a definition list of every symbol, always present
+
+   The "where" list is not optional. A screen reader that stumbles over the
+   expression still gets every symbol defined in prose.
+   ========================================================================== */
+
+.formula {
+  margin-block: var(--fsu-space-2);
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-body-on-warm);
+  border: var(--fsu-border-width) solid var(--fsu-border);
+  border-inline-start: var(--fsu-rule-width) solid var(--fsu-rule);
+  border-radius: var(--fsu-radius);
+  overflow-x: auto;
+}
+
+.formula__label {
+  display: block;
+  margin-block-end: var(--fsu-space-05);
+  color: var(--fsu-color-caption-on-warm);
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.formula__expr {
+  margin: 0;
+  font-family: var(--fsu-font-serif);
+  font-size: var(--fsu-text-body-lg);
+  line-height: var(--fsu-leading-normal);
+  color: var(--fsu-color-strong-on-warm);
+}
+
+.formula__expr var,
+.formula var {
+  font-style: italic;
+  font-family: var(--fsu-font-serif);
+}
+
+.formula__expr sub,
+.formula__expr sup {
+  /* Keeps subscripts from inflating the line box and breaking 1.4.12. */
+  line-height: 0;
+  font-size: 0.75em;
+}
+
+.formula__where {
+  margin: var(--fsu-space-1) 0 0;
+  font-size: var(--fsu-text-small);
+}
+
+.formula__where dt {
+  font-weight: var(--fsu-weight-bold);
+  color: var(--fsu-color-strong-on-warm);
+}
+
+.formula__where dd {
+  margin: 0 0 var(--fsu-space-05) var(--fsu-space-2);
+}
+
+.formula__number {
+  float: inline-end;
+  color: var(--fsu-color-caption-on-warm);
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ==========================================================================
+   14. PILLS / TAGS  (coverage markers)
+
+   Coverage vocabulary from COURSE_TOPIC_MAP.md:
+     .pill--full     ● fully covered
+     .pill--partial  ◐ partially covered
+     .pill--none     ○ not covered
+     .pill--new      NEW — no interactive version existed
+     .pill--exam     assessed on an exam
+     .pill--lab      taught in a lab
+     .pill--slides   taught in the slides
+
+   Each pill carries its WORD. The glyph is aria-hidden decoration and the
+   border style differs per variant, so the marker survives greyscale, colour
+   vision deficiency, and forced-colors.
+   ========================================================================== */
+
+/* --- .pill-list: the per-topic coverage line ------------------------------
+   This runs under EVERY ONE of ~330 topic headings. As four bordered,
+   uppercase, bold chips on their own full-width row it was the single
+   loudest thing on a module page — four boxes shouting above every paragraph,
+   repeated all the way down, so the actual heading hierarchy disappeared into
+   a field of outlines.
+
+   It is metadata about the heading, so it now reads as a byline: one quiet
+   line, no boxes, hairline dots between entries, the glyph carrying the
+   colour and the word carrying the meaning. Nothing is lost — every marker
+   still has its glyph AND its word, so 1.4.1 holds — but it stops competing
+   with the content it annotates.
+
+   The .pill styling still applies inside the legend at the top of the page,
+   where a chip IS the subject rather than an annotation. */
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0;
+  margin: calc(-1 * var(--fsu-space-05)) 0 var(--fsu-space-2);
+  padding: 0;
+  list-style: none;
+  font-size: var(--fsu-text-small);
+  line-height: var(--fsu-leading-normal);
+}
+
+.pill-list li { margin: 0; }
+
+/* A hairline middot between entries, drawn in CSS so it is never read out. */
+.pill-list li + li::before {
+  content: "";
+  display: inline-block;
+  inline-size: 3px;
+  block-size: 3px;
+  margin-inline: var(--fsu-space-1);
+  border-radius: var(--fsu-radius-pill);
+  background: var(--fsu-line-strong);
+  vertical-align: middle;
+}
+
+/* Strip the chip chrome inside the topic line: no border, no fill, no caps. */
+.pill-list .pill {
+  display: inline;
+  min-block-size: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  color: var(--fsu-color-caption);
+  font-size: inherit;
+  font-weight: var(--fsu-weight-regular);
+  letter-spacing: var(--fsu-tracking-normal);
+  text-transform: none;
+  white-space: nowrap;
+}
+
+/* The glyph is the only coloured thing, and it is small. Colour is never the
+   only cue — the word beside it always says which marker this is. */
+.pill-list .pill__glyph {
+  margin-inline-end: 0.3em;
+  font-weight: var(--fsu-weight-bold);
+}
+
+.pill-list .pill--full    .pill__glyph { color: var(--dash-accent); }
+.pill-list .pill--partial .pill__glyph { color: var(--fsu-color-caption); }
+.pill-list .pill--none    .pill__glyph { color: var(--fsu-color-caption); }
+.pill-list .pill--lab     .pill__glyph { color: var(--fsu-status-info-text); }
+.pill-list .pill--new     .pill__glyph { color: var(--fsu-status-warn-text); }
+.pill-list .pill--exam    .pill__glyph { color: var(--fsu-status-error-text); }
+.pill-list .pill--slides  .pill__glyph { color: var(--fsu-color-caption); }
+
+/* The one marker worth raising above a byline: this topic is on an exam. */
+.pill-list .pill--exam {
+  color: var(--fsu-status-error-text);
+  font-weight: var(--fsu-weight-medium);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fsu-space-05);
+  /* 28px, not the 24px target floor: .pill--new carries a 3px double border,
+     and a chip that is taller than its neighbours makes the legend row read
+     as ragged. One height for all variants. */
+  min-block-size: 28px;
+  padding: 0 var(--fsu-space-1);
+  background: var(--fsu-paper);
+  color: var(--fsu-color-body);
+  border: var(--fsu-border-width-strong) solid var(--fsu-line-strong);
+  /* Rectangular, not a pill. design-system.md §4 reserves --fsu-radius-pill
+     for status dots and count badges; a coverage marker is a chip. */
+  border-radius: var(--fsu-radius);
+  font-size: var(--fsu-text-small);
+  font-weight: var(--fsu-weight-medium);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  line-height: var(--fsu-leading-normal);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pill__glyph { font-weight: var(--fsu-weight-bold); }
+
+.pill--full {
+  border-style: solid;
+  border-color: var(--dash-accent);
+  color: var(--fsu-color-strong);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.pill--partial {
+  border-style: dashed;
+  border-color: var(--fsu-border-strong);
+}
+
+.pill--none {
+  border-style: dotted;
+  border-color: var(--fsu-border-strong);
+  color: var(--fsu-color-caption);
+}
+
+.pill--new {
+  /* `double` needs at least 3px to render as two lines at all. */
+  border-style: double;
+  border-width: 3px;
+  border-color: var(--fsu-status-warn-accent);
+  color: var(--fsu-status-warn-text);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.pill--exam {
+  border-color: var(--fsu-status-error-accent);
+  color: var(--fsu-status-error-text);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.pill--lab { border-color: var(--fsu-status-info-accent); color: var(--fsu-status-info-text); }
+
+.pill--slides { border-color: var(--fsu-border-strong); }
+
+/* Pills that are links get a hit area and an underline like any other link. */
+a.pill { text-decoration: underline; }
+a.pill:hover { text-decoration-thickness: var(--fsu-link-underline-hover); }
+
+/* --- Coverage legend -----------------------------------------------------
+   Was a five-row definition list in a filled box, sitting between the page
+   title and the first topic — so every reader paid for a reference table
+   they need about twice per visit.
+
+   Now it is ONE quiet row of the markers themselves, and each definition
+   appears on hover or focus. The definitions are not lost when they are not
+   painted: every <dt> is wired to its <dd> with aria-describedby, so a screen
+   reader gets the definition inline, always, whether or not anything is
+   hovered.
+
+   1.4.13 Content on Hover or Focus (AA) has three requirements and this meets
+   all three:
+     hoverable   the popover is a child of the item, so moving the pointer
+                 into it does not dismiss it, and there is no gap to cross
+     dismissible Esc closes it — nav.js binds that; the CSS alone would fail
+     persistent  it stays until the pointer leaves, focus moves, or Esc */
+.coverage-legend {
+  margin-block: var(--fsu-space-2) var(--fsu-space-3);
+  font-size: var(--fsu-text-small);
+}
+
+.coverage-legend__intro {
+  margin: 0 0 var(--fsu-space-05);
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-eyebrow);
+  font-weight: var(--fsu-weight-bold);
+  letter-spacing: var(--fsu-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.coverage-legend dl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--fsu-space-05);
+  margin: 0;
+}
+
+/* In the legend the chips are a key, not annotations on a topic, so they are
+   sized to fit one row. Seven markers at the topic-level chip size need about
+   770px and a module page's main column is about 650px — which is how the old
+   legend became five rows of a definition list. Still 24px tall, so still
+   above the 2.5.8 target floor, and still tabbable. */
+.coverage-legend .pill {
+  min-block-size: 24px;
+  padding-inline: var(--fsu-space-05);
+  font-size: var(--fsu-text-eyebrow);
+  letter-spacing: 0.04em;
+  border-width: var(--fsu-border-width);
+}
+
+.coverage-legend .pill--new { border-width: 3px; }
+
+.coverage-legend__item {
+  position: relative;
+  display: inline-flex;
+}
+
+.coverage-legend dt {
+  margin: 0;
+  cursor: help;
+}
+
+/* The definition, revealed on hover or focus. Absolutely positioned so the
+   row never reflows — a legend that pushes the page down when you point at it
+   is worse than the block it replaced. */
+.coverage-legend dd {
+  position: absolute;
+  inset-block-start: calc(100% + var(--fsu-space-05));
+  inset-inline-start: 0;
+  z-index: var(--fsu-z-dropdown);
+  inline-size: max-content;
+  max-inline-size: min(22rem, 80vw);
+  margin: 0;
+  padding: var(--fsu-space-1) var(--fsu-space-2);
+  background: var(--fsu-surf-panel);
+  color: var(--fsu-on-paper-warm);
+  border: var(--fsu-border-width) solid var(--fsu-line-strong);
+  border-radius: var(--fsu-radius);
+  box-shadow: var(--fsu-shadow-2);   /* a genuinely floating layer — §5 */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--fsu-duration-fast) var(--fsu-easing);
+}
+
+.coverage-legend__item:hover dd,
+.coverage-legend__item:focus-within dd {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Esc sets this; see nav.js. Wins over :hover so the dismissal actually
+   dismisses while the pointer is still there (1.4.13). */
+.coverage-legend__item[data-dismissed] dd {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* The pill takes focus so keyboard users get parity with hover. */
+.coverage-legend dt .pill:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+  box-shadow: 0 0 0 var(--fsu-focus-ring-offset) var(--fsu-focus-ring-halo);
+}
+
+/* Last item flips so its popover never leaves the viewport. */
+.coverage-legend__item:last-of-type dd {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+
+/* No hover on a touch screen and no pointer to dismiss with, so the
+   definitions are simply always visible in a wrapped row. */
+@media (hover: none) {
+  .coverage-legend dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--fsu-space-05) var(--fsu-space-1);
+  }
+
+  .coverage-legend__item { display: contents; }
+
+  .coverage-legend dd {
+    position: static;
+    inline-size: auto;
+    max-inline-size: none;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    opacity: 1;
+    visibility: visible;
+    color: var(--fsu-color-body);
+  }
+}
+
+@media print {
+  .coverage-legend dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
+  .coverage-legend__item { display: contents; }
+  .coverage-legend dd {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+}
+
+
+/* ==========================================================================
+   15. BUTTONS AND FORM CONTROLS
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--fsu-space-05);
+  min-block-size: var(--fsu-target-enhanced);   /* 44px, comfortably over 24px */
+  min-inline-size: var(--fsu-target-min);
+  padding: var(--fsu-space-05) var(--fsu-space-2);
+  background: var(--fsu-surface);
+  color: var(--fsu-color-strong);
+  border: var(--fsu-border-width-strong) solid var(--fsu-border-strong); /* 1.4.11 */
+  border-radius: var(--fsu-radius);
+  font-family: var(--fsu-font-sans);
+  font-size: var(--fsu-text-button);
+  font-weight: var(--fsu-weight-medium);
+  line-height: var(--fsu-leading-normal);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-strong-on-warm);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  /* Never dim with opacity — that silently drops the measured ratio. A
+     disabled control keeps full contrast and says so via the border style. */
+  border-style: dotted;
+  color: var(--fsu-color-caption);
+}
+
+.btn--primary {
+  background: var(--fsu-surface-brand);   /* FSU Garnet */
+  color: var(--fsu-on-brand);             /* 9.21:1 */
+  border-color: var(--fsu-surface-brand);
+}
+
+.btn--primary:hover {
+  background: var(--fsu-surface-brand-deep);  /* Plaza Brick — garnet is never lightened */
+  color: var(--fsu-on-brand-deep);            /* 11.87:1 */
+  border-color: var(--fsu-surface-brand-deep);
+}
+
+.btn--gold {
+  background: var(--fsu-surface-gold);   /* FSU Gold */
+  color: var(--fsu-on-gold);             /* black on Gold, 9.41:1 */
+  border-color: var(--fsu-on-gold);
+}
+
+/* Gold is never darkened: the hover state moves to Garnet. */
+.btn--gold:hover {
+  background: var(--fsu-surface-brand);
+  color: var(--fsu-on-brand);
+  border-color: var(--fsu-surface-brand);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--fsu-border-strong);
+}
+
+.btn--small {
+  min-block-size: var(--fsu-target-min);
+  padding-inline: var(--fsu-space-1);
+  font-size: var(--fsu-text-small);
+}
+
+/* Toggle buttons expose aria-pressed. The pressed state changes fill AND
+   weight AND the visible label text ("Play" -> "Pause"). */
+.btn[aria-pressed="true"] {
+  background: var(--dash-accent);
+  color: var(--dash-accent-on);
+  border-color: var(--dash-accent);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fsu-space-1);
+  /* 2.5.8: the gap keeps a 24px circle on each target from overlapping the
+     next one, even for .btn--small. */
+}
+
+/* --- Native inputs -------------------------------------------------------
+   No control is ever styled with `appearance: none` without a full
+   replacement — a stripped checkbox with no visual state is a 1.4.11 and
+   4.1.2 failure at once. These keep native rendering and just size it. */
+input[type="text"],
+input[type="search"],
+input[type="number"],
+select,
+textarea {
+  min-block-size: var(--fsu-target-enhanced);
+  max-inline-size: 100%;
+  padding: var(--fsu-space-05) var(--fsu-space-1);
+  background: var(--fsu-surface);
+  color: var(--fsu-color-body);
+  border: var(--fsu-border-width-strong) solid var(--fsu-border-strong); /* 1.4.11 */
+  border-radius: var(--fsu-radius);
+  font-family: var(--fsu-font-sans);
+  font-size: var(--fsu-text-body);
+  line-height: var(--fsu-leading-normal);
+}
+
+textarea {
+  min-block-size: 6rem;
+  font-family: var(--fsu-font-mono);
+  resize: vertical;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  inline-size: var(--fsu-target-min);
+  block-size: var(--fsu-target-min);
+  accent-color: var(--dash-accent);
+  cursor: pointer;
+}
+
+input[type="range"] {
+  accent-color: var(--dash-accent);
+  block-size: var(--fsu-target-min);
+  cursor: pointer;
+}
+
+/* An invalid field is marked with aria-invalid + a text message, never with a
+   red border alone (1.4.1, 3.3.1). */
+[aria-invalid="true"] {
+  border-color: var(--fsu-status-error-accent);
+  border-style: dashed;
+}
+
+.field-error {
+  display: block;
+  margin-block-start: var(--fsu-space-05);
+  color: var(--fsu-status-error-text);
+  font-size: var(--fsu-text-small);
+  font-weight: var(--fsu-weight-medium);
+}
+
+fieldset {
+  margin: 0;
+  padding: var(--fsu-space-1);
+  border: var(--fsu-border-width) solid var(--fsu-border);
+  border-radius: var(--fsu-radius);
+  min-inline-size: 0;   /* fieldsets refuse to shrink without this — 1.4.10 */
+}
+
+legend { padding-inline: var(--fsu-space-05); }
+
+label { line-height: var(--fsu-leading-normal); }
+
+/* --- Disclosure (<details>) ---------------------------------------------- */
+details {
+  margin-block: var(--fsu-space-2);
+  border: var(--fsu-border-width) solid var(--fsu-border-strong);
+  border-radius: var(--fsu-radius);
+  background: var(--fsu-surface);
+}
+
+summary {
+  min-block-size: var(--fsu-target-enhanced);
+  display: flex;
+  align-items: center;
+  gap: var(--fsu-space-05);
+  padding: var(--fsu-space-1);
+  font-weight: var(--fsu-weight-medium);
+  color: var(--fsu-color-strong);
+  cursor: pointer;
+}
+
+summary:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: calc(-1 * var(--fsu-focus-ring-width));
+}
+
+details > :not(summary) {
+  padding-inline: var(--fsu-space-2);
+}
+
+details > :last-child { padding-block-end: var(--fsu-space-2); }
+
+
+/* ==========================================================================
+   16. SEARCH BOX + RESULTS
+
+   Pattern: a real <form> with a labelled <input type="search">, and results
+   as a plain list of real links. Deliberately NOT an aria-activedescendant
+   combobox — real links give Enter, middle-click, context menu and
+   "open in new tab" for free, and there is no state to get wrong.
+   search.js adds Down-arrow-into-results and Escape-to-clear on top.
+
+   The result count goes to a polite live region (4.1.3 Status Messages).
+   ========================================================================== */
+
+.search { margin-block: var(--fsu-space-2); }
+
+.search__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--fsu-space-1);
+}
+
+.search__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fsu-space-05);
+  flex: 1 1 16rem;
+  min-inline-size: 0;
+}
+
+.search__label {
+  font-weight: var(--fsu-weight-medium);
+  color: var(--fsu-color-strong);
+}
+
+.search__input { inline-size: 100%; }
+
+.search__hint {
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-small);
+}
+
+/* The live region. Always in the DOM before any result is injected —
+   a live region created at the same time as its content announces nothing. */
+.search__status {
+  margin-block-start: var(--fsu-space-1);
+  font-weight: var(--fsu-weight-medium);
+  color: var(--fsu-color-strong);
+  min-block-size: var(--fsu-leading-body);   /* reserves the line, no layout jump */
+}
+
+.search__results {
+  margin: var(--fsu-space-1) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--fsu-space-1);
+}
+
+.search__results li { margin: 0; }
+
+.search__result {
+  display: block;
+  padding: var(--fsu-space-1);
+  background: var(--fsu-surface);
+  border: var(--fsu-border-width) solid var(--fsu-border-strong);
+  border-inline-start: var(--fsu-rule-width) solid var(--fsu-rule);
+  border-radius: var(--fsu-radius);
+  text-decoration: none;
+  color: var(--fsu-color-body);
+}
+
+.search__result:visited { color: var(--fsu-color-body); }
+
+.search__result:hover {
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-body-on-warm);
+}
+
+.search__result-title {
+  display: block;
+  color: var(--fsu-link);
+  font-weight: var(--fsu-weight-bold);
+  text-decoration: underline;
+  text-decoration-thickness: var(--fsu-link-underline);
+  text-underline-offset: var(--fsu-link-underline-offset);
+}
+
+.search__result:hover .search__result-title { color: var(--fsu-link-hover); }
+
+.search__result-path {
+  display: block;
+  color: var(--fsu-color-caption);
+  font-size: var(--fsu-text-small);
+}
+
+.search__result-summary {
+  display: block;
+  margin-block-start: var(--fsu-space-05);
+  font-size: var(--fsu-text-small);
+}
+
+/* Match highlighting uses <mark>, which carries its own semantics. Gold on
+   black text: FSU Gold background with Black text is 9.41:1. */
+.search__result mark {
+  background: var(--fsu-surface-gold);
+  color: var(--fsu-on-gold);
+  padding-inline: 0.1em;
+  border-radius: var(--fsu-radius);
+  font-weight: var(--fsu-weight-bold);
+}
+
+.search__empty {
+  padding: var(--fsu-space-2);
+  background: var(--fsu-surf-inset);
+  color: var(--fsu-color-body-on-warm);
+  border: var(--fsu-border-width) solid var(--fsu-border-strong);
+  border-radius: var(--fsu-radius);
+  max-inline-size: var(--fsu-measure-max);
+}
+
+.search__empty > :last-child { margin-block-end: 0; }
+
+
+/* ==========================================================================
+   17. FOOTER
+   ========================================================================== */
+
+.site-footer {
+  margin-block-start: auto;
+  padding-block: var(--fsu-space-3);
+  background: var(--fsu-surface-dark);   /* Stadium Night */
+  color: var(--fsu-on-dark);             /* 17.89:1 */
+  border-block-start: var(--dash-header-rule) solid var(--fsu-rule);
+}
+
+/* data-surface="dark" on the footer flips the focus ring to the dark pairing.
+   Links inside inherit --fsu-link-on-dark (FSU Gold, 9.23:1). */
+
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: var(--fsu-space-3);
+}
+
+.site-footer h2 {
+  color: var(--fsu-on-dark-accent);   /* FSU Gold, 9.23:1 on Stadium Night */
+  font-size: var(--fsu-text-h4);
+}
+
+.site-footer ul { margin: 0; padding: 0; list-style: none; }
+
+.site-footer li { margin-block-end: var(--fsu-space-05); }
+
+.site-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--fsu-target-min);
+  color: var(--fsu-link-on-dark);        /* FSU Gold, 9.23:1 */
+}
+
+.site-footer a:hover { color: var(--fsu-link-on-dark-hover); }   /* white, 17.89:1 */
+.site-footer a:visited { color: var(--fsu-link-on-dark); }
+
+.site-footer__note {
+  margin-block-start: var(--fsu-space-2);
+  font-size: var(--fsu-text-small);
+  color: var(--fsu-on-dark);
+}
+
+
+/* ==========================================================================
+   18. RESPONSIVE — down to 320 CSS px
+
+   1.4.10 Reflow: no two-dimensional scrolling at 320px (400% zoom on a
+   1280px viewport). Everything below either stacks or scrolls in ONE axis
+   inside its own container, which is what the criterion permits for tables,
+   code, and figures.
+   ========================================================================== */
+
+@media (max-width: 64rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--fsu-space-3);
+  }
+
+  .layout__sidebar {
+    position: static;
+    max-block-size: none;
+    overflow: visible;
+  }
+
+  /* nav.js un-hides this and wires aria-expanded/aria-controls. With no JS
+     the list is simply always visible — never a dead disclosure. */
+  .module-nav__toggle {
+    display: inline-flex;
+    inline-size: 100%;
+    justify-content: space-between;
+  }
+
+  .module-nav__toggle[hidden] { display: none; }
+}
+
+@media (max-width: 48rem) {
+  :root { --dash-gutter: var(--fsu-space-2); }
+
+  .site-header__inner {
+    align-items: flex-start;
+    row-gap: var(--fsu-space-1);
+  }
+
+  .brand { margin-inline-end: 0; flex: 1 1 auto; }
+
+  /* nav.js reveals the toggle and puts `hidden` on the list. Collapsing is
+     driven by the attribute, never by a CSS class — the attribute is what
+     takes the list out of the tab order too. Without JS the toggle stays
+     hidden and the list simply wraps, which is perfectly usable. */
+  .primary-nav__list { inline-size: 100%; }
+
+  .demo__controls { grid-template-columns: minmax(0, 1fr); }
+
+  .demo__steps { row-gap: var(--fsu-space-1); }
+
+  .demo__step-count { flex: 1 0 100%; margin-inline-end: 0; }
+}
+
+@media (max-width: 30rem) {
+  :root {
+    --dash-gutter: var(--fsu-space-1);
+    --fsu-space-4: 2rem;
+  }
+
+  .demo { padding: var(--fsu-space-1); }
+  .demo__controls { padding: var(--fsu-space-1); }
+  .demo__figure { padding: var(--fsu-space-1); }
+
+  .btn { padding-inline: var(--fsu-space-1); }
+
+  .btn-group .btn { flex: 1 1 auto; }
+
+  /* Long topic numbers and titles must wrap rather than push the page wide. */
+  .topic-section__header { row-gap: var(--fsu-space-05); }
+
+  .search__form { flex-direction: column; align-items: stretch; }
+  .search__form .btn { inline-size: 100%; }
+}
+
+/* Text-spacing bookmarklet resilience (1.4.12): nothing above sets a fixed
+   block-size on a text container, and every flex/grid child may wrap. The
+   one place a fixed height would be tempting — .search__status — uses
+   min-block-size, so extra leading grows the box instead of clipping it. */
+
+
+/* ==========================================================================
+   19. FORCED COLORS — Windows High Contrast Mode
+
+   fsu-tokens.css §10 already remaps the colour tokens. What is left here is
+   the class of failure that mapping cannot fix: state that is carried by a
+   `background` fill. Backgrounds are stripped in forced-colors, so every
+   meaningful fill needs a border to fall back on.
+   ========================================================================== */
+
+@media (forced-colors: active) {
+  .primary-nav__link[aria-current="page"],
+  .module-nav__link[aria-current],
+  .theme-switch__input:checked + .theme-switch__label,
+  .btn[aria-pressed="true"],
+  .data-table tr[aria-current] > *:first-child {
+    border: var(--fsu-border-width-strong) solid CanvasText;
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .demo__progress-fill { background: Highlight; }
+
+  .pill { border-width: var(--fsu-border-width-strong); }
+
+  /* The gold rule under headings and cards is decoration that would otherwise
+     vanish entirely. */
+  .topic-group__header,
+  .page-header,
+  .site-header,
+  .site-footer {
+    border-color: CanvasText;
+  }
+}
+
+
+/* ==========================================================================
+   20. PRINT
+
+   fsu-tokens.css §11 already flattens the palette to black on white and
+   prints every external href. What is left is structure: drop the chrome,
+   open every disclosure, and make sure the data table — not the figure — is
+   what actually lands on the page.
+   ========================================================================== */
+
+@media print {
+  body { display: block; }
+
+  .layout {
+    display: block;
+    padding: 0;
+    max-inline-size: none;
+  }
+
+  /* Chrome and controls mean nothing on paper. */
+  .site-header,
+  .layout__sidebar,
+  .primary-nav,
+  .nav-toggle,
+  .theme-switch,
+  .search__form,
+  .search__status,
+  .demo__controls,
+  .demo__toolbar,
+  .demo__steps,
+  .demo__keys,
+  .topic-section__anchor,
+  .module-nav__toggle {
+    display: none !important;
+  }
+
+  /* The figure may or may not print usefully; the table always does. Force
+     both into view and drop the scroll containers so nothing is clipped. */
+  .table-scroll,
+  .scroll-x,
+  .demo__figure,
+  .code-block pre {
+    overflow: visible !important;
+    max-block-size: none !important;
+  }
+
+  .demo {
+    border: 1pt solid;
+    padding: 0.5em;
+    break-inside: avoid;
+  }
+
+  .demo__summary {
+    border: 1pt solid;
+    break-inside: avoid;
+  }
+
+  /* A demo whose table was moved off-screen by the "Figure only" view must
+     come back for print — the numbers are the point. */
+  .demo__data.visually-hidden,
+  .demo__data .visually-hidden {
+    position: static !important;
+    inline-size: auto !important;
+    block-size: auto !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    clip-path: none !important;
+    white-space: normal !important;
+  }
+
+  details { border: 1pt solid; }
+  details > :not(summary) { display: block !important; }
+
+  .data-table { font-size: 10pt; }
+  .data-table thead { display: table-header-group; }
+
+  .callout, .formula, .topic-section { break-inside: avoid; }
+
+  .site-footer {
+    border-block-start: 1pt solid;
+    padding-block: 0.5em;
+  }
+}

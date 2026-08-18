@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- ==========================================================================
+     _TEMPLATE.html — the skeleton every module page copies
+     ==========================================================================
+
+     HOW TO USE THIS FILE
+       1. Copy it to  m<N>-<slug>.html  (the eight filenames are fixed —
+          see AUTHORING-CONTRACT.md §2).
+       2. Replace every  {{ … }}  placeholder.
+       3. Delete the "SLOT" comment blocks you do not use.
+          (Never write a literal comment terminator inside a comment — it ends
+          the comment there and the rest of it becomes page content. That is
+          exactly the bug this line used to contain.)
+       4. Do NOT delete: the skip link, the theme bootstrap, the landmarks,
+          the <noscript> blocks, or any aria-* attribute already present.
+       5. Read AUTHORING-CONTRACT.md before you start. It has copy-pasteable
+          markup for every component and explains why each rule exists.
+
+     PLACEHOLDERS USED BELOW
+       {{MODULE_NUMBER}}   0–7
+       {{MODULE_SLUG}}     e.g. graphs
+       {{MODULE_TITLE}}    e.g. Graphs
+       {{MODULE_LEDE}}     one or two sentences
+       {{TOPIC_COUNT}}     from COURSE_TOPIC_MAP.md §0
+
+     HEADING CONTRACT — do not deviate
+       h1  the module title            (exactly one per page)
+       h2  a numbered group, e.g. 3.5  (.topic-group)
+       h3  a numbered topic, e.g. 3.5.5 (.topic-section)
+       h4  a demo title                 (demo.js emits this; headingLevel: 4)
+       h5  rarely needed; never skip a level to reach it
+
+     WHY THE SIDEBAR HAS NO HEADINGS
+       It sits before <main> in the source, which is also its visual and tab
+       order. Putting an <h2> there would place two headings above the page's
+       only <h1>. So the sidebar's landmarks are named with aria-label instead,
+       and their visible titles are plain <p> elements. The page's heading
+       outline therefore starts at the h1 and descends cleanly.
+     ========================================================================== -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- 2.4.2 Page Titled. Format: "<module> — ISC 4221C". Unique per page. -->
+<title>M{{MODULE_NUMBER}} {{MODULE_TITLE}} — ISC 4221C Discrete Algorithms</title>
+<meta name="description" content="{{MODULE_LEDE}}">
+
+<link rel="stylesheet" href="assets/css/fsu-tokens.css">
+<link rel="stylesheet" href="assets/css/dashboard.css">
+
+<!-- Theme bootstrap. Copy verbatim. Runs before first paint so a stored dark
+     preference does not flash light; theme.js agrees with whatever it set. -->
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('isc4221c.theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) { /* storage unavailable; fall through to the OS preference */ }
+  })();
+</script>
+</head>
+
+<body>
+
+<!-- 2.4.1 Bypass Blocks. First element in <body>. Never display:none it. -->
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- ========================================================== SITE HEADER
+     Copy verbatim from this template on every page. The only change is
+     nothing: nav.js sets aria-current="page" from the filename.
+     ====================================================================== -->
+<header class="site-header">
+  <!-- ROW 1 — identity and utilities. Scrolls away with the page. -->
+  <div class="site-header__bar">
+    <div class="site-header__bar-inner wrap">
+      <a class="brand" href="index.html">
+        <span>
+          <span class="brand__code">ISC 4221C</span>
+          <span class="brand__name">Discrete Algorithms · Spring 2026</span>
+        </span>
+      </a>
+
+      <!-- Pushed to the right edge by margin-inline-start:auto, not by a
+           spacer element. Ships `hidden`; theme.js reveals it, so a reader
+           without the script never sees a control that cannot work. -->
+      <fieldset class="theme-switch" hidden>
+        <legend class="theme-switch__legend">Theme</legend>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-system" value="system" checked>
+          <label class="theme-switch__label" for="theme-system">Auto</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-light" value="light">
+          <label class="theme-switch__label" for="theme-light">Light</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-dark" value="dark">
+          <label class="theme-switch__label" for="theme-dark">Dark</label>
+        </span>
+      </fieldset>
+    </div>
+  </div>
+
+</header>
+
+<!-- ROW 2 — modules. Sticky, and it never wraps: every module is visible at
+     once, its sections behind a dropdown rather than spilled onto the strip.
+     nav.js fills each .chapter-nav__menu from window.NAV_MAP.
+
+     OUTSIDE <header> on purpose. A sticky element cannot leave its parent's
+     box, so while this lived inside the two-row <header> it stuck for the
+     header's own 85px of height and then scrolled away with it. Its parent has
+     to be <body>. -->
+<nav class="chapter-nav" aria-label="Modules">
+  <div class="chapter-nav__inner wrap">
+    <ul class="chapter-nav__list">
+        <li class="chapter-nav__item chapter-nav__item--plain">
+          <a class="chapter-nav__link" href="index.html">Home</a>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m0">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m0"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m0"
+                  data-chapter-file="m0-foundations.html">
+            <span class="chapter-nav__full">Module 0</span>
+            <span class="chapter-nav__short" aria-hidden="true">M0</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m0" role="group"
+               aria-labelledby="chapbtn-m0" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m1">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m1"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m1"
+                  data-chapter-file="m1-algorithm-design.html">
+            <span class="chapter-nav__full">Module 1</span>
+            <span class="chapter-nav__short" aria-hidden="true">M1</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m1" role="group"
+               aria-labelledby="chapbtn-m1" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m2">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m2"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m2"
+                  data-chapter-file="m2-probability.html">
+            <span class="chapter-nav__full">Module 2</span>
+            <span class="chapter-nav__short" aria-hidden="true">M2</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m2" role="group"
+               aria-labelledby="chapbtn-m2" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m3">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m3"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m3"
+                  data-chapter-file="m3-graphs.html">
+            <span class="chapter-nav__full">Module 3</span>
+            <span class="chapter-nav__short" aria-hidden="true">M3</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m3" role="group"
+               aria-labelledby="chapbtn-m3" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m4">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m4"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m4"
+                  data-chapter-file="m4-image-processing.html">
+            <span class="chapter-nav__full">Module 4</span>
+            <span class="chapter-nav__short" aria-hidden="true">M4</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m4" role="group"
+               aria-labelledby="chapbtn-m4" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m5">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m5"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m5"
+                  data-chapter-file="m5-data-mining.html">
+            <span class="chapter-nav__full">Module 5</span>
+            <span class="chapter-nav__short" aria-hidden="true">M5</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m5" role="group"
+               aria-labelledby="chapbtn-m5" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m6">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m6"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m6"
+                  data-chapter-file="m6-computational-geometry.html">
+            <span class="chapter-nav__full">Module 6</span>
+            <span class="chapter-nav__short" aria-hidden="true">M6</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m6" role="group"
+               aria-labelledby="chapbtn-m6" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m7">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m7"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m7"
+                  data-chapter-file="m7-discrete-optimization.html">
+            <span class="chapter-nav__full">Module 7</span>
+            <span class="chapter-nav__short" aria-hidden="true">M7</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m7" role="group"
+               aria-labelledby="chapbtn-m7" hidden></div>
+        </li>
+        <li class="chapter-nav__item chapter-nav__item--plain chapter-nav__item--sep"
+            data-chapter="threads">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-threads"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-threads">
+            <span class="chapter-nav__full">Threads</span>
+            <span class="chapter-nav__short" aria-hidden="true">Thr</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-threads" role="group"
+               aria-labelledby="chapbtn-threads" hidden></div>
+        </li>
+      </ul>
+    </div>
+</nav>
+<nav class="breadcrumb wrap" aria-label="Breadcrumb">
+  <ol class="breadcrumb__list">
+    <li><a href="index.html">Course home</a></li>
+    <li><span aria-current="page">M{{MODULE_NUMBER}} — {{MODULE_TITLE}}</span></li>
+  </ol>
+</nav>
+
+<div class="layout">
+
+  <!-- ============================================================ SIDEBAR
+       A second <nav>, so it MUST be labelled distinctly from the primary
+       nav (2.4.1). One entry per topic section on this page. nav.js sets
+       aria-current="true" on whichever is nearest the top of the viewport.
+       ================================================================== -->
+  <div class="layout__sidebar">
+
+    <!-- Search, scoped-down copy. Optional but recommended: it is the same
+         component as the home page, just with a smaller result limit.
+         Named with aria-label rather than a heading — see the note at the top
+         of this file about why the sidebar carries no headings. -->
+    <section class="search" data-search data-search-limit="8" aria-label="Search the course">
+      <form class="search__form" role="search">
+        <div class="search__field">
+          <label class="search__label" for="side-search">Search all topics</label>
+          <input class="search__input" id="side-search" name="q" type="search"
+                 autocomplete="off" spellcheck="false" data-search-input>
+        </div>
+      </form>
+      <p class="search__status" role="status" aria-live="polite" data-search-status></p>
+      <ul class="search__results" data-search-results aria-label="Search results"></ul>
+      <!-- Removed by search.js on success. Not a <noscript> — see the note on
+           the demo mount further down this file. -->
+      <p class="search__nojs">Search is not running. Use the module contents below.</p>
+    </section>
+
+    <nav class="module-nav" aria-label="On this page">
+      <p class="module-nav__title">On this page</p>
+
+      <button class="module-nav__toggle btn btn--ghost" type="button"
+              aria-expanded="true" aria-controls="module-nav-list" hidden>
+        <span data-nav-label>Module contents</span>
+      </button>
+
+      <ul class="module-nav__list" id="module-nav-list">
+
+        <!-- SLOT: one <li> per numbered group, each with its topics nested.
+             The href is the section/topic anchor id; the number is real text
+             inside the link so it is announced and can be copied. -->
+        <li>
+          <p class="module-nav__group-title">{{MODULE_NUMBER}}.1 — {{GROUP_TITLE}}</p>
+          <ul class="module-nav__sublist">
+            <li>
+              <a class="module-nav__link" href="#topic-{{MODULE_NUMBER}}-1-1">
+                <span class="module-nav__num">{{MODULE_NUMBER}}.1.1</span>
+                <span>{{TOPIC_TITLE}}</span>
+              </a>
+            </li>
+            <!-- …repeat… -->
+          </ul>
+        </li>
+        <!-- …repeat per group… -->
+
+      </ul>
+    </nav>
+  </div>
+
+  <!-- =============================================================== MAIN
+       Exactly one <main>, id="main" (the skip-link target), tabindex="-1"
+       so focus can actually land on it.
+       ================================================================== -->
+  <main class="layout__main" id="main" tabindex="-1">
+
+    <div class="page-header">
+      <p class="eyebrow">Module {{MODULE_NUMBER}}</p>
+      <h1>{{MODULE_TITLE}}</h1>
+      <p class="lede">{{MODULE_LEDE}}</p>
+      <p class="page-header__meta">
+        <span><strong>{{TOPIC_COUNT}}</strong> topics</span>
+        <span>{{SLIDE_FRAMES}} slide frames</span>
+        <span>{{LABS}}</span>
+      </p>
+    </div>
+
+    <!-- Coverage legend. Include it once per page, above the first group,
+         so the pills further down mean something. -->
+    <div class="coverage-legend">
+      <p class="coverage-legend__intro" id="coverage-legend-intro">Coverage markers</p>
+      <dl aria-labelledby="coverage-legend-intro">
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend--TEMPLATE-full" class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Full</span></dt>
+            <dd id="legend--TEMPLATE-full">Taught in full in the named source</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend--TEMPLATE-partial" class="pill pill--partial"><span class="pill__glyph" aria-hidden="true">◐</span> Partial</span></dt>
+            <dd id="legend--TEMPLATE-partial">Mentioned, or covered only in passing</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend--TEMPLATE-new" class="pill pill--new"><span class="pill__glyph" aria-hidden="true">✚</span> New</span></dt>
+            <dd id="legend--TEMPLATE-new">Built for 2026 — no interactive version existed before</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend--TEMPLATE-exam" class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Exam</span></dt>
+            <dd id="legend--TEMPLATE-exam">Assessed on the midterm or the final</dd>
+          </div>
+      </dl>
+    </div>
+
+    <!-- ==================================================== TOPIC GROUP
+         One <section class="topic-group"> per numbered group (e.g. 3.5),
+         id="section-3-5". Its heading is an h2.
+         ============================================================== -->
+    <section class="topic-group" id="section-{{MODULE_NUMBER}}-1" aria-labelledby="section-{{MODULE_NUMBER}}-1-title">
+      <div class="topic-group__header">
+        <h2 id="section-{{MODULE_NUMBER}}-1-title">
+          <span class="topic-section__number">{{MODULE_NUMBER}}.1</span>
+          {{GROUP_TITLE}}
+        </h2>
+      </div>
+
+      <!-- ================================================ TOPIC SECTION
+           One <section class="topic-section"> per numbered topic.
+           id="topic-3-5-5" for topic 3.5.5 — dots become dashes.
+           Its heading is an h3 and contains the number as real text.
+           ========================================================== -->
+      <section class="topic-section" id="topic-{{MODULE_NUMBER}}-1-1"
+               aria-labelledby="topic-{{MODULE_NUMBER}}-1-1-title">
+
+        <div class="topic-section__header">
+          <h3 id="topic-{{MODULE_NUMBER}}-1-1-title">
+            <span class="topic-section__number">{{MODULE_NUMBER}}.1.1</span>
+            {{TOPIC_TITLE}}
+          </h3>
+          <a class="topic-section__anchor" href="#topic-{{MODULE_NUMBER}}-1-1">
+            <span aria-hidden="true">#</span>
+            <span class="visually-hidden">Permalink to topic {{MODULE_NUMBER}}.1.1, {{TOPIC_TITLE}}</span>
+          </a>
+        </div>
+
+        <ul class="pill-list">
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Slides</span></li>
+          <li><span class="pill pill--lab"><span class="pill__glyph" aria-hidden="true">▣</span> Lab 07</span></li>
+          <li><span class="pill pill--exam"><span class="pill__glyph" aria-hidden="true">★</span> Midterm</span></li>
+        </ul>
+
+        <div class="topic-section__body prose">
+
+          <p>{{TOPIC_PROSE}}</p>
+
+          <!-- SLOT: CALLOUT — see AUTHORING-CONTRACT.md §6.5
+          <div class="callout callout--key">
+            <p class="callout__title">Key idea</p>
+            <p>…</p>
+          </div>
+          -->
+
+          <!-- SLOT: FORMULA — see AUTHORING-CONTRACT.md §6.6
+          <div class="formula" role="math" aria-label="d of v equals the minimum of d of v and d of u plus w of u v">
+            <span class="formula__label">Relaxation step</span>
+            <p class="formula__expr">
+              <var>d</var>(<var>v</var>) &larr; min( <var>d</var>(<var>v</var>),
+              <var>d</var>(<var>u</var>) + <var>w</var>(<var>u</var>,<var>v</var>) )
+            </p>
+            <dl class="formula__where">
+              <dt><var>d</var>(<var>v</var>)</dt><dd>best distance to node v found so far</dd>
+            </dl>
+          </div>
+          -->
+
+          <!-- SLOT: CODE — see AUTHORING-CONTRACT.md §6.7
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">Python</span>
+              <span id="code-{{ID}}-label">Dijkstra, main loop</span>
+            </div>
+            <pre tabindex="0" role="region" aria-labelledby="code-{{ID}}-label"><code>…</code></pre>
+          </div>
+          -->
+
+          <!-- SLOT: STATIC FIGURE + ITS TABLE — see AUTHORING-CONTRACT.md §6.2
+          <figure>
+            <svg role="img" aria-labelledby="fig-{{ID}}-title" viewBox="0 0 480 300">
+              <title id="fig-{{ID}}-title">…the finding, not the picture…</title>
+              …
+            </svg>
+            <figcaption>Figure {{N}}. …</figcaption>
+          </figure>
+          <div class="table-scroll" role="region" tabindex="0" aria-labelledby="fig-{{ID}}-data-title">
+            <p class="visually-hidden" id="fig-{{ID}}-data-title">Data behind figure {{N}}</p>
+            <table class="data-table"> … </table>
+          </div>
+          -->
+
+          <!-- SLOT: INTERACTIVE DEMO — see AUTHORING-CONTRACT.md §6.4
+
+               The mount is NOT empty. It holds a static fallback table, and
+               demo.js replaces the mount's children when it runs. That is not
+               the same thing as a <noscript>, and the difference matters:
+               <noscript> fires when scripting is disabled, but NOT when a
+               script fails to load for any other reason. In-mount fallback
+               content covers both.
+
+               HISTORY: the runtime used to be ES modules, and Chrome and
+               Firefox refuse a module script from a file:// address — so
+               every reader who opened the folder from a USB stick hit this
+               fallback on every demo. The runtime is now classic scripts
+               (tools/demodulize.py) and that failure is gone. The fallback
+               remains for the ordinary cases: scripting off, a missing file.
+
+               The fallback table is NOT optional. -->
+          <div id="demo-{{DEMO_SLUG}}-mount">
+            <div class="demo__fallback">
+              <p><strong>{{DEMO_TITLE}} — interactive version not running.</strong>
+                 Either JavaScript is off, or this page was opened directly from
+                 a folder. The numbers this demo produces at its default
+                 settings are below.</p>
+              <div class="table-scroll" role="region" tabindex="0"
+                   aria-label="{{DEMO_TITLE}} — values at the default settings">
+                <table class="data-table">
+                  <caption>{{DEMO_TITLE}}, at its default settings</caption>
+                  <thead><tr><th scope="col">…</th></tr></thead>
+                  <tbody><tr><td>…</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+      <!-- /topic-section -->
+
+      <!-- …repeat topic sections… -->
+
+    </section>
+    <!-- /topic-group -->
+
+    <!-- …repeat topic groups… -->
+
+    <p><a href="#main" data-back-to-top>Back to the top of {{MODULE_TITLE}}</a></p>
+
+  </main>
+</div>
+
+<!-- =============================================================== FOOTER -->
+<footer class="site-footer" data-surface="dark">
+  <div class="site-footer__inner wrap">
+    <section aria-labelledby="footer-modules">
+      <h2 id="footer-modules">Modules</h2>
+      <ul>
+        <li><a href="m0-foundations.html">M0 — Foundations &amp; Tooling</a></li>
+        <li><a href="m1-algorithm-design.html">M1 — Algorithm Design &amp; Analysis</a></li>
+        <li><a href="m2-probability.html">M2 — Probability &amp; Random Processes</a></li>
+        <li><a href="m3-graphs.html">M3 — Graphs</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-modules-2">
+      <h2 id="footer-modules-2">Modules, continued</h2>
+      <ul>
+        <li><a href="m4-image-processing.html">M4 — Image Processing</a></li>
+        <li><a href="m5-data-mining.html">M5 — Data Mining</a></li>
+        <li><a href="m6-computational-geometry.html">M6 — Computational Geometry</a></li>
+        <li><a href="m7-discrete-optimization.html">M7 — Discrete Optimization</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-about">
+      <h2 id="footer-about">About this dashboard</h2>
+      <ul>
+        <li><a class="link-external" href="../ACCESSIBILITY_STATEMENT.md">Accessibility statement<span class="visually-hidden"> (Markdown file, opens outside the dashboard)</span></a></li>
+        <li><a class="link-external" href="../COURSE_TOPIC_MAP.md">Course topic map<span class="visually-hidden"> (Markdown file, opens outside the dashboard)</span></a></li>
+        <li><a href="index.html#search">Search all topics</a></li>
+      </ul>
+      <p class="site-footer__note">
+        ISC 4221C · Florida State University · Department of Scientific Computing.
+        Built to work offline: no external requests, no tracking, no account.
+      </p>
+    </section>
+  </div>
+</footer>
+
+<!-- ============================================================== SCRIPTS
+     Order does not matter — they are modules and each waits for the DOM.
+     Add exactly ONE module-specific script, and put every demo for this
+     page inside it. Do not inline demo code in the HTML.
+     ================================================================== -->
+<script defer src="assets/js/core/gfx.js"></script>
+<script defer data-manual src="assets/js/vendor/prism.js"></script>
+<script defer src="assets/js/highlight.js"></script>
+<script defer src="assets/js/theme.js"></script>
+<script defer src="assets/js/nav-map.js"></script>
+<script defer src="assets/js/nav.js"></script>
+<script defer src="assets/js/search-index.js"></script>
+<script defer src="assets/js/search.js"></script>
+<script defer src="assets/js/demo.js"></script>
+<script defer src="assets/js/demos/m{{MODULE_NUMBER}}-{{MODULE_SLUG}}.js"></script>
+</body>
+</html>

@@ -1,0 +1,575 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "kmeans",
+  "module": "M5",
+  "topics": [
+    "5.4.1",
+    "5.4.2",
+    "5.4.3",
+    "5.4.4",
+    "5.4.5",
+    "5.4.6",
+    "5.4.10"
+  ],
+  "title": "Lloyd's method with k = 3 on eighteen two-dimensional points",
+  "seed": 4221,
+  "determinism": "Forgy initialisation drawn from mulberry32 seeded 4221; changing the seed changes the starting centroids and is how initialisation sensitivity (topic 5.4.6) is demonstrated",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "Inertia is recomputed every iteration. The 2025 k-means view appended the same FINAL inertia max_iter times and called it a convergence history, so its curve was flat by construction.",
+    "A second run from seed 4222 is summarised so the demo can state whether the answer depended on the initialisation without the student having to rerun it."
+  ],
+  "input": {
+    "points": [
+      [
+        1.0,
+        1.4
+      ],
+      [
+        1.6,
+        1.0
+      ],
+      [
+        0.8,
+        2.2
+      ],
+      [
+        1.9,
+        2.0
+      ],
+      [
+        1.2,
+        0.6
+      ],
+      [
+        2.3,
+        1.5
+      ],
+      [
+        6.4,
+        1.2
+      ],
+      [
+        7.1,
+        1.9
+      ],
+      [
+        6.8,
+        0.7
+      ],
+      [
+        7.6,
+        1.4
+      ],
+      [
+        6.1,
+        2.1
+      ],
+      [
+        7.3,
+        2.6
+      ],
+      [
+        3.6,
+        6.4
+      ],
+      [
+        4.3,
+        7.1
+      ],
+      [
+        3.1,
+        7.0
+      ],
+      [
+        4.6,
+        6.2
+      ],
+      [
+        3.9,
+        7.6
+      ],
+      [
+        4.9,
+        6.9
+      ]
+    ],
+    "k": 3,
+    "initialisation": "Forgy — k distinct data points chosen at random",
+    "distance": "Euclidean",
+    "stop": "no point changes cluster"
+  },
+  "columns": [
+    {
+      "label": "Cluster",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Points in cluster",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Centroid x before",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Centroid y before",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Centroid x after",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Centroid y after",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Distance moved",
+      "unit": "",
+      "numeric": true
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 4,
+  "steps": [
+    {
+      "index": 0,
+      "label": "Iteration 1: starting from Forgy initialisation with seed 4221 picked data points 16, 18, 4, every point joins its nearest centroid, giving clusters of 6, 3, 9 points and an inertia of 153.46. Each centroid then moves to the mean of its members, the largest move being 2.17.",
+      "rows": [
+        [
+          1,
+          6,
+          4.6,
+          6.2,
+          5.55,
+          4.25,
+          2.1691
+        ],
+        [
+          2,
+          3,
+          4.9,
+          6.9,
+          4.367,
+          7.2,
+          0.6119
+        ],
+        [
+          3,
+          9,
+          1.9,
+          2.0,
+          3.122,
+          1.411,
+          1.3567
+        ]
+      ],
+      "state": {
+        "iteration": 1,
+        "centroids": [
+          [
+            4.6,
+            6.2
+          ],
+          [
+            4.9,
+            6.9
+          ],
+          [
+            1.9,
+            2.0
+          ]
+        ],
+        "newCentroids": [
+          [
+            5.55,
+            4.25
+          ],
+          [
+            4.366666666667,
+            7.2
+          ],
+          [
+            3.122222222222,
+            1.411111111111
+          ]
+        ],
+        "labels": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          0,
+          2,
+          0,
+          2,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "counts": [
+          6,
+          3,
+          9
+        ],
+        "inertia": 153.46,
+        "maxShift": 2.169101196348,
+        "reassigned": 0,
+        "converged": false
+      }
+    },
+    {
+      "index": 1,
+      "label": "Iteration 2: 5 points changed cluster, dropping inertia to 79.59. The centroids move again, the largest by 2.76.",
+      "rows": [
+        [
+          1,
+          5,
+          5.55,
+          4.25,
+          6.9,
+          1.84,
+          2.7624
+        ],
+        [
+          2,
+          6,
+          4.367,
+          7.2,
+          4.067,
+          6.867,
+          0.4485
+        ],
+        [
+          3,
+          7,
+          3.122,
+          1.411,
+          2.229,
+          1.343,
+          0.8963
+        ]
+      ],
+      "state": {
+        "iteration": 2,
+        "centroids": [
+          [
+            5.55,
+            4.25
+          ],
+          [
+            4.366666666667,
+            7.2
+          ],
+          [
+            3.122222222222,
+            1.411111111111
+          ]
+        ],
+        "newCentroids": [
+          [
+            6.9,
+            1.84
+          ],
+          [
+            4.066666666667,
+            6.866666666667
+          ],
+          [
+            2.228571428571,
+            1.342857142857
+          ]
+        ],
+        "labels": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "counts": [
+          5,
+          6,
+          7
+        ],
+        "inertia": 79.592654320988,
+        "maxShift": 2.762354068544,
+        "reassigned": 5,
+        "converged": false
+      }
+    },
+    {
+      "index": 2,
+      "label": "Iteration 3: 1 point changed cluster, dropping inertia to 14.61. The centroids move again, the largest by 0.77.",
+      "rows": [
+        [
+          1,
+          6,
+          6.9,
+          1.84,
+          6.883,
+          1.65,
+          0.1907
+        ],
+        [
+          2,
+          6,
+          4.067,
+          6.867,
+          4.067,
+          6.867,
+          0.0
+        ],
+        [
+          3,
+          6,
+          2.229,
+          1.343,
+          1.467,
+          1.45,
+          0.7694
+        ]
+      ],
+      "state": {
+        "iteration": 3,
+        "centroids": [
+          [
+            6.9,
+            1.84
+          ],
+          [
+            4.066666666667,
+            6.866666666667
+          ],
+          [
+            2.228571428571,
+            1.342857142857
+          ]
+        ],
+        "newCentroids": [
+          [
+            6.883333333333,
+            1.65
+          ],
+          [
+            4.066666666667,
+            6.866666666667
+          ],
+          [
+            1.466666666667,
+            1.45
+          ]
+        ],
+        "labels": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "counts": [
+          6,
+          6,
+          6
+        ],
+        "inertia": 14.608470748299,
+        "maxShift": 0.769401363431,
+        "reassigned": 1,
+        "converged": false
+      }
+    },
+    {
+      "index": 3,
+      "label": "Iteration 4: no point changed cluster, so the assignment is stable and the centroids move by at most 0.000. Inertia has settled at 10.84.",
+      "rows": [
+        [
+          1,
+          6,
+          6.883,
+          1.65,
+          6.883,
+          1.65,
+          0.0
+        ],
+        [
+          2,
+          6,
+          4.067,
+          6.867,
+          4.067,
+          6.867,
+          0.0
+        ],
+        [
+          3,
+          6,
+          1.467,
+          1.45,
+          1.467,
+          1.45,
+          0.0
+        ]
+      ],
+      "state": {
+        "iteration": 4,
+        "centroids": [
+          [
+            6.883333333333,
+            1.65
+          ],
+          [
+            4.066666666667,
+            6.866666666667
+          ],
+          [
+            1.466666666667,
+            1.45
+          ]
+        ],
+        "newCentroids": [
+          [
+            6.883333333333,
+            1.65
+          ],
+          [
+            4.066666666667,
+            6.866666666667
+          ],
+          [
+            1.466666666667,
+            1.45
+          ]
+        ],
+        "labels": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "counts": [
+          6,
+          6,
+          6
+        ],
+        "inertia": 10.838333333333,
+        "maxShift": 0.0,
+        "reassigned": 0,
+        "converged": true
+      }
+    }
+  ],
+  "summary": {
+    "iterations": 4,
+    "finalCentroids": [
+      [
+        6.883333333333,
+        1.65
+      ],
+      [
+        4.066666666667,
+        6.866666666667
+      ],
+      [
+        1.466666666667,
+        1.45
+      ]
+    ],
+    "finalLabels": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "finalCounts": [
+      6,
+      6,
+      6
+    ],
+    "finalInertia": 10.838333333333,
+    "inertiaByIteration": [
+      153.46,
+      79.592654320988,
+      14.608470748299,
+      10.838333333333
+    ],
+    "inertiaDrop": 142.621666666667,
+    "alternativeSeed": 4222,
+    "alternativeIterations": 3,
+    "alternativeInertia": 10.838333333333,
+    "sameAnswer": true,
+    "cost": "each iteration costs n times k distance computations"
+  },
+  "alt": {
+    "first": "Three data points are chosen as the starting centroids, and every point joins whichever is nearest. The clusters do not yet match the three visible blobs.",
+    "last": "After 4 iterations no point changes cluster, so Lloyd's method stops. The three clusters hold 6, 6, 6 points and the total squared distance to the centroids has fallen from 153.5 to 10.8."
+  }
+}

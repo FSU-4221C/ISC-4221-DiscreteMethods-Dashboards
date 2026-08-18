@@ -1,0 +1,125 @@
+<!--
+  Generated file — do not edit by hand.
+
+    Regenerate:  python3 Dashboard/tools/build.py
+    Generator:   Dashboard/tools/generate_figures.py  (figure id 'clt-sampling-distribution')
+
+  Topics: 2.4.1, 2.4.2, 2.4.3, 2.4.4
+
+  Colour comes from fsu-tokens.css when this file is inlined into a dashboard
+  page; the var() fallbacks are the same values as standards/color-palette.md
+  and only apply when the file is opened on its own. The white plot panel is
+  deliberate and theme-independent — see Dashboard/tools/fsu_palette.py.
+
+  The non-visual equivalent of this figure is the table in the sibling file
+  clt-sampling-distribution.table.html. Ship them together.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" width="800" height="460" role="img" aria-labelledby="fig-clt-sampling-distribution-title fig-clt-sampling-distribution-desc" class="fsu-figure" data-figure="clt-sampling-distribution">
+  <title id="fig-clt-sampling-distribution-title">Averaging an exponential parent turns a hard right skew into a symmetric bell: skewness falls from 1.96 at n = 1 to 0.36 at n = 30.</title>
+  <desc id="fig-clt-sampling-distribution-desc">Four histograms of the distribution of the sample mean, at sample sizes 1, 2, 5 and 30, all drawn on the same horizontal axis. At n = 1 the histogram is the exponential parent itself: a tall bar at the left and a long tail to the right. At n = 2 the peak has moved right and the tail shortened. At n = 5 the shape is recognisably humped. At n = 30 it is symmetric and narrow. Each panel prints its observed spread beside the value predicted by sigma over the square root of n, and the two agree to within a few thousandths.</desc>
+  <style>
+    /* Reflow: the figure scales with its container instead of forcing
+       a horizontal page scrollbar at 320px or at 400% zoom (1.4.10). */
+    svg.fsu-figure { max-width: 100%; height: auto; }
+  </style>
+  <text x="24" y="30" fill="var(--fsu-black, #161514)" font-size="17" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700">Distribution of the sample mean, exponential parent (3000 samples per panel)</text>
+  <rect x="26" y="76" width="178" height="150" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="26" y="66" fill="var(--fsu-slate, #2c2a29)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700">n = 1</text>
+  <rect x="32" y="220" width="8.22" height="0" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="41.22" y="220" width="8.22" height="0" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="50.44" y="220" width="8.22" height="0" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="59.67" y="220" width="8.22" height="0" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="68.89" y="220" width="8.22" height="0" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="78.11" y="220" width="8.22" height="0" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="87.33" y="191.85" width="8.22" height="28.15" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="96.56" y="137.18" width="8.22" height="82.82" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="105.78" y="167.37" width="8.22" height="52.63" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="115" y="188.78" width="8.22" height="31.22" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="124.22" y="196.8" width="8.22" height="23.2" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="133.44" y="206.78" width="8.22" height="13.22" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="142.67" y="210.79" width="8.22" height="9.21" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="151.89" y="213.94" width="8.22" height="6.06" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="161.11" y="217.1" width="8.22" height="2.9" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="170.33" y="217.36" width="8.22" height="2.64" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="179.56" y="218.72" width="8.22" height="1.28" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="188.78" y="217.44" width="8.22" height="2.56" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <line x1="114.72" y1="82" x2="114.72" y2="220" stroke="var(--fsu-black, #161514)" stroke-width="1.6" stroke-dasharray="5 3" />
+  <text x="115" y="246" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">spread 0.996</text>
+  <text x="115" y="264" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">predicted 1.000</text>
+  <text x="115" y="282" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">skewness 1.96</text>
+  <rect x="218" y="76" width="178" height="150" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="218" y="66" fill="var(--fsu-slate, #2c2a29)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700">n = 2</text>
+  <rect x="224" y="220" width="8.22" height="0" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="233.22" y="220" width="8.22" height="0" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="242.44" y="220" width="8.22" height="0" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="251.67" y="220" width="8.22" height="0" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="260.89" y="220" width="8.22" height="0" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="270.11" y="220" width="8.22" height="0" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="279.33" y="214.88" width="8.22" height="5.12" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="288.56" y="147.84" width="8.22" height="72.16" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="297.78" y="141.87" width="8.22" height="78.13" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="307" y="170.19" width="8.22" height="49.81" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="316.22" y="194.75" width="8.22" height="25.25" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="325.44" y="207.12" width="8.22" height="12.88" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="334.67" y="213.43" width="8.22" height="6.57" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="343.89" y="216.59" width="8.22" height="3.41" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="353.11" y="218.64" width="8.22" height="1.36" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="362.33" y="219.23" width="8.22" height="0.77" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="371.56" y="219.66" width="8.22" height="0.34" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="380.78" y="219.91" width="8.22" height="0.09" fill="var(--fsu-gold, #ceb888)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <line x1="306.53" y1="82" x2="306.53" y2="220" stroke="var(--fsu-black, #161514)" stroke-width="1.6" stroke-dasharray="5 3" />
+  <text x="307" y="246" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">spread 0.680</text>
+  <text x="307" y="264" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">predicted 0.707</text>
+  <text x="307" y="282" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">skewness 1.42</text>
+  <rect x="410" y="76" width="178" height="150" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="410" y="66" fill="var(--fsu-slate, #2c2a29)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700">n = 5</text>
+  <rect x="416" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="425.22" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="434.44" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="443.67" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="452.89" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="462.11" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="471.33" y="219.91" width="8.22" height="0.09" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="480.56" y="180.85" width="8.22" height="39.15" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="489.78" y="113.38" width="8.22" height="106.62" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="499" y="146.47" width="8.22" height="73.53" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="508.22" y="193.47" width="8.22" height="26.53" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="517.44" y="212.92" width="8.22" height="7.08" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="526.67" y="217.53" width="8.22" height="2.47" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="535.89" y="219.57" width="8.22" height="0.43" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="545.11" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="554.33" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="563.56" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="572.78" y="220" width="8.22" height="0" fill="var(--fsu-plaza-brick, #572932)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <line x1="498.7" y1="82" x2="498.7" y2="220" stroke="var(--fsu-black, #161514)" stroke-width="1.6" stroke-dasharray="5 3" />
+  <text x="499" y="246" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">spread 0.442</text>
+  <text x="499" y="264" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">predicted 0.447</text>
+  <text x="499" y="282" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">skewness 0.92</text>
+  <rect x="602" y="76" width="178" height="150" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="602" y="66" fill="var(--fsu-slate, #2c2a29)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700">n = 30</text>
+  <rect x="608" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="617.22" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="626.44" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="635.67" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="644.89" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="654.11" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="663.33" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="672.56" y="219.32" width="8.22" height="0.68" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="681.78" y="86" width="8.22" height="134" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="691" y="103.14" width="8.22" height="116.86" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="700.22" y="215.65" width="8.22" height="4.35" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="709.44" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="718.67" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="727.89" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="737.11" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="746.33" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="755.56" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <rect x="764.78" y="220" width="8.22" height="0" fill="var(--fsu-gulf-sands, #dfd1a7)" stroke="var(--fsu-slate, #2c2a29)" stroke-width="0.5" />
+  <line x1="691.03" y1="82" x2="691.03" y2="220" stroke="var(--fsu-black, #161514)" stroke-width="1.6" stroke-dasharray="5 3" />
+  <text x="691" y="246" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">spread 0.184</text>
+  <text x="691" y="264" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">predicted 0.183</text>
+  <text x="691" y="282" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">skewness 0.36</text>
+  <g><text x="26" y="330" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif">All four panels share the same horizontal range, so the narrowing is real and not an axis effect.</text></g>
+  <g><text x="26" y="355" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif">The dashed vertical rule in each panel is the observed mean of the sample means; it barely moves.</text></g>
+  <g><text x="26" y="380" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">The parent distribution is never normal. The means become normal anyway — that is the theorem.</text></g>
+</svg>

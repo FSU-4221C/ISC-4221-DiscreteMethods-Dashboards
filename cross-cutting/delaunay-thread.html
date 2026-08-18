@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Thread: Delaunay triangulation — ISC 4221C Discrete Algorithms</title>
+<meta name="description" content="Delaunay triangulation as the dual of the Voronoi diagram in M5, as the max-min-angle triangulation in M6, and as the mesh that carries a sensor field in Lab 13.">
+
+<link rel="stylesheet" href="../assets/css/fsu-tokens.css">
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+
+<!-- Theme bootstrap. Copy verbatim. Runs before first paint so a stored dark
+     preference does not flash light; theme.js agrees with whatever it set. -->
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('isc4221c.theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) { /* storage unavailable; fall through to the OS preference */ }
+  })();
+</script>
+</head>
+
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <!-- ROW 1 — identity and utilities. Scrolls away with the page. -->
+  <div class="site-header__bar">
+    <div class="site-header__bar-inner wrap">
+      <a class="brand" href="../index.html">
+        <span>
+          <span class="brand__code">ISC 4221C</span>
+          <span class="brand__name">Discrete Algorithms · Spring 2026</span>
+        </span>
+      </a>
+
+      <!-- Pushed to the right edge by margin-inline-start:auto, not by a
+           spacer element. Ships `hidden`; theme.js reveals it, so a reader
+           without the script never sees a control that cannot work. -->
+      <fieldset class="theme-switch" hidden>
+        <legend class="theme-switch__legend">Theme</legend>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-system" value="system" checked>
+          <label class="theme-switch__label" for="theme-system">Auto</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-light" value="light">
+          <label class="theme-switch__label" for="theme-light">Light</label>
+        </span>
+        <span class="theme-switch__option">
+          <input class="theme-switch__input" type="radio" name="theme" id="theme-dark" value="dark">
+          <label class="theme-switch__label" for="theme-dark">Dark</label>
+        </span>
+      </fieldset>
+    </div>
+  </div>
+
+</header>
+
+<!-- ROW 2 — modules. Sticky, and it never wraps: every module is visible at
+     once, its sections behind a dropdown rather than spilled onto the strip.
+     nav.js fills each .chapter-nav__menu from window.NAV_MAP.
+
+     OUTSIDE <header> on purpose. A sticky element cannot leave its parent's
+     box, so while this lived inside the two-row <header> it stuck for the
+     header's own 85px of height and then scrolled away with it. Its parent has
+     to be <body>. -->
+<nav class="chapter-nav" aria-label="Modules">
+  <div class="chapter-nav__inner wrap">
+    <ul class="chapter-nav__list">
+        <li class="chapter-nav__item chapter-nav__item--plain">
+          <a class="chapter-nav__link" href="../index.html">Home</a>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m0">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m0"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m0"
+                  data-chapter-file="../m0-foundations.html">
+            <span class="chapter-nav__full">Module 0</span>
+            <span class="chapter-nav__short" aria-hidden="true">M0</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m0" role="group"
+               aria-labelledby="chapbtn-m0" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m1">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m1"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m1"
+                  data-chapter-file="../m1-algorithm-design.html">
+            <span class="chapter-nav__full">Module 1</span>
+            <span class="chapter-nav__short" aria-hidden="true">M1</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m1" role="group"
+               aria-labelledby="chapbtn-m1" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m2">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m2"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m2"
+                  data-chapter-file="../m2-probability.html">
+            <span class="chapter-nav__full">Module 2</span>
+            <span class="chapter-nav__short" aria-hidden="true">M2</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m2" role="group"
+               aria-labelledby="chapbtn-m2" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m3">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m3"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m3"
+                  data-chapter-file="../m3-graphs.html">
+            <span class="chapter-nav__full">Module 3</span>
+            <span class="chapter-nav__short" aria-hidden="true">M3</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m3" role="group"
+               aria-labelledby="chapbtn-m3" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m4">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m4"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m4"
+                  data-chapter-file="../m4-image-processing.html">
+            <span class="chapter-nav__full">Module 4</span>
+            <span class="chapter-nav__short" aria-hidden="true">M4</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m4" role="group"
+               aria-labelledby="chapbtn-m4" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m5">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m5"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m5"
+                  data-chapter-file="../m5-data-mining.html">
+            <span class="chapter-nav__full">Module 5</span>
+            <span class="chapter-nav__short" aria-hidden="true">M5</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m5" role="group"
+               aria-labelledby="chapbtn-m5" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m6">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m6"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m6"
+                  data-chapter-file="../m6-computational-geometry.html">
+            <span class="chapter-nav__full">Module 6</span>
+            <span class="chapter-nav__short" aria-hidden="true">M6</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m6" role="group"
+               aria-labelledby="chapbtn-m6" hidden></div>
+        </li>
+        <li class="chapter-nav__item" data-chapter="m7">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-m7"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-m7"
+                  data-chapter-file="../m7-discrete-optimization.html">
+            <span class="chapter-nav__full">Module 7</span>
+            <span class="chapter-nav__short" aria-hidden="true">M7</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-m7" role="group"
+               aria-labelledby="chapbtn-m7" hidden></div>
+        </li>
+        <li class="chapter-nav__item chapter-nav__item--plain chapter-nav__item--sep"
+            data-chapter="threads">
+          <button class="chapter-nav__button"
+                  type="button"
+                  id="chapbtn-threads"
+                  aria-expanded="false"
+                  aria-controls="chapmenu-threads">
+            <span class="chapter-nav__full">Threads</span>
+            <span class="chapter-nav__short" aria-hidden="true">Thr</span>
+            <span class="chapter-nav__caret" aria-hidden="true"></span>
+          </button>
+          <div class="chapter-nav__menu" id="chapmenu-threads" role="group"
+               aria-labelledby="chapbtn-threads" hidden></div>
+        </li>
+      </ul>
+    </div>
+</nav>
+
+<nav class="breadcrumb wrap" aria-label="Breadcrumb">
+  <ol class="breadcrumb__list">
+    <li><a href="../index.html">Course home</a></li>
+    <li><a href="../index.html#threads">Cross-cutting threads</a></li>
+    <li><span aria-current="page">Delaunay triangulation</span></li>
+  </ol>
+</nav>
+
+<div class="layout">
+
+  <div class="layout__sidebar">
+
+    <nav class="module-nav" aria-label="On this page">
+      <p class="module-nav__title">On this page</p>
+
+      <button class="module-nav__toggle btn btn--ghost" type="button"
+              aria-expanded="true" aria-controls="module-nav-list" hidden>
+        <span data-nav-label>Page contents</span>
+      </button>
+
+      <ul class="module-nav__list" id="module-nav-list">
+        <li><a class="module-nav__link" href="#section-two-doors"><span>Two doors into one object</span></a></li>
+        <li><a class="module-nav__link" href="#section-duality"><span>M5's door: the Voronoi dual</span></a></li>
+        <li><a class="module-nav__link" href="#section-definition"><span>M6's door: maximise the smallest angle</span></a></li>
+        <li><a class="module-nav__link" href="#section-demo"><span>Carry the definition out</span></a></li>
+        <li><a class="module-nav__link" href="#section-lab13"><span>Lab 13: a field from scattered sensors</span></a></li>
+        <li><a class="module-nav__link" href="#section-into-modules"><span>Into the modules</span></a></li>
+      </ul>
+    </nav>
+
+    <nav class="module-nav" aria-label="Cross-cutting threads">
+      <p class="module-nav__title">Other threads</p>
+      <ul class="module-nav__list">
+        <li><a class="module-nav__link" href="complexity-comparator.html"><span>Complexity comparator</span></a></li>
+        <li><a class="module-nav__link" href="kmeans-everywhere.html"><span>k-means everywhere</span></a></li>
+        <li><a class="module-nav__link" href="greedy-gallery.html"><span>Greedy gallery</span></a></li>
+        <li><a class="module-nav__link" href="exam-practice.html"><span>Exam practice by type</span></a></li>
+        <li><a class="module-nav__link" href="../index.html#search"><span>Search all topics</span></a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main class="layout__main" id="main" tabindex="-1">
+    <!-- Search. Every page carries one; a reader who lands here from a link
+         should not have to go back to the home page to look something up.
+         Ids are page-unique because two [data-search] blocks on one page
+         would otherwise share a label target. -->
+    <section class="search search--inline" data-search data-search-limit="8"
+             data-search-base="../"
+             aria-label="Search the course">
+      <form class="search__form" role="search">
+        <div class="search__field">
+          <label class="search__label" for="delaunay-thread-search">Search all topics</label>
+          <input class="search__input" id="delaunay-thread-search" name="q" type="search"
+                 autocomplete="off" spellcheck="false" data-search-input>
+        </div>
+      </form>
+      <p class="search__status" role="status" aria-live="polite" data-search-status></p>
+      <ul class="search__results" data-search-results aria-label="Search results"></ul>
+      <p class="search__nojs">Search is not running. JavaScript is switched off,
+         or a script file is missing.</p>
+    </section>
+
+
+    <div class="page-header">
+      <p class="eyebrow">Cross-cutting thread</p>
+      <h1>Delaunay triangulation</h1>
+      <p class="lede">
+        M5 meets it as a by-product of the Voronoi diagram — join each generator to its
+        neighbours and a triangulation falls out. M6 meets it as the answer to a
+        completely different question: of the many ways to triangulate a point set, which
+        one avoids thin triangles? They are the same object, and Lab 13 is where it does
+        real work.
+      </p>
+      <p class="page-header__meta">
+        <span><strong>2</strong> modules</span>
+        <span>Topics 5.5.3, 6.5.1–6.5.3</span>
+        <span>Lab 13</span>
+        <span><strong>1</strong> interactive tool</span>
+      </p>
+    </div>
+
+    <div class="coverage-legend">
+      <p class="coverage-legend__intro" id="coverage-legend-intro">Coverage markers</p>
+      <dl aria-labelledby="coverage-legend-intro">
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-delaunay-thread-full" class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Full</span></dt>
+            <dd id="legend-delaunay-thread-full">Taught in full in the named source</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-delaunay-thread-partial" class="pill pill--partial"><span class="pill__glyph" aria-hidden="true">◐</span> Partial</span></dt>
+            <dd id="legend-delaunay-thread-partial">Mentioned, or covered only in passing</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-delaunay-thread-lab" class="pill pill--lab"><span class="pill__glyph" aria-hidden="true">▣</span> Lab</span></dt>
+            <dd id="legend-delaunay-thread-lab">Implemented in the named lab</dd>
+          </div>
+          <div class="coverage-legend__item">
+            <dt><span tabindex="0" aria-describedby="legend-delaunay-thread-new" class="pill pill--new"><span class="pill__glyph" aria-hidden="true">✚</span> New</span></dt>
+            <dd id="legend-delaunay-thread-new">Built for 2026 — no interactive version existed before</dd>
+          </div>
+      </dl>
+    </div>
+
+    <!-- ============================================================ SECTION 1 -->
+    <section class="topic-group" id="section-two-doors" aria-labelledby="section-two-doors-title">
+      <div class="topic-group__header">
+        <h2 id="section-two-doors-title">Two doors into one object</h2>
+      </div>
+
+      <div class="prose">
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-doors-label">
+          <p class="visually-hidden" id="table-doors-label">How M5 and M6 each arrive at the Delaunay triangulation</p>
+          <table class="data-table">
+            <caption>The same triangulation, reached from two directions</caption>
+            <thead>
+              <tr>
+                <th scope="col">&nbsp;</th>
+                <th scope="col">M5 §5.5 — geometric clustering</th>
+                <th scope="col">M6 §6.5 — triangulating a point set</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Starts from</th>
+                <td>a Voronoi diagram you already built</td>
+                <td>a bare set of points and no diagram at all</td>
+              </tr>
+              <tr>
+                <th scope="row">The question being asked</th>
+                <td>which generators are neighbours?</td>
+                <td>which of the many possible triangulations is the good one?</td>
+              </tr>
+              <tr>
+                <th scope="row">The construction</th>
+                <td>join each generator to the generators of the cells that touch its own</td>
+                <td>choose the triangulation whose smallest angle is as large as possible</td>
+              </tr>
+              <tr>
+                <th scope="row">What it is used for there</th>
+                <td>grid generation; showing that the Voronoi diagram has a graph hiding in it</td>
+                <td>integrating a function over an irregular region</td>
+              </tr>
+              <tr>
+                <th scope="row">Course topic number</th>
+                <td>5.5.3 — Delaunay triangulation as the Voronoi dual</td>
+                <td>6.5.1–6.5.3 — the point-set problem, what makes a triangulation good, Delaunay</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout--key">
+          <p class="callout__title">Key idea</p>
+          <p>
+            Both doors open on the same room. Every Voronoi diagram has exactly one
+            Delaunay triangulation attached to it, and for points in general position that
+            triangulation is also the one that maximises the smallest angle. Which
+            definition you use depends on what you already have in your hands: a set of
+            cells, or a set of points.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 2 -->
+    <section class="topic-group" id="section-duality" aria-labelledby="section-duality-title">
+      <div class="topic-group__header">
+        <h2 id="section-duality-title">M5's door: the Voronoi dual</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Slides, M5</span></li>
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Tutorial</span></li>
+        </ul>
+
+        <p>
+          M5 introduces the Voronoi diagram as a way of clustering a continuous region:
+          each generator owns every point closer to it than to any other generator, and
+          the boundary between two neighbouring cells is the perpendicular bisector of the
+          line joining their generators. Connect each generator to its neighbours and you
+          have the Delaunay triangulation.
+        </p>
+
+        <p>
+          The smallest honest example has three generators. Their three perpendicular
+          bisectors meet at one point — the circumcentre of the triangle they form — and
+          the Voronoi diagram is three rays leaving it.
+        </p>
+
+        <figure>
+          <svg role="img" aria-labelledby="fig-duality-title" viewBox="0 0 460 400" width="100%" style="max-inline-size:100%;block-size:auto">
+            <title id="fig-duality-title">Three generators form one Delaunay triangle whose circumcentre,
+              at (4.68, 4.44), is the single Voronoi vertex; the three Voronoi edges leave it along the
+              perpendicular bisectors of the triangle's sides.</title>
+
+            <!-- axes -->
+            <line x1="44" y1="356" x2="436" y2="356" style="stroke:var(--fsu-chart-axis);stroke-width:2"></line>
+            <line x1="44" y1="20" x2="44" y2="356" style="stroke:var(--fsu-chart-axis);stroke-width:2"></line>
+            <text x="44" y="376" text-anchor="middle" style="fill:var(--fsu-color-caption);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">0</text>
+            <text x="240" y="376" text-anchor="middle" style="fill:var(--fsu-color-caption);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">5</text>
+            <text x="436" y="376" text-anchor="middle" style="fill:var(--fsu-color-caption);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">10</text>
+            <text x="36" y="360" text-anchor="end" style="fill:var(--fsu-color-caption);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">0</text>
+            <text x="36" y="192" text-anchor="end" style="fill:var(--fsu-color-caption);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">5</text>
+            <text x="36" y="26" text-anchor="end" style="fill:var(--fsu-color-caption);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">10</text>
+
+            <!-- Delaunay triangle: solid, heavy -->
+            <polygon points="122,289 358,255 201,88"
+                     style="fill:none;stroke:var(--fsu-series-1);stroke-width:3"></polygon>
+
+            <!-- Voronoi edges: dashed rays from the circumcentre -->
+            <line x1="228" y1="207" x2="257" y2="356" style="stroke:var(--fsu-series-3);stroke-width:2.5" stroke-dasharray="7 4"></line>
+            <line x1="228" y1="207" x2="44" y2="155" style="stroke:var(--fsu-series-3);stroke-width:2.5" stroke-dasharray="7 4"></line>
+            <line x1="228" y1="207" x2="436" y2="64" style="stroke:var(--fsu-series-3);stroke-width:2.5" stroke-dasharray="7 4"></line>
+
+            <!-- circumcentre -->
+            <circle cx="228" cy="207" r="7" style="fill:none;stroke:var(--fsu-color-strong);stroke-width:2.5"></circle>
+            <text x="238" y="200" style="fill:var(--fsu-color-body);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">Voronoi vertex</text>
+
+            <!-- generators -->
+            <circle cx="122" cy="289" r="6" style="fill:var(--fsu-color-strong)"></circle>
+            <text x="98" y="310" style="fill:var(--fsu-color-body);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">A (2, 2)</text>
+            <circle cx="358" cy="255" r="6" style="fill:var(--fsu-color-strong)"></circle>
+            <text x="330" y="278" style="fill:var(--fsu-color-body);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">B (8, 3)</text>
+            <circle cx="201" cy="88" r="6" style="fill:var(--fsu-color-strong)"></circle>
+            <text x="176" y="76" style="fill:var(--fsu-color-body);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">C (4, 8)</text>
+
+            <text x="60" y="40" style="fill:var(--fsu-color-body);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">Solid: Delaunay edges</text>
+            <text x="60" y="60" style="fill:var(--fsu-color-body);font-size:var(--fsu-text-small);font-family:var(--fsu-font-sans)">Dashed: Voronoi edges</text>
+          </svg>
+          <figcaption>
+            Figure 1. Three generators, their Delaunay triangle, and the Voronoi diagram
+            it is dual to.
+          </figcaption>
+        </figure>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="fig-duality-data">
+          <p class="visually-hidden" id="fig-duality-data">Coordinates and lengths behind figure 1</p>
+          <table class="data-table">
+            <caption>
+              Data behind figure 1: three generators, three Delaunay edges, and the three
+              Voronoi rays that leave the single Voronoi vertex at (4.68, 4.44)
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Kind</th>
+                <th scope="col">Position or endpoints</th>
+                <th scope="col" class="is-numeric">Length</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">A</th><td>generator</td><td>(2, 2)</td><td class="is-numeric">—</td></tr>
+              <tr><th scope="row">B</th><td>generator</td><td>(8, 3)</td><td class="is-numeric">—</td></tr>
+              <tr><th scope="row">C</th><td>generator</td><td>(4, 8)</td><td class="is-numeric">—</td></tr>
+              <tr><th scope="row">Voronoi vertex</th><td>circumcentre of triangle ABC</td><td>(4.68, 4.44)</td><td class="is-numeric">—</td></tr>
+              <tr><th scope="row">A–B</th><td>Delaunay edge, solid</td><td>(2, 2) to (8, 3)</td><td class="is-numeric">6.08</td></tr>
+              <tr><th scope="row">A–C</th><td>Delaunay edge, solid</td><td>(2, 2) to (4, 8)</td><td class="is-numeric">6.32</td></tr>
+              <tr><th scope="row">B–C</th><td>Delaunay edge, solid</td><td>(8, 3) to (4, 8)</td><td class="is-numeric">6.40</td></tr>
+              <tr><th scope="row">Bisector of A–B</th><td>Voronoi edge, dashed</td><td>(4.68, 4.44) towards (5.42, 0)</td><td class="is-numeric">—</td></tr>
+              <tr><th scope="row">Bisector of A–C</th><td>Voronoi edge, dashed</td><td>(4.68, 4.44) towards (0, 6.00)</td><td class="is-numeric">—</td></tr>
+              <tr><th scope="row">Bisector of B–C</th><td>Voronoi edge, dashed</td><td>(4.68, 4.44) towards (10, 8.70)</td><td class="is-numeric">—</td></tr>
+              <tr><th scope="row">Circumradius</th><td>distance from the Voronoi vertex to each generator</td><td>equal for all three</td><td class="is-numeric">3.62</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          The last row is the whole duality in one number: the Voronoi vertex is
+          equidistant from all three generators, which is exactly what it means for the
+          circle through A, B and C to contain no other generator. That is the
+          empty-circle property, and it is the reason the two definitions agree.
+        </p>
+
+        <p>
+          The Voronoi half of this thread is also the k-means half — see
+          <a href="kmeans-everywhere.html#section-mapping">k-means everywhere</a>, where
+          the assign step of Lloyd's method turns out to be a Voronoi diagram and the
+          converged state is a centroidal Voronoi tessellation.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 3 -->
+    <section class="topic-group" id="section-definition" aria-labelledby="section-definition-title">
+      <div class="topic-group__header">
+        <h2 id="section-definition-title">M6's door: maximise the smallest angle</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--full"><span class="pill__glyph" aria-hidden="true">●</span> Slides, M6 part 3</span></li>
+          <li><span class="pill pill--lab"><span class="pill__glyph" aria-hidden="true">▣</span> Lab 13</span></li>
+        </ul>
+
+        <p>
+          M6 starts somewhere else entirely. Draw lines between points without ever
+          crossing one you have already drawn; when you can draw no more, every point is a
+          vertex of a triangle. Do it again and you get a different picture — there are
+          many triangulations of the same points. So which one do you want?
+        </p>
+
+        <p>
+          If the edges are roads you might want the shortest total length. If the
+          triangles are patches of territory you probably dislike very thin ones. For
+          graphics and for numerical work, avoiding small angles is the usual criterion,
+          and that gives the definition.
+        </p>
+
+        <div class="formula" role="math"
+             aria-label="T star is a Delaunay triangulation when theta of T is less than or equal to theta of T star for every triangulation T of the same points">
+          <span class="formula__label">Delaunay by exhaustion (M6 topic 6.5.3)</span>
+          <p class="formula__expr">
+            &theta;(<var>T</var>) &le; &theta;(<var>T</var><sup>*</sup>)
+            &nbsp;&nbsp;for every triangulation <var>T</var> of the same points
+          </p>
+          <dl class="formula__where">
+            <dt><var>T</var></dt><dd>any triangulation of the point set</dd>
+            <dt>&theta;(<var>T</var>)</dt><dd>the smallest angle occurring in any triangle of <var>T</var></dd>
+            <dt><var>T</var><sup>*</sup></dt><dd>the Delaunay triangulation — the one whose smallest angle is as large as it can be. Usually, but not always, unique</dd>
+          </dl>
+        </div>
+
+        <div class="callout callout--warning">
+          <p class="callout__title">Common mistake</p>
+          <p>
+            Reading this as &ldquo;Delaunay has no thin triangles&rdquo;. It says only
+            that no <em>other</em> triangulation <em>of these points</em> does better. If
+            the points themselves are badly placed, the best available smallest angle can
+            still be tiny — and on the Lab 13 sensor field it is 0.08 degrees. The
+            guarantee is comparative, not absolute.
+          </p>
+        </div>
+
+        <div class="callout callout--note">
+          <p class="callout__title">Note</p>
+          <p>
+            The definition is also degenerate when the points are cocircular — four
+            corners of a square, for instance. Then both diagonals give the same smallest
+            angle and there is no unique Delaunay triangulation. That is why the demo
+            below places its points on an ellipse rather than a circle.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 4 -->
+    <section class="topic-group" id="section-demo" aria-labelledby="section-demo-title">
+      <div class="topic-group__header">
+        <h2 id="section-demo-title">Carry the definition out</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--new"><span class="pill__glyph" aria-hidden="true">✚</span> New for 2026</span></li>
+        </ul>
+
+        <h3 id="sub-demo">Every triangulation, measured and ranked</h3>
+
+        <p>
+          The definition says &ldquo;consider all possible triangulations&rdquo;, which is
+          normally where a lecture stops. For points in convex position the count is a
+          Catalan number — 5, 14, 42 and 132 for five to eight points — so the demo can
+          actually build all of them, measure every angle, and sort them worst first.
+          Stepping to the last one lands on the Delaunay triangulation, by definition
+          rather than by algorithm.
+        </p>
+
+        <div id="demo-delaunay-ranking-mount">
+          <div class="demo__fallback">
+            <p><strong>Triangulation ranking — interactive version not running.</strong>
+               Either JavaScript is off, or this page was opened directly from a folder.
+               At the default settings — 6 points, seed 42 — there are 14 triangulations.
+               The worst has a smallest angle of 15.6 degrees; the best, which is the
+               Delaunay triangulation, reaches 32.3 degrees. Its four triangles are
+               below.</p>
+            <div class="table-scroll" role="region" tabindex="0"
+                 aria-label="The four triangles of the Delaunay triangulation at the default settings">
+              <table class="data-table">
+                <caption>
+                  The Delaunay triangulation of the six default points, whose smallest
+                  angle is 32.3 degrees. Points, in order round the ellipse:
+                  P1 (9.39, 5.15), P2 (7.30, 7.47), P3 (2.14, 7.20), P4 (0.62, 4.74),
+                  P5 (2.19, 2.77), P6 (7.25, 2.51).
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Triangle</th>
+                    <th scope="col" class="is-numeric">Area</th>
+                    <th scope="col">Angles (degrees)</th>
+                    <th scope="col" class="is-numeric">Smallest angle (degrees)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">P1, P2, P6</th><td class="is-numeric">5.25</td><td>98.9, 42.6, 38.4</td><td class="is-numeric">38.4</td></tr>
+                  <tr><th scope="row">P2, P5, P6</th><td class="is-numeric">12.58</td><td>46.9, 45.5, 87.6</td><td class="is-numeric">45.5</td></tr>
+                  <tr><th scope="row">P2, P3, P5</th><td class="is-numeric">11.45</td><td>39.6, 92.4, 48.0</td><td class="is-numeric">39.6</td></tr>
+                  <tr><th scope="row">P3, P4, P5</th><td class="is-numeric">3.43</td><td>32.3, 109.8, 37.9</td><td class="is-numeric">32.3</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              For comparison, the worst of the 14 arrangements contains a triangle with a
+              15.6-degree angle — less than half as good, on exactly the same six points.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 5 -->
+    <section class="topic-group" id="section-lab13" aria-labelledby="section-lab13-title">
+      <div class="topic-group__header">
+        <h2 id="section-lab13-title">Lab 13: a field from scattered sensors</h2>
+      </div>
+
+      <div class="prose">
+        <ul class="pill-list">
+          <li><span class="pill pill--lab"><span class="pill__glyph" aria-hidden="true">▣</span> Lab 13</span></li>
+          <li><span class="pill pill--partial"><span class="pill__glyph" aria-hidden="true">◐</span> Slides</span></li>
+        </ul>
+
+        <p>
+          Lab 13 is where the triangulation stops being a picture. 120 air-quality sensors
+          are scattered over a rectangular region &Omega; = [0,&nbsp;10] &times;
+          [0,&nbsp;6] kilometres. Each reports a pollutant concentration. The task is to
+          build a Delaunay triangulation of the sensor positions, fit a linear function
+          over each triangle from its three vertex readings, and integrate to get the
+          total pollutant load.
+        </p>
+
+        <div class="formula" role="math"
+             aria-label="f of x y equals 20 times e to the minus, open bracket, x minus 5 squared plus y minus 3 squared, close bracket, over 3, plus 4 sine of 1.5 x, plus 3 cosine of 2 y">
+          <span class="formula__label">The field being sampled (Lab 13, Problem 2)</span>
+          <p class="formula__expr">
+            <var>f</var>(<var>x</var>,&thinsp;<var>y</var>) =
+            20&thinsp;e<sup>&minus;[(<var>x</var>&minus;5)<sup>2</sup> + (<var>y</var>&minus;3)<sup>2</sup>]/3</sup>
+            + 4&thinsp;sin(1.5<var>x</var>) + 3&thinsp;cos(2<var>y</var>)
+          </p>
+          <dl class="formula__where">
+            <dt><var>x</var>, <var>y</var></dt><dd>position in kilometres, with 0 ≤ x ≤ 10 and 0 ≤ y ≤ 6</dd>
+            <dt>the exponential term</dt><dd>a pollution plume centred on (5, 3)</dd>
+            <dt>the sine and cosine terms</dt><dd>smaller regional variation</dd>
+          </dl>
+        </div>
+
+        <p>
+          Over each triangle the interpolant is
+          <var>f</var>&nbsp;&approx;&nbsp;<var>a</var> + <var>bx</var> + <var>cy</var>,
+          whose three coefficients are fixed by the three vertex readings, so the gradient
+          (<var>b</var>,&nbsp;<var>c</var>) is constant inside the triangle. That is
+          first-order finite-element interpolation, and it is the whole reason the shape of
+          the triangles matters.
+        </p>
+
+        <h3 id="sub-lab13-numbers">The numbers, with the seed the reference solution uses</h3>
+
+        <div class="table-scroll" role="region" tabindex="0" aria-labelledby="table-lab13-label">
+          <p class="visually-hidden" id="table-lab13-label">Measured quantities for the Lab 13 sensor field with seed 42</p>
+          <table class="data-table">
+            <caption>
+              Lab 13 with 120 sensors and seed 42: what the triangulation actually
+              produces, recomputed independently of the shipped solution
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Quantity</th>
+                <th scope="col" class="is-numeric">Value</th>
+                <th scope="col">What it means</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Triangles in the mesh</th>
+                <td class="is-numeric">227</td>
+                <td>from 120 points with an 11-vertex convex hull</td>
+              </tr>
+              <tr>
+                <th scope="row">Area of &Omega;</th>
+                <td class="is-numeric">60.00 km²</td>
+                <td>the region the question asks about</td>
+              </tr>
+              <tr>
+                <th scope="row">Area of the convex hull</th>
+                <td class="is-numeric">53.58 km²</td>
+                <td>the region the mesh actually covers — 89.30 per cent of &Omega;</td>
+              </tr>
+              <tr>
+                <th scope="row">Exact integral over &Omega;</th>
+                <td class="is-numeric">205.90</td>
+                <td>analytic: 185.791 from the plume, 28.155 from the sine, −8.049 from the cosine</td>
+              </tr>
+              <tr>
+                <th scope="row">Centroid-rule estimate over the mesh</th>
+                <td class="is-numeric">186.72</td>
+                <td>9.32 per cent below the exact value</td>
+              </tr>
+              <tr>
+                <th scope="row">Smallest angle anywhere in the mesh</th>
+                <td class="is-numeric">0.08 degrees</td>
+                <td>and 55.1 per cent of the 227 triangles have a smallest angle below 30 degrees</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout--warning">
+          <p class="callout__title">Common mistake</p>
+          <p>
+            Blaming the 9 per cent error on the quadrature rule. It is not a quadrature
+            error at all — the Delaunay mesh only covers the convex hull of the sensors,
+            which is 89.3 per cent of &Omega;, so roughly a tenth of the region is never
+            integrated. Refining the rule will not fix it; only extending the domain
+            will. The shipped reference solution reports this same error and calls it
+            &ldquo;small, indicating good approximation quality&rdquo;, which is worth
+            arguing with.
+          </p>
+        </div>
+
+        <div class="callout callout--key">
+          <p class="callout__title">Key idea</p>
+          <p>
+            Two claims that sound alike but are not: <em>Delaunay maximises the minimum
+            angle among triangulations of this point set</em> is true and is the
+            definition; <em>Delaunay avoids skinny triangles</em> is false, and the
+            histogram you produce in Lab 13 disproves it on your own data.
+          </p>
+        </div>
+
+        <h3 id="sub-lab13-questions">Three questions worth answering before you submit</h3>
+        <ol>
+          <li>Your estimate is about 9 per cent below the exact value. Is that a quadrature
+            error or a domain error? Name the number from your own output that settles it.</li>
+          <li>Your minimum-angle histogram has a triangle at well under one degree. Does
+            that contradict the claim that Delaunay avoids thin triangles? Answer in one
+            sentence, using the definition above.</li>
+          <li>The scenario says you only have sensor readings. Given that, is
+            <em>f</em> at the triangle centroid something you can actually evaluate — or
+            do you only have the vertex average?</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============================================================ SECTION 6 -->
+    <section class="topic-group" id="section-into-modules" aria-labelledby="section-into-modules-title">
+      <div class="topic-group__header">
+        <h2 id="section-into-modules-title">Into the modules</h2>
+      </div>
+
+      <div class="prose">
+        <ul>
+          <li><a href="../m5-data-mining.html#section-5-5">M5 §5.5 Geometric clustering</a> — Voronoi diagrams, the dual, and CVT</li>
+          <li><a href="../m5-data-mining.html#topic-5-5-3">Topic 5.5.3 — Delaunay triangulation as the Voronoi dual</a></li>
+          <li><a href="../m6-computational-geometry.html#section-6-5">M6 §6.5 Delaunay triangulation and quadrature</a></li>
+          <li><a href="../m6-computational-geometry.html#topic-6-5-2">Topic 6.5.2 — what makes a triangulation good</a></li>
+          <li><a href="../m6-computational-geometry.html#topic-6-5-3">Topic 6.5.3 — the Delaunay triangulation</a></li>
+          <li><a href="../m6-computational-geometry.html#topic-6-5-11">Topic 6.5.11 — constructing a field from scattered sensor data, taught only in Lab 13</a></li>
+          <li><a href="../m6-computational-geometry.html#section-6-4">M6 §6.4 Convex hull</a> — the boundary that turns out to matter in Lab 13</li>
+        </ul>
+
+        <h3 id="sub-threads">The other threads</h3>
+        <ul>
+          <li><a href="kmeans-everywhere.html">k-means everywhere</a> — Voronoi diagrams from the clustering side</li>
+          <li><a href="complexity-comparator.html">Complexity comparator</a></li>
+          <li><a href="greedy-gallery.html">Greedy gallery</a></li>
+          <li><a href="exam-practice.html#type-ear-clipping">Exam practice — polygon triangulation by ear clipping</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <p><a href="#main" data-back-to-top>Back to the top of the Delaunay thread</a></p>
+
+  </main>
+</div>
+
+<footer class="site-footer" data-surface="dark">
+  <div class="site-footer__inner wrap">
+    <section aria-labelledby="footer-modules">
+      <h2 id="footer-modules">Modules</h2>
+      <ul>
+        <li><a href="../m0-foundations.html">M0 — Foundations &amp; Tooling</a></li>
+        <li><a href="../m1-algorithm-design.html">M1 — Algorithm Design &amp; Analysis</a></li>
+        <li><a href="../m2-probability.html">M2 — Probability &amp; Random Processes</a></li>
+        <li><a href="../m3-graphs.html">M3 — Graphs</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-modules-2">
+      <h2 id="footer-modules-2">Modules, continued</h2>
+      <ul>
+        <li><a href="../m4-image-processing.html">M4 — Image Processing</a></li>
+        <li><a href="../m5-data-mining.html">M5 — Data Mining</a></li>
+        <li><a href="../m6-computational-geometry.html">M6 — Computational Geometry</a></li>
+        <li><a href="../m7-discrete-optimization.html">M7 — Discrete Optimization</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-threads">
+      <h2 id="footer-threads">Cross-cutting threads</h2>
+      <ul>
+        <li><a href="complexity-comparator.html">Complexity comparator</a></li>
+        <li><a href="kmeans-everywhere.html">k-means everywhere</a></li>
+        <li><a href="greedy-gallery.html">Greedy gallery</a></li>
+        <li><a href="delaunay-thread.html">Delaunay thread</a></li>
+        <li><a href="exam-practice.html">Exam practice by type</a></li>
+        <li><a class="link-external" href="../../ACCESSIBILITY_STATEMENT.md">Accessibility statement<span class="visually-hidden"> (Markdown file, opens outside the dashboard)</span></a></li>
+      </ul>
+      <p class="site-footer__note">
+        ISC 4221C · Florida State University · Department of Scientific Computing.
+        Built to work offline: no external requests, no tracking, no account.
+      </p>
+    </section>
+  </div>
+</footer>
+
+<script defer src="../assets/js/core/gfx.js"></script>
+<script defer data-manual src="../assets/js/vendor/prism.js"></script>
+<script defer src="../assets/js/highlight.js"></script>
+<script defer src="../assets/js/theme.js"></script>
+<script defer src="../assets/js/nav-map.js"></script>
+<script defer src="../assets/js/nav.js"></script>
+<script defer src="../assets/js/search-index.js"></script>
+<script defer src="../assets/js/search.js"></script>
+<script defer src="../assets/js/demo.js"></script>
+<script defer src="../assets/js/demos/cross-delaunay-thread.js"></script>
+</body>
+</html>

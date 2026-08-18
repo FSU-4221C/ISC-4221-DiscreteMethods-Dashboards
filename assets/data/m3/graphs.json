@@ -1,0 +1,648 @@
+{
+  "schema": "isc4221c-dataset/1",
+  "id": "m3-graphs",
+  "module": "M3",
+  "topics": [
+    "3.1.2",
+    "3.1.4",
+    "3.1.5",
+    "3.2.1",
+    "3.2.2",
+    "3.2.3",
+    "3.2.4",
+    "3.2.5",
+    "3.2.6",
+    "3.2.7",
+    "3.3.1",
+    "3.3.7"
+  ],
+  "title": "The two M3 graphs in every representation the module teaches",
+  "provenance": "the campus graph extends the 2025 'Simple Weighted' sample with two edges so that its minimum spanning tree and its shortest-path tree genuinely differ; the traversal graph is a tree plus one cross edge",
+  "generator": "Dashboard/tools/generate_datasets.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "One graph carries Dijkstra, Kruskal, BFS and DFS across the whole module. A student learns one picture and four algorithms instead of four pictures.",
+    "Node positions are authored, not force-directed. spring_layout with a fixed seed still moves when the graph changes; an authored layout means 'the node at the top left' is a stable thing to say.",
+    "The incidence matrix and the GRF text are included because topics 3.2.5 and 3.2.6 are both marked NEW — nothing in the 2025 material shows either."
+  ],
+  "graphs": {
+    "campus": {
+      "name": "campus",
+      "nodes": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "weighted": true,
+      "positions": {
+        "A": [
+          0.1,
+          0.5
+        ],
+        "B": [
+          0.34,
+          0.16
+        ],
+        "C": [
+          0.34,
+          0.84
+        ],
+        "D": [
+          0.64,
+          0.3
+        ],
+        "E": [
+          0.64,
+          0.76
+        ],
+        "F": [
+          0.92,
+          0.52
+        ]
+      },
+      "edgeList": [
+        [
+          "A",
+          "B",
+          4
+        ],
+        [
+          "A",
+          "C",
+          2
+        ],
+        [
+          "B",
+          "C",
+          1
+        ],
+        [
+          "B",
+          "D",
+          5
+        ],
+        [
+          "C",
+          "D",
+          8
+        ],
+        [
+          "C",
+          "E",
+          6
+        ],
+        [
+          "D",
+          "E",
+          2
+        ],
+        [
+          "D",
+          "F",
+          6
+        ],
+        [
+          "E",
+          "F",
+          3
+        ]
+      ],
+      "adjacencyList": {
+        "A": [
+          "B",
+          "C"
+        ],
+        "B": [
+          "A",
+          "C",
+          "D"
+        ],
+        "C": [
+          "A",
+          "B",
+          "D",
+          "E"
+        ],
+        "D": [
+          "B",
+          "C",
+          "E",
+          "F"
+        ],
+        "E": [
+          "C",
+          "D",
+          "F"
+        ],
+        "F": [
+          "D",
+          "E"
+        ]
+      },
+      "adjacencyMatrix": [
+        [
+          0,
+          4,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          1,
+          5,
+          0,
+          0
+        ],
+        [
+          2,
+          1,
+          0,
+          8,
+          6,
+          0
+        ],
+        [
+          0,
+          5,
+          8,
+          0,
+          2,
+          6
+        ],
+        [
+          0,
+          0,
+          6,
+          2,
+          0,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          6,
+          3,
+          0
+        ]
+      ],
+      "incidenceMatrix": [
+        [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "degrees": {
+        "A": 2,
+        "B": 3,
+        "C": 4,
+        "D": 4,
+        "E": 3,
+        "F": 2
+      },
+      "nodeCount": 6,
+      "edgeCount": 9,
+      "totalWeight": 37,
+      "density": 0.6,
+      "grf": "6 9\n1 2 4\n1 3 2\n2 3 1\n2 4 5\n3 4 8\n3 5 6\n4 5 2\n4 6 6\n5 6 3\n"
+    },
+    "traversal": {
+      "name": "traversal",
+      "nodes": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "weighted": false,
+      "positions": {
+        "A": [
+          0.5,
+          0.1
+        ],
+        "B": [
+          0.26,
+          0.4
+        ],
+        "C": [
+          0.74,
+          0.4
+        ],
+        "D": [
+          0.1,
+          0.76
+        ],
+        "E": [
+          0.4,
+          0.76
+        ],
+        "F": [
+          0.62,
+          0.76
+        ],
+        "G": [
+          0.9,
+          0.76
+        ]
+      },
+      "edgeList": [
+        [
+          "A",
+          "B",
+          1
+        ],
+        [
+          "A",
+          "C",
+          1
+        ],
+        [
+          "B",
+          "D",
+          1
+        ],
+        [
+          "B",
+          "E",
+          1
+        ],
+        [
+          "C",
+          "F",
+          1
+        ],
+        [
+          "C",
+          "G",
+          1
+        ],
+        [
+          "E",
+          "F",
+          1
+        ]
+      ],
+      "adjacencyList": {
+        "A": [
+          "B",
+          "C"
+        ],
+        "B": [
+          "A",
+          "D",
+          "E"
+        ],
+        "C": [
+          "A",
+          "F",
+          "G"
+        ],
+        "D": [
+          "B"
+        ],
+        "E": [
+          "B",
+          "F"
+        ],
+        "F": [
+          "C",
+          "E"
+        ],
+        "G": [
+          "C"
+        ]
+      },
+      "adjacencyMatrix": [
+        [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "incidenceMatrix": [
+        [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ]
+      ],
+      "degrees": {
+        "A": 2,
+        "B": 3,
+        "C": 3,
+        "D": 1,
+        "E": 2,
+        "F": 2,
+        "G": 1
+      },
+      "nodeCount": 7,
+      "edgeCount": 7,
+      "totalWeight": null,
+      "density": 0.3333333333333333,
+      "grf": "7 7\n1 2\n1 3\n2 4\n2 5\n3 6\n3 7\n5 6\n"
+    }
+  },
+  "representationCost": {
+    "columns": [
+      {
+        "label": "Representation",
+        "unit": "",
+        "numeric": false
+      },
+      {
+        "label": "Space",
+        "unit": "",
+        "numeric": false
+      },
+      {
+        "label": "On this graph",
+        "unit": "cells or entries",
+        "numeric": true
+      },
+      {
+        "label": "Is u adjacent to v?",
+        "unit": "",
+        "numeric": false
+      },
+      {
+        "label": "List the neighbours of v",
+        "unit": "",
+        "numeric": false
+      },
+      {
+        "label": "Best when",
+        "unit": "",
+        "numeric": false
+      }
+    ],
+    "rows": [
+      [
+        "Adjacency matrix",
+        "O(V²)",
+        36,
+        "O(1)",
+        "O(V)",
+        "the graph is dense, or you test edges constantly"
+      ],
+      [
+        "Adjacency list",
+        "O(V + E)",
+        24,
+        "O(deg v)",
+        "O(deg v)",
+        "the graph is sparse, or you walk neighbours constantly"
+      ],
+      [
+        "Edge list",
+        "O(E)",
+        9,
+        "O(E)",
+        "O(E)",
+        "you only ever iterate over edges — Kruskal, for instance"
+      ]
+    ]
+  },
+  "tspCities": {
+    "note": "Six cities for the brute-force travelling salesman demo (topics 3.6.11 and 3.6.12). Six is chosen deliberately: 5! / 2 = 60 distinct tours is small enough to enumerate in the browser and large enough that seven cities would be 360 and ten would be 181,440.",
+    "cities": [
+      {
+        "name": "Tallahassee",
+        "x": 0.0,
+        "y": 0.0
+      },
+      {
+        "name": "Jacksonville",
+        "x": 264.0,
+        "y": 24.0
+      },
+      {
+        "name": "Gainesville",
+        "x": 200.0,
+        "y": 118.0
+      },
+      {
+        "name": "Orlando",
+        "x": 300.0,
+        "y": 232.0
+      },
+      {
+        "name": "Tampa",
+        "x": 214.0,
+        "y": 300.0
+      },
+      {
+        "name": "Miami",
+        "x": 452.0,
+        "y": 480.0
+      }
+    ],
+    "distanceUnit": "kilometres, straight line",
+    "tourCount": 60
+  },
+  "maze": {
+    "note": "A 5 by 5 maze as a grid graph (topic 3.2.9). '#' is wall, '.' is open. Turning it into an adjacency list and running BFS is the lab exercise; the shortest path is given so the demo can check an answer.",
+    "grid": [
+      "S...#",
+      "###.#",
+      "....#",
+      ".####",
+      "....E"
+    ],
+    "start": [
+      0,
+      0
+    ],
+    "end": [
+      4,
+      4
+    ],
+    "shortestPathLength": 12
+  }
+}

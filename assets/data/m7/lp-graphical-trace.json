@@ -1,0 +1,193 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "lp-graphical",
+  "module": "M7",
+  "topics": [
+    "7.1.1",
+    "7.2.4",
+    "7.2.5",
+    "7.2.6",
+    "7.3.1",
+    "7.3.2",
+    "7.4.6",
+    "7.4.9"
+  ],
+  "title": "The furniture factory LP solved by checking every feasible corner",
+  "seed": null,
+  "determinism": "no randomness; the input is fixed",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [],
+  "input": {
+    "objective": "maximise z = 40x + 30y",
+    "constraints": [
+      "2x + y <= 10",
+      "x + y <= 6",
+      "x >= 0",
+      "y >= 0"
+    ],
+    "variables": [
+      "chairs",
+      "tables"
+    ],
+    "bounds": [
+      0.0,
+      10.0
+    ]
+  },
+  "columns": [
+    {
+      "label": "Vertex",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "First boundary",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Second boundary",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Objective z",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Verdict",
+      "unit": "",
+      "numeric": false
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 4,
+  "steps": [
+    {
+      "index": 0,
+      "label": "Vertex (4, 2) is where 2x + 1y = 10 meets 1x + 1y = 6. The objective 40x + 30y is worth 220 here — the largest value of the four, so this corner is the optimum.",
+      "rows": [
+        [
+          "(4, 2)",
+          "2x + 1y = 10",
+          "1x + 1y = 6",
+          220.0,
+          "optimal"
+        ]
+      ],
+      "state": {
+        "vertex": [
+          4.0,
+          2.0
+        ],
+        "z": 220.0,
+        "optimal": true
+      }
+    },
+    {
+      "index": 1,
+      "label": "Vertex (5, 0), where 2x + 1y = 10 meets y = 0, is worth 200 — 20 less than the best corner.",
+      "rows": [
+        [
+          "(5, 0)",
+          "2x + 1y = 10",
+          "y = 0",
+          200.0,
+          "feasible"
+        ]
+      ],
+      "state": {
+        "vertex": [
+          5.0,
+          0.0
+        ],
+        "z": 200.0,
+        "optimal": false
+      }
+    },
+    {
+      "index": 2,
+      "label": "Vertex (0, 6), where 1x + 1y = 6 meets x = 0, is worth 180 — 40 less than the best corner.",
+      "rows": [
+        [
+          "(0, 6)",
+          "1x + 1y = 6",
+          "x = 0",
+          180.0,
+          "feasible"
+        ]
+      ],
+      "state": {
+        "vertex": [
+          0.0,
+          6.0
+        ],
+        "z": 180.0,
+        "optimal": false
+      }
+    },
+    {
+      "index": 3,
+      "label": "Vertex (0, 0), where x = 0 meets y = 0, is worth 0 — 220 less than the best corner.",
+      "rows": [
+        [
+          "(0, 0)",
+          "x = 0",
+          "y = 0",
+          0.0,
+          "feasible"
+        ]
+      ],
+      "state": {
+        "vertex": [
+          0.0,
+          0.0
+        ],
+        "z": 0.0,
+        "optimal": false
+      }
+    }
+  ],
+  "summary": {
+    "vertices": [
+      {
+        "x": 4.0,
+        "y": 2.0,
+        "z": 220.0,
+        "optimal": true
+      },
+      {
+        "x": 5.0,
+        "y": 0.0,
+        "z": 200.0,
+        "optimal": false
+      },
+      {
+        "x": 0.0,
+        "y": 6.0,
+        "z": 180.0,
+        "optimal": false
+      },
+      {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "optimal": false
+      }
+    ],
+    "optimum": {
+      "x": 4.0,
+      "y": 2.0,
+      "z": 220.0
+    },
+    "vertexCount": 4,
+    "principle": "a linear objective on a convex feasible region always attains its optimum at a vertex, so checking the corners is enough",
+    "whySimplex": "four corners is nothing; a problem with 20 variables and 20 constraints has over 100 billion candidate basic solutions, which is why simplex walks from corner to improving corner instead of enumerating them"
+  },
+  "alt": {
+    "first": "The feasible region is a quadrilateral bounded by the two constraint lines and the axes. Its best corner, where the two constraints cross, is worth 220.",
+    "last": "All 4 feasible corners have been evaluated. The optimum is (4, 2) with z = 220; the origin is worth 0 and neither single-axis corner beats the crossing point."
+  }
+}

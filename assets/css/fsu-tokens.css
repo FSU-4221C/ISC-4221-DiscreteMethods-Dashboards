@@ -1,0 +1,1153 @@
+/* ==========================================================================
+   fsu-tokens.css — design tokens for the ISC 4221C (2026) accessible dashboard
+   ==========================================================================
+
+   Florida State University brand + WCAG 2.1 AA / 2.2 AA token layer.
+   Everything else in Dashboard/ builds on this file. Load it first, use the
+   custom properties, and never hardcode a hex value in a component.
+
+   SOURCES OF TRUTH
+     Colour + every ratio in this file .. ../../../standards/color-palette.md
+     Brand rules ........................ skills/SKILL.md, skills/colors.md
+     Type scale ......................... skills/typography.md
+     Criteria cited ..................... skills/ada-wcag-compliance-guide.md
+     Upstream reference ................. skills/fsu-tokens.css (names kept
+                                          compatible where sensible)
+
+   RATIOS
+     Every ratio in a comment below was computed by ../../../tools/contrast.py
+     and copied verbatim from standards/color-palette.md. Do not add a pairing
+     that is not in that table. If you need a new one, measure it there first
+     and re-run the generator — do not estimate, and do not edit numbers here.
+
+   TARGETS
+     4.5:1  normal text                            (1.4.3 Contrast Minimum, AA)
+     3:1    large text >=24px / >=18.66px bold     (1.4.3)
+     3:1    UI component boundaries + focus rings  (1.4.11 Non-text Contrast, AA)
+
+   TWO BRAND RULES THAT ARE EASY TO BREAK BY ACCIDENT
+     - FSU Garnet is NEVER lightened or tinted. Warm surfaces come from the
+       Gold tint ramp (--fsu-gold-3c), never from garnet at reduced opacity.
+     - FSU Gold is NEVER darkened. Darker hover/active states use Garnet,
+       Plaza Brick, or Stadium Night.
+
+   ONE ACCESSIBILITY RULE THAT IS EASY TO BREAK BY ACCIDENT
+     Never dim text with `opacity` or a colour-mix to make it look "muted".
+     That silently drops the measured ratio and there is no token for it here.
+     Pick a colour that already passes: --fsu-color-caption.
+
+   FILE MAP
+     1.  Raw brand palette (hex lives here and nowhere else)
+     2.  Semantic colour tokens — light theme (the default)
+     3.  Dark theme — prefers-color-scheme + explicit data-theme override
+     4.  Typography
+     5.  Spacing, radius, border, shadow, z-index, target size
+     6.  Focus-visible tokens and base focus styles
+     7.  Chart series order
+     8.  Utility classes (.visually-hidden, .skip-link, .fsu-focus-ring)
+     9.  prefers-reduced-motion
+     10. forced-colors (Windows High Contrast Mode)
+     11. Print
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. RAW BRAND PALETTE
+   Brand names, not roles. Use the semantic tokens in section 2 for anything
+   you actually style; reach in here only when the brand name is the point
+   (e.g. a legend that literally says "FSU Garnet").
+   ========================================================================== */
+
+:root {
+  /* --- Primary: must carry >=70% of the visual weight ------------------- */
+  --fsu-garnet:          #782f40;
+  --fsu-gold:            #ceb888;
+  --fsu-white:           #ffffff;
+
+  /* --- Secondary -------------------------------------------------------- */
+  --fsu-stadium-night:   #101820;  /* dark-mode canvas */
+  --fsu-plaza-brick:     #572932;  /* the link colour */
+  --fsu-gulf-sands:      #dfd1a7;  /* chart series only — no measured text pairing */
+
+  /* --- Accent: small doses, chrome only.
+         Never body text, never headings, never gradients. ---------------- */
+  --fsu-legacy-blue:     #425563;
+  --fsu-westcott-water:  #5cb8b2;
+  --fsu-vault-garnet:    #a6192e;  /* error chrome — never the only cue (1.4.1) */
+  --fsu-vault-gold:      #ffc72c;  /* highlight chrome — never the only cue (1.4.1) */
+
+  /* --- Gold tint ramp: the approved way to get a soft warm surface ------ */
+  --fsu-gold-1c:         #dacaa6;  /* Gold +1 Canvas */
+  --fsu-gold-2c:         #e7dcc4;  /* Gold +2 Canvas */
+  --fsu-gold-3c:         #f3ede1;  /* Gold +3 Canvas — the standard warm surface */
+  --fsu-gold-4c:         #f9f6f0;  /* derived: the half-step between white and +3 */
+
+  /* --- Dark surface ramp (color-palette.md §6.2) ------------------------
+         FSU publishes ONE dark value, #101820. That is an anchor, not a
+         scale, and a single flat surface is why the first dark build read as
+         one slab with gold drawn all over it — gold was carrying structural
+         work that a surface scale should carry.
+
+         These six steps are DERIVED, stepping from Stadium Night toward
+         #2A3B57 along the same hue: the dark-side counterpart of FSU's own
+         Black -> S3 White neutral ramp.
+
+         THE RULE THAT COMES WITH THEM: a derived step is a BACKGROUND and
+         nothing else. Never text, never a chart series, never a border that
+         has to carry a ratio. Every text pairing on every step is measured in
+         color-palette.md §6.2; White clears AAA on all seven. */
+  --fsu-ink-950:         #101820;  /* = Stadium Night. Page chrome, footer */
+  --fsu-ink-900:         #121b25;  /* the default dark page background */
+  --fsu-ink-850:         #16202c;  /* alternating band; sub-panel inside a card */
+  --fsu-ink-800:         #1a2636;  /* card and panel surface */
+  --fsu-ink-750:         #1f2c40;  /* raised: secondary buttons, hover, panel headers */
+  --fsu-ink-700:         #24334b;  /* inset dividers, table rules */
+  --fsu-ink-650:         #2a3b57;  /* the strongest structural line. Sparingly */
+
+  /* --- Neutral ramp (Strata Three) --------------------------------------
+         Read the comments. Three of these are text-hostile and the palette
+         says so explicitly. */
+  --fsu-canvas:          #ffffff;
+  --fsu-off-white:       #f4f4f4;  /* S3 White. NO measured text pairing exists —
+                                      do not put text on it. Use --fsu-gold-3c. */
+  --fsu-neutral-2w:      #d5d4d4;  /* decorative separators only */
+  --fsu-neutral-1w:      #b5b5b4;  /* 1.97:1 on white — borders only, never text */
+  --fsu-neutral:         #969594;  /* 2.99:1 on white — fails normal AND large text,
+                                      and fails 1.4.11 as a control boundary */
+  --fsu-neutral-2s:      #565554;  /* 7.44:1 on white — the muted-text colour */
+  --fsu-slate:           #2c2a29;  /* 14.28:1 on white — body copy */
+  --fsu-black:           #161514;  /* 18.24:1 on white */
+
+  /* --- Approved gradients (the only two) -------------------------------- */
+  --fsu-gradient-garnet: linear-gradient(135deg, #782f40 0%, #572932 100%);
+  --fsu-gradient-gold:   linear-gradient(135deg, #ceb888 0%, #dfd1a7 55%, #ffffff 100%);
+}
+
+
+/* ==========================================================================
+   2. SEMANTIC COLOUR TOKENS — LIGHT THEME (default)
+
+   Each text token carries its measured ratio against the surface it is meant
+   to sit on. A token is only ever set to a colour that appears in the
+   corresponding table in standards/color-palette.md §2.
+
+   The `:root, :root[data-theme="light"]` selector list is deliberate: the
+   second selector re-asserts light values so an explicit toggle to light beats
+   an OS preference of dark (see section 3).
+   ========================================================================== */
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* --- Surfaces --------------------------------------------------------- */
+  --fsu-surface:              var(--fsu-white);       /* default canvas for body copy */
+  --fsu-surface-warm:         var(--fsu-gold-3c);     /* Gold +3 Canvas warm band */
+  --fsu-surface-brand:        var(--fsu-garnet);      /* header bar, title bands */
+  --fsu-surface-brand-deep:   var(--fsu-plaza-brick); /* garnet hover/active — never a lighter garnet */
+  --fsu-surface-gold:         var(--fsu-gold);        /* table header bands, gold buttons */
+  --fsu-surface-dark:         var(--fsu-surf-0);   /* header and footer chrome */ /* footer, dark bands inside a light page */
+
+  /* --- THE SURFACE RAMP (design-system.md §1.2, color-palette.md §6) ----
+         Seven steps of one substrate. Depth is expressed by stepping UP this
+         scale — never by adding a shadow, and never by drawing another gold
+         line. The ramp is the single most load-bearing thing in the system:
+         with it, hierarchy is a background; without it, every boundary has to
+         be a border, and that is what made the first build look busy.
+
+         The steps are THEME-NEUTRAL by name, so a component says "I am a
+         panel" (surf-3) rather than "I am cream" and works in both themes
+         with no per-theme rule of its own.
+
+           surf-0  page chrome — header, footer
+           surf-1  the default page background
+           surf-2  alternating band; a sub-panel nested inside a card
+           surf-3  card and panel surface — anything that is a discrete object
+           surf-4  raised — secondary buttons, hover states, panel headers
+           surf-5  inset fills and strong table rules
+           surf-6  the strongest structural step. Sparingly.
+
+         ONE body colour covers the whole ramp in each theme, which is the
+         point of building it from a single hue: Slate clears 8.83:1 on every
+         light step, White clears 11.28:1 on every dark one. See
+         color-palette.md §6 for the full matrix.
+
+         S3 White #F4F4F4 is deliberately NOT in the light ramp: it is a cool
+         grey among warm steps and muddies against #F3EDE1. Neutral chrome
+         only. */
+  --fsu-surf-0:  var(--fsu-white);
+  --fsu-surf-1:  var(--fsu-white);
+  --fsu-surf-2:  var(--fsu-gold-4c);    /* #F9F6F0 */
+  --fsu-surf-3:  var(--fsu-gold-3c);    /* #F3EDE1 */
+  --fsu-surf-4:  var(--fsu-gold-2c);    /* #E7DCC4 */
+  --fsu-surf-5:  var(--fsu-gold-1c);    /* #DACAA6 */
+  --fsu-surf-6:  var(--fsu-neutral-2w); /* #D5D4D4 */
+
+  /* --- Surface ROLES ----------------------------------------------------
+         The two ramps run in opposite directions: on paper a deeper step
+         reads as INSET, on ink a lighter step reads as RAISED. A component
+         that names a raw step therefore looks right in one theme and wrong in
+         the other. Name the role instead. */
+  --fsu-surf-chrome: var(--fsu-surf-0);   /* header, footer */
+  --fsu-surf-page:   var(--fsu-surf-1);   /* the page itself */
+  --fsu-surf-band:   var(--fsu-surf-2);   /* alternating section band */
+  --fsu-surf-panel:  var(--fsu-surf-3);   /* card, demo, callout, sidebar */
+  --fsu-surf-inset:  var(--fsu-surf-4);   /* table header, code block, nested panel */
+  --fsu-surf-field:  var(--fsu-surf-1);   /* an input: lighter than the panel around it */
+  --fsu-surf-mark:   var(--fsu-surf-5);   /* chip fill, current-step marker */
+
+  /* Aliases from the first pass. Kept so nothing has to be re-authored. */
+  --fsu-paper:         var(--fsu-surf-1);
+  --fsu-paper-warm:    var(--fsu-surf-3);
+  --fsu-paper-warm-2:  var(--fsu-surf-4);
+  --fsu-paper-warm-3:  var(--fsu-surf-5);
+  --fsu-ink-canvas:    var(--fsu-stadium-night);
+
+  /* Back-compat aliases for skills/fsu-tokens.css consumers */
+  --fsu-bg:                   var(--fsu-surface);
+  --fsu-bg-subtle:            var(--fsu-surface-warm);
+
+  /* --- Text on --fsu-surface (white) ------------------------------------ */
+  --fsu-color-body:           var(--fsu-slate);       /* 14.28:1 on white */
+  --fsu-color-strong:         var(--fsu-black);       /* 18.24:1 on white */
+  --fsu-color-heading:        var(--fsu-garnet);      /*  9.21:1 on white */
+  --fsu-color-caption:        var(--fsu-neutral-2s);  /*  7.44:1 on white */
+  --fsu-color-eyebrow:        var(--fsu-neutral-2s);  /*  7.44:1 on white */
+
+  /* Alias kept from the upstream file so existing markup keeps working */
+  --fsu-text:                 var(--fsu-color-body);
+  --fsu-text-muted:           var(--fsu-color-caption);
+  --fsu-heading:              var(--fsu-color-heading);
+
+  /* --- Text on --fsu-surface-warm (Gold +3 Canvas #F3EDE1) -------------- */
+  --fsu-color-body-on-warm:    var(--fsu-slate);      /* 12.25:1 on Gold +3 Canvas */
+  --fsu-color-strong-on-warm:  var(--fsu-black);      /* 15.64:1 on Gold +3 Canvas */
+  --fsu-color-heading-on-warm: var(--fsu-garnet);     /*  7.90:1 on Gold +3 Canvas */
+  --fsu-color-caption-on-warm: var(--fsu-neutral-2s); /*  6.38:1 on Gold +3 Canvas */
+
+  /* --- Text on the deeper ramp steps -------------------------------------
+         Companion tokens so a component never has to know which theme it is
+         in. Light values are measured in color-palette.md §2. */
+  --fsu-on-paper-warm:    var(--fsu-slate);  /* 12.25:1 on Gold +3 Canvas */
+  --fsu-on-paper-warm-2:  var(--fsu-black);  /* 13.40:1 on Gold +2 Canvas */
+  --fsu-on-paper-warm-3:  var(--fsu-black);  /* 11.27:1 on Gold +1 Canvas */
+
+  /* --- Text on brand fills ---------------------------------------------- */
+  --fsu-on-brand:             var(--fsu-white);       /*  9.21:1 on FSU Garnet */
+  --fsu-on-brand-accent:      var(--fsu-gold);        /*  4.75:1 on FSU Garnet — AA, thin
+                                                          margin. Short spans only: header
+                                                          bands, buttons. Not sustained reading. */
+  --fsu-on-brand-deep:        var(--fsu-white);       /* 11.87:1 on Plaza Brick */
+  --fsu-on-gold:              var(--fsu-black);       /*  9.41:1 on FSU Gold */
+  --fsu-on-gold-alt:          var(--fsu-slate);       /*  7.37:1 on FSU Gold */
+  --fsu-on-dark:              var(--fsu-white);       /* 17.89:1 on Stadium Night */
+  --fsu-on-dark-accent:       var(--fsu-gold);        /*  9.23:1 on Stadium Night */
+  /* NEVER: white on FSU Gold (1.94:1) or FSU Gold on white (1.94:1). */
+
+  /* --- Links ------------------------------------------------------------
+         Underline stays on in body copy: colour alone is not a link cue
+         (1.4.1 Use of Color). The hover state changes hue AND thickens the
+         underline so the cue is not colour-only either.
+         This replaces the 2025 `urlcolor=cyan` (1.25:1) across the course. */
+  --fsu-link:                 var(--fsu-plaza-brick); /* 11.87:1 on white */
+  --fsu-link-hover:           var(--fsu-garnet);      /*  9.21:1 on white */
+  --fsu-link-visited:         var(--fsu-slate);       /* 14.28:1 on white */
+  --fsu-link-on-dark:         var(--fsu-gold);        /*  9.23:1 on Stadium Night */
+  --fsu-link-on-dark-hover:   var(--fsu-white);       /* 17.89:1 on Stadium Night */
+  --fsu-link-on-brand:        var(--fsu-white);       /*  9.21:1 on FSU Garnet */
+  --fsu-link-underline:       0.08em;
+  --fsu-link-underline-hover: 0.14em;
+  --fsu-link-underline-offset: 0.18em;
+
+  /* --- Borders and rules ------------------------------------------------
+         Two tiers, and the difference matters:
+         --fsu-border          decorative separators. No ratio claimed, none
+                               needed — 1.4.11 does not apply to pure decoration.
+         --fsu-border-strong   the boundary of an interactive control (input,
+                               select, checkbox, card that is a link target).
+                               MUST clear 3:1 (1.4.11), so it is Neutral +2 Slate,
+                               not the light neutrals.
+         #969594 measures 2.99:1 on white — it misses 3:1 and is therefore never
+         a control boundary, despite being in the FSU web ramp. */
+  --fsu-border:               var(--fsu-neutral-2w);  /* decorative only */
+  --fsu-border-strong:        var(--fsu-neutral-2s);  /* 7.44:1 on white — control boundaries */
+  --fsu-rule:                 var(--fsu-gold);        /* gold rule: decoration, never text */
+
+  /* --- The hairline tier (design-system.md §1.4) ------------------------
+         Borders carry the structural load, so they get three deliberate
+         weights rather than one default. These are the preferred names;
+         --fsu-border / --fsu-border-strong above remain as aliases. */
+  --fsu-line-soft:            var(--fsu-neutral-2w);  /* inside a panel, between rows of one object */
+  --fsu-line:                 var(--fsu-neutral-1w);  /* the default border: panel edges, section boundaries */
+  --fsu-line-strong:          var(--fsu-neutral-2s);  /* interactive edges only. 7.44:1 — clears 1.4.11 */
+
+  /* --- Status chrome ----------------------------------------------------
+         Colour is never the only encoding (1.4.1). Every status needs an icon
+         AND a word. The *-accent tokens are icon/border/bar chrome; the *-text
+         tokens are the only ones with a measured ratio, so they are the only
+         ones allowed to carry words. */
+  --fsu-status-error-accent:  var(--fsu-vault-garnet);   /* chrome only — no measured text pairing */
+  --fsu-status-error-text:    var(--fsu-garnet);         /*  9.21:1 on white */
+  --fsu-status-warn-accent:   var(--fsu-vault-gold);     /* chrome only — no measured text pairing */
+  --fsu-status-warn-text:     var(--fsu-black);          /* 18.24:1 on white */
+  --fsu-status-info-accent:   var(--fsu-legacy-blue);    /*  7.75:1 on white */
+  --fsu-status-info-text:     var(--fsu-legacy-blue);    /*  7.75:1 on white — short status
+                                                             labels only. Legacy Blue is an
+                                                             accent colour: never a heading,
+                                                             never body copy, never a gradient. */
+  --fsu-status-ok-accent:     var(--fsu-westcott-water); /* chrome only — no measured text pairing */
+  --fsu-status-ok-text:       var(--fsu-slate);          /* 14.28:1 on white */
+
+  /* --- Focus ring (full definition in section 6) ------------------------
+         Light theme: a Garnet ring with a White halo. On white the ring
+         carries it (9.21:1). On a Garnet header band the ring vanishes but the
+         halo carries it (white on garnet, 9.21:1). Both layers are always
+         drawn, so the indicator survives any approved surface. */
+  --fsu-focus-ring-color:     var(--fsu-garnet);      /* 9.21:1 on white, 7.90:1 on Gold +3 Canvas */
+  --fsu-focus-ring-halo:      var(--fsu-white);       /* 9.21:1 against the Garnet ring itself */
+
+  /* --- Shadows (design-system.md §5) -------------------------------------
+         THERE ARE NO SHADOWS IN THIS SYSTEM. Depth comes from stepping up the
+         surface ramp and from hairlines. These three remain defined for
+         exactly one consumer — the narrow-viewport nav disclosure panel, which
+         genuinely floats over content — and nothing else. A shadow is never
+         the sole indicator of state or grouping and is never tinted with an
+         accent. The focus ring's box-shadow halo is not elevation; it is the
+         second layer of a two-layer indicator and is mandatory (§6). -------- */
+  --fsu-shadow-1: 0 1px 2px rgba(16, 24, 32, 0.10);
+  --fsu-shadow-2: 0 2px 6px rgba(16, 24, 32, 0.12);
+  --fsu-shadow-3: 0 8px 24px rgba(16, 24, 32, 0.16);
+}
+
+
+/* ==========================================================================
+   3. DARK THEME
+
+   Canvas is Stadium Night #101820. The palette measures exactly two
+   foregrounds on it: White 17.89:1 and FSU Gold 9.23:1. That is the whole
+   dark vocabulary, and it is why there is no dimmer "muted" colour here —
+   caption text is White at a smaller size and lighter weight, never White
+   at reduced opacity.
+
+   Garnet is absent from dark surfaces: no Garnet-on-Stadium-Night pairing is
+   measured, and Garnet may not be lightened to make one. Plaza Brick is the
+   one usable dark accent fill (White 11.87:1, Gold 6.13:1 on it).
+
+   The two blocks below are byte-identical on purpose. Together they give the
+   required behaviour in BOTH directions:
+     - OS dark, no toggle set      -> media block applies
+     - OS dark, toggle = "light"   -> media block is excluded by :not(), light wins
+     - OS light, toggle = "dark"   -> attribute block applies
+   If you edit one block, edit the other.
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --fsu-surface:              var(--fsu-surf-1);   /* the page */
+    --fsu-surface-warm:         var(--fsu-surf-3);   /* panels and cards */
+    --fsu-surface-brand:        var(--fsu-garnet);
+    --fsu-surface-brand-deep:   var(--fsu-plaza-brick);
+    --fsu-surface-gold:         var(--fsu-gold);
+    --fsu-surface-dark:         var(--fsu-surf-0);   /* header and footer chrome */
+    --fsu-bg:                   var(--fsu-surface);
+    --fsu-bg-subtle:            var(--fsu-surface);
+
+    /* --- The dark surface ramp (color-palette.md §6.2) -----------------
+       Seven measured steps, so dark expresses nesting with BACKGROUNDS
+       instead of drawing every boundary in gold. This is the fix for
+       "everything is gold": gold was doing structural work. */
+    --fsu-surf-0:  var(--fsu-ink-950);
+    --fsu-surf-1:  var(--fsu-ink-900);
+    --fsu-surf-2:  var(--fsu-ink-850);
+    --fsu-surf-3:  var(--fsu-ink-800);
+    --fsu-surf-4:  var(--fsu-ink-750);
+    --fsu-surf-5:  var(--fsu-ink-700);
+    --fsu-surf-6:  var(--fsu-ink-650);
+
+    --fsu-surf-chrome: var(--fsu-surf-0);
+    --fsu-surf-page:   var(--fsu-surf-1);
+    --fsu-surf-band:   var(--fsu-surf-2);
+    --fsu-surf-panel:  var(--fsu-surf-3);
+    --fsu-surf-inset:  var(--fsu-surf-4);
+    --fsu-surf-field:  var(--fsu-surf-4);   /* on ink, "lighter" is the raised step */
+    --fsu-surf-mark:   var(--fsu-surf-5);
+
+    --fsu-paper:         var(--fsu-surf-1);
+    --fsu-paper-warm:    var(--fsu-surf-3);
+    --fsu-paper-warm-2:  var(--fsu-surf-4);
+    --fsu-paper-warm-3:  var(--fsu-surf-5);
+
+    --fsu-color-body:           var(--fsu-white);   /* 17.89:1 on Stadium Night */
+    --fsu-color-strong:         var(--fsu-white);   /* 17.89:1 on Stadium Night */
+    --fsu-color-heading:        var(--fsu-gulf-sands); /* 11.77:1 on surf-0 … 8.37:1 on surf-5 */
+    --fsu-color-caption:        var(--fsu-neutral-2w); /* 12.10:1 on surf-0 … 8.60:1 on surf-5 */
+    --fsu-color-eyebrow:        var(--fsu-neutral-2w); /* 12.10:1 on surf-0 … 8.60:1 on surf-5 */
+    --fsu-text:                 var(--fsu-color-body);
+    --fsu-text-muted:           var(--fsu-color-caption);
+    --fsu-heading:              var(--fsu-color-heading);
+
+    --fsu-color-body-on-warm:    var(--fsu-white);  /* 17.89:1 on Stadium Night */
+    --fsu-color-strong-on-warm:  var(--fsu-white);  /* 17.89:1 on Stadium Night */
+    --fsu-color-heading-on-warm: var(--fsu-gulf-sands); /* 10.05:1 on surf-3 */
+    --fsu-color-caption-on-warm: var(--fsu-neutral-2w); /* 10.33:1 on surf-3 */
+
+    --fsu-on-paper-warm:    var(--fsu-white);  /* 17.89:1 on Stadium Night */
+    --fsu-on-paper-warm-2:  var(--fsu-white);  /* 11.87:1 on Plaza Brick */
+    --fsu-on-paper-warm-3:  var(--fsu-white);  /* 11.87:1 on Plaza Brick */
+
+    --fsu-link:                 var(--fsu-gold);    /*  9.23:1 on Stadium Night */
+    --fsu-link-hover:           var(--fsu-white);   /* 17.89:1 on Stadium Night */
+    --fsu-link-visited:         var(--fsu-gold);    /*  9.23:1 — only two foregrounds are
+                                                        measured on this surface, so visited
+                                                        is carried by the underline, not hue */
+
+    --fsu-border:               var(--fsu-ink-650);    /* decorative only — a ramp step */
+    --fsu-border-strong:        var(--fsu-neutral-1w); /*  8.72:1 on surf-0 … 5.50:1 on surf-6 */
+    --fsu-rule:                 var(--fsu-gold);
+
+    /* Dark has no surface ramp, so the hairlines carry ALL of the structure. */
+    --fsu-line-soft:            var(--fsu-ink-700);
+    --fsu-line:                 var(--fsu-ink-650);
+    --fsu-line-strong:          var(--fsu-neutral-1w); /*  8.72:1 on surf-0 … 5.50:1 on surf-6 */
+
+    --fsu-status-error-accent:  var(--fsu-vault-garnet);
+    --fsu-status-error-text:    var(--fsu-white);   /* 17.89:1 — Garnet is unusable on dark */
+    --fsu-status-warn-accent:   var(--fsu-vault-gold);
+    --fsu-status-warn-text:     var(--fsu-vault-gold); /* 11.47:1 on surf-0 … 8.16:1 on surf-5 */
+    --fsu-status-info-accent:   var(--fsu-legacy-blue);
+    --fsu-status-info-text:     var(--fsu-white);   /* 17.89:1 on Stadium Night */
+    --fsu-status-ok-accent:     var(--fsu-westcott-water);
+    --fsu-status-ok-text:       var(--fsu-westcott-water); /* 7.63:1 on surf-0 … 5.43:1 on surf-5 */
+
+    /* Ring/halo swap: Gold ring carries it on dark (9.23:1 on Stadium Night),
+       Stadium Night halo separates the ring from lighter fills. */
+    --fsu-focus-ring-color:     var(--fsu-gold);          /* 9.23:1 on Stadium Night */
+    --fsu-focus-ring-halo:      var(--fsu-stadium-night); /* 9.23:1 against the Gold ring itself */
+
+    --fsu-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.55);
+    --fsu-shadow-2: 0 2px 6px rgba(0, 0, 0, 0.60);
+    --fsu-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.70);
+  }
+}
+
+/* Explicit toggle. Must stay identical to the media block above. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --fsu-surface:              var(--fsu-surf-1);   /* the page */
+  --fsu-surface-warm:         var(--fsu-surf-3);   /* panels and cards */
+  --fsu-surface-brand:        var(--fsu-garnet);
+  --fsu-surface-brand-deep:   var(--fsu-plaza-brick);
+  --fsu-surface-gold:         var(--fsu-gold);
+  --fsu-surface-dark:         var(--fsu-surf-0);   /* header and footer chrome */
+  --fsu-bg:                   var(--fsu-surface);
+  --fsu-bg-subtle:            var(--fsu-surface);
+
+  /* --- The dark surface ramp (color-palette.md §6.2) -----------------
+     Seven measured steps, so dark expresses nesting with BACKGROUNDS
+     instead of drawing every boundary in gold. This is the fix for
+     "everything is gold": gold was doing structural work. */
+  --fsu-surf-0:  var(--fsu-ink-950);
+  --fsu-surf-1:  var(--fsu-ink-900);
+  --fsu-surf-2:  var(--fsu-ink-850);
+  --fsu-surf-3:  var(--fsu-ink-800);
+  --fsu-surf-4:  var(--fsu-ink-750);
+  --fsu-surf-5:  var(--fsu-ink-700);
+  --fsu-surf-6:  var(--fsu-ink-650);
+
+  --fsu-surf-chrome: var(--fsu-surf-0);
+  --fsu-surf-page:   var(--fsu-surf-1);
+  --fsu-surf-band:   var(--fsu-surf-2);
+  --fsu-surf-panel:  var(--fsu-surf-3);
+  --fsu-surf-inset:  var(--fsu-surf-4);
+  --fsu-surf-field:  var(--fsu-surf-4);   /* on ink, "lighter" is the raised step */
+  --fsu-surf-mark:   var(--fsu-surf-5);
+
+  --fsu-paper:         var(--fsu-surf-1);
+  --fsu-paper-warm:    var(--fsu-surf-3);
+  --fsu-paper-warm-2:  var(--fsu-surf-4);
+  --fsu-paper-warm-3:  var(--fsu-surf-5);
+
+  --fsu-color-body:           var(--fsu-white);   /* 17.89:1 on Stadium Night */
+  --fsu-color-strong:         var(--fsu-white);   /* 17.89:1 on Stadium Night */
+  --fsu-color-heading:        var(--fsu-gulf-sands); /* 11.77:1 on surf-0 … 8.37:1 on surf-5 */
+  --fsu-color-caption:        var(--fsu-neutral-2w); /* 12.10:1 on surf-0 … 8.60:1 on surf-5 */
+  --fsu-color-eyebrow:        var(--fsu-neutral-2w); /* 12.10:1 on surf-0 … 8.60:1 on surf-5 */
+  --fsu-text:                 var(--fsu-color-body);
+  --fsu-text-muted:           var(--fsu-color-caption);
+  --fsu-heading:              var(--fsu-color-heading);
+
+  --fsu-color-body-on-warm:    var(--fsu-white);  /* 17.89:1 on Stadium Night */
+  --fsu-color-strong-on-warm:  var(--fsu-white);  /* 17.89:1 on Stadium Night */
+  --fsu-color-heading-on-warm: var(--fsu-gulf-sands); /* 10.05:1 on surf-3 */
+  --fsu-color-caption-on-warm: var(--fsu-neutral-2w); /* 10.33:1 on surf-3 */
+
+  --fsu-on-paper-warm:    var(--fsu-white);  /* 17.89:1 on Stadium Night */
+  --fsu-on-paper-warm-2:  var(--fsu-white);  /* 11.87:1 on Plaza Brick */
+  --fsu-on-paper-warm-3:  var(--fsu-white);  /* 11.87:1 on Plaza Brick */
+
+  --fsu-link:                 var(--fsu-gold);    /*  9.23:1 on Stadium Night */
+  --fsu-link-hover:           var(--fsu-white);   /* 17.89:1 on Stadium Night */
+  --fsu-link-visited:         var(--fsu-gold);    /*  9.23:1 — underline carries visited state */
+
+  --fsu-border:               var(--fsu-ink-650);    /* decorative only — a ramp step */
+  --fsu-border-strong:        var(--fsu-neutral-1w); /*  8.72:1 on surf-0 … 5.50:1 on surf-6 */
+  --fsu-rule:                 var(--fsu-gold);
+
+  --fsu-line-soft:            var(--fsu-ink-700);
+  --fsu-line:                 var(--fsu-ink-650);
+  --fsu-line-strong:          var(--fsu-neutral-1w); /*  8.72:1 on surf-0 … 5.50:1 on surf-6 */
+
+  --fsu-status-error-accent:  var(--fsu-vault-garnet);
+  --fsu-status-error-text:    var(--fsu-white);   /* 17.89:1 — Garnet is unusable on dark */
+  --fsu-status-warn-accent:   var(--fsu-vault-gold);
+  --fsu-status-warn-text:     var(--fsu-vault-gold); /* 11.47:1 on surf-0 … 8.16:1 on surf-5 */
+  --fsu-status-info-accent:   var(--fsu-legacy-blue);
+  --fsu-status-info-text:     var(--fsu-white);   /* 17.89:1 on Stadium Night */
+  --fsu-status-ok-accent:     var(--fsu-westcott-water);
+  --fsu-status-ok-text:       var(--fsu-westcott-water); /* 7.63:1 on surf-0 … 5.43:1 on surf-5 */
+
+  --fsu-focus-ring-color:     var(--fsu-gold);          /* 9.23:1 on Stadium Night */
+  --fsu-focus-ring-halo:      var(--fsu-stadium-night); /* 9.23:1 against the Gold ring itself */
+
+  --fsu-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.55);
+  --fsu-shadow-2: 0 2px 6px rgba(0, 0, 0, 0.60);
+  --fsu-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.70);
+}
+
+/* Dark bands inside a light page (garnet header, Stadium Night footer).
+   Put data-surface="dark" on the band; its focus ring flips to the dark
+   pairing so the indicator stays visible without a theme change. */
+[data-surface="dark"] {
+  --fsu-focus-ring-color: var(--fsu-gold);          /* 9.23:1 on Stadium Night */
+  --fsu-focus-ring-halo:  var(--fsu-stadium-night);
+  --fsu-link:             var(--fsu-link-on-dark);
+  --fsu-link-hover:       var(--fsu-link-on-dark-hover);
+}
+
+
+/* ==========================================================================
+   4. TYPOGRAPHY
+
+   FONT LOADING — deliberately @font-face-free.
+   The dashboard must work fully offline, so there is no CDN link, no
+   @font-face, and no network request of any kind. Open Sans is used when the
+   viewer already has it installed; otherwise the stack falls through to Arial,
+   which is metrically close enough that nothing reflows badly.
+
+   What that costs, and how the fallback is kept honest:
+     - Arial's x-height is slightly smaller than Open Sans'. The scale below is
+       sized so body copy is comfortable in EITHER face. Do not compensate by
+       hardcoding a smaller size for one of them.
+     - No @font-face means no `size-adjust`/`ascent-override`. So: never build a
+       layout that depends on exact glyph widths, and never put text in a
+       fixed-height box (that is 1.4.12 Text Spacing waiting to fail).
+     - If the course later self-hosts Open Sans, add ONE @font-face block with a
+       local woff2 under assets/fonts/ and `font-display: swap`. Do not add a
+       Google Fonts <link>: it breaks offline use and adds a third-party request
+       to a student-facing page.
+
+   Garamond is intentionally not offered as a body face. FSU forbids it as
+   digital body text; the serif token exists for ceremonial display only.
+   ========================================================================== */
+
+:root {
+  /* --- Stacks ----------------------------------------------------------- */
+  --fsu-font-sans:   "Open Sans", Arial, Helvetica, "Helvetica Neue", sans-serif;
+  --fsu-font-serif:  "Garamond Premier Pro", "EB Garamond", Garamond, "Times New Roman", serif;
+  --fsu-font-script: "Parisienne", cursive;   /* titles/accents only, never UI or body */
+  --fsu-font-mono:   ui-monospace, "DejaVu Sans Mono", "Cascadia Mono", Consolas,
+                     "Liberation Mono", Menlo, monospace;
+
+  /* --- Modular scale (skills/typography.md, ~1.33 perfect fourth) --------
+         The clamp() formulas all include a rem term. That matters: a
+         viewport-only clamp stops responding to a user's font-size setting and
+         quietly fails 1.4.4 Resize Text at 200%. */
+  --fsu-text-display: clamp(2.5rem, 2rem + 2.5vw, 3.5rem);   /* hero    700-800 / 1.05 */
+  --fsu-text-h1:      clamp(2rem, 1.7rem + 1.5vw, 2.5rem);   /* H1      700     / 1.15 */
+  --fsu-text-h2:      clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem); /* H2  700     / 1.2  */
+  --fsu-text-h3:      1.375rem;                              /* H3      600     / 1.3  */
+  --fsu-text-h4:      1.125rem;                              /* H4      600     / 1.4  */
+  --fsu-text-body-lg: 1.125rem;                              /* body    400     / 1.6  */
+  --fsu-text-body:    1rem;                                  /* body    400     / 1.6  */
+  --fsu-text-small:   0.875rem;                              /* caption 400     / 1.5  */
+  --fsu-text-eyebrow: 0.75rem;                               /* label   700     / 1.2  */
+  --fsu-text-button:  1rem;                                  /* button  600     / 1    */
+
+  /* --- Weights ---------------------------------------------------------- */
+  --fsu-weight-regular:  400;
+  --fsu-weight-medium:   600;
+  --fsu-weight-bold:     700;
+  --fsu-weight-heavy:    800;
+
+  /* --- Line height ------------------------------------------------------
+         1.4.12 Text Spacing requires nothing break when a user forces
+         line-height 1.5. Body already sits at 1.6, so there is headroom. */
+  --fsu-leading-display: 1.05;
+  --fsu-leading-tight:   1.15;
+  --fsu-leading-snug:    1.2;
+  --fsu-leading-heading: 1.3;
+  --fsu-leading-normal:  1.5;
+  --fsu-leading-body:    1.6;
+
+  /* --- Letter spacing --------------------------------------------------- */
+  --fsu-tracking-tight:   -0.01em;
+  --fsu-tracking-normal:  0;
+  --fsu-tracking-eyebrow: 0.08em;
+
+  /* --- Measure: 60-75 characters for body copy (typography.md; also
+         1.4.8 Visual Presentation AAA caps at 80). ---------------------- */
+  --fsu-measure-min:    60ch;
+  --fsu-measure:        68ch;
+  --fsu-measure-max:    75ch;
+  --fsu-measure-narrow: 45ch;  /* captions, sidebars, table cells */
+}
+
+
+/* ==========================================================================
+   5. SPACING, RADIUS, BORDER, SHADOW, Z-INDEX, TARGET SIZE
+   Spacing is in rem so it scales with the user's text size. Never px for
+   anything that surrounds text.
+   ========================================================================== */
+
+:root {
+  /* --- Spacing (1-5 match skills/fsu-tokens.css; the rest extend it) ----- */
+  --fsu-space-0:    0;
+  --fsu-space-05:   0.25rem;
+  --fsu-space-1:    0.5rem;
+  --fsu-space-2:    1rem;
+  --fsu-space-3:    1.5rem;
+  --fsu-space-4:    2.5rem;
+  --fsu-space-5:    4rem;
+  --fsu-space-6:    6rem;
+
+  /* --- Radius (design-system.md §4) --------------------------------------
+         ONE radius, and it is small. Three radii on one screen is three
+         voices, and the 2025-era mix of 2/4/8/999px plus the arch is the
+         single loudest source of "decorative" in the old build.
+
+         --fsu-radius-sm and --fsu-radius-lg are DEPRECATED aliases kept so the
+         fourteen content pages and the Python figure generators keep working.
+         They point at --fsu-radius; do not introduce new uses.
+
+         --fsu-radius-arch is gone. The FSU arch is a legitimate brand shape
+         and there is no place in an algorithm dashboard where a rounded-top
+         mask reads as anything but decoration. It stays available for print
+         and ceremonial artifacts. */
+  --fsu-radius:      3px;
+  --fsu-radius-sm:   var(--fsu-radius);   /* deprecated alias */
+  --fsu-radius-lg:   var(--fsu-radius);   /* deprecated alias */
+  --fsu-radius-pill: 999px;               /* status dots, count badges, avatars ONLY */
+
+  /* --- Border widths ----------------------------------------------------
+         --fsu-border-width-strong is 2px because a 1px boundary on a control
+         is easy to lose at high zoom; 1.4.11 governs its colour, not its size. */
+  --fsu-border-width:        1px;
+  --fsu-border-width-strong: 2px;
+  /* The accent rule. 2px, not 4px: gold is a mark, not a band
+     (design-system.md §1.1). A 4px gold rule under the header AND on top of
+     every card is the same device twice on one screen, and it is what made the
+     first build read as a flyer. */
+  --fsu-rule-width:          2px;
+
+  /* --- Target size: 2.5.8 Target Size (Minimum) AA is 24x24 CSS px;
+         2.5.5 (AAA) is 44x44. Grow the hit area with padding or a
+         pseudo-element rather than inflating the visible control. --------- */
+  --fsu-target-min:      24px;
+  --fsu-target-enhanced: 44px;
+
+  /* --- Z-index ----------------------------------------------------------
+         The skip link sits above everything. 2.4.11 Focus Not Obscured
+         (Minimum) fails the moment a sticky header covers a focused control,
+         and the skip link is the first thing focused on every page. */
+  --fsu-z-base:      0;
+  --fsu-z-raised:    10;
+  --fsu-z-sticky:    100;
+  --fsu-z-header:    200;
+  --fsu-z-dropdown:  400;
+  --fsu-z-overlay:   800;
+  --fsu-z-modal:     900;
+  --fsu-z-toast:     950;
+  --fsu-z-skip-link: 1000;
+
+  /* Height of any sticky chrome. Used for scroll-margin so a tabbed-to element
+     is never parked under the header (2.4.11). Override per layout. */
+  --fsu-sticky-offset: 0px;
+
+  /* --- Motion ----------------------------------------------------------- */
+  --fsu-duration-fast: 120ms;
+  --fsu-duration:      200ms;
+  --fsu-easing:        cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+
+/* ==========================================================================
+   6. FOCUS
+
+   2.4.7 Focus Visible (AA)      — there must be a visible indicator.
+   1.4.11 Non-text Contrast (AA) — it must clear 3:1 against what surrounds it.
+   2.4.13 Focus Appearance (AAA) — >=2 CSS px perimeter, >=3:1 against the
+                                   unfocused state. The 3px ring clears both.
+
+   HOW THE TWO-LAYER RING WORKS
+   The ring alone cannot be one colour that is verified against every approved
+   surface: Gold fails on white (1.94:1) and Garnet has no measured pairing on
+   Stadium Night. So the indicator is always drawn as two concentric layers,
+   and at least one of them is measured against whatever it sits on:
+
+     light theme   ring = Garnet   9.21:1 on white, 7.90:1 on Gold +3 Canvas
+                   halo = White    9.21:1 on FSU Garnet, and 9.21:1 against the
+                                   Garnet ring itself
+     dark theme    ring = Gold     9.23:1 on Stadium Night
+                   halo = Stadium Night, 9.23:1 against the Gold ring itself
+
+   On a garnet header the ring disappears into the fill and the white halo
+   carries the indicator; on white the ring carries it and the halo is
+   invisible. Either way something at >=9:1 is always on screen.
+   ========================================================================== */
+
+:root {
+  --fsu-focus-ring-width:  3px;
+  --fsu-focus-ring-offset: 2px;
+
+  /* DELIBERATELY NOT DEFINED: a composite `--fsu-focus-ring` shorthand.
+     Custom properties are substituted at computed-value time on the element
+     that DECLARES them, so a shorthand built here from
+     --fsu-focus-ring-color freezes to the :root colour (Garnet) and every
+     later override of that colour -- including the dark-surface switch to
+     Gold -- is silently ignored. That produced a Garnet ring on the Garnet
+     header: 1:1, an invisible focus indicator, failing 2.4.7 and 1.4.11 in
+     exactly the two places this file exists to protect.
+     Always write the longhand and reference the colour token directly:
+       outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+     Do not reintroduce the shorthand. */
+
+  /* Back-compat: the upstream file called this --fsu-focus. */
+  --fsu-focus: var(--fsu-focus-ring-color);
+}
+
+/* Base focus style. `:focus-visible`, so pointer users do not get a ring on
+   every click, but keyboard users always do. Never write `outline: none`
+   without replacing the indicator — that is the single most common 2.4.7
+   failure and it is what all 19 of the 2025 dashboards do today. */
+:focus-visible {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+  /* The halo fills the outline-offset gap, so the ring always has a
+     high-contrast neighbour to sit against. Note this replaces any component
+     box-shadow while focused; if a component needs to keep its elevation,
+     re-declare it alongside the halo rather than dropping the halo. */
+  box-shadow: 0 0 0 var(--fsu-focus-ring-offset) var(--fsu-focus-ring-halo);
+  /* Keep the focused element clear of sticky chrome (2.4.11). */
+  scroll-margin-block: calc(var(--fsu-sticky-offset) + var(--fsu-space-2));
+}
+
+/* Older engines that support :focus but not :focus-visible drop this rule
+   wholesale, so nothing is left unstyled. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Apply the same ring to a custom widget that manages its own focus. */
+.fsu-focus-ring {
+  outline: var(--fsu-focus-ring-width) solid var(--fsu-focus-ring-color);
+  outline-offset: var(--fsu-focus-ring-offset);
+  box-shadow: 0 0 0 var(--fsu-focus-ring-offset) var(--fsu-focus-ring-halo);
+}
+
+
+/* ==========================================================================
+   7. CHART SERIES
+
+   Draw order from standards/color-palette.md §5. Primaries lead so any chart
+   with <=4 series stays >=70% primary. Adjacent pairs 1-2, 2-3 and 3-4 are
+   distinguishable by luminance alone, so the sequence survives greyscale
+   printing and common colour vision deficiencies.
+
+   Colour is never the only encoding (1.4.1). Every series also needs a direct
+   label, a marker shape, or a dash pattern, and prose must name the series
+   rather than saying "the garnet line".
+   ========================================================================== */
+
+:root {
+  --fsu-series-1: var(--fsu-garnet);
+  --fsu-series-2: var(--fsu-gold);
+  --fsu-series-3: var(--fsu-plaza-brick);
+  --fsu-series-4: var(--fsu-gulf-sands);
+  --fsu-series-5: var(--fsu-legacy-blue);
+  --fsu-series-6: var(--fsu-westcott-water);
+
+  /* Axis lines, ticks, gridlines. Axis LABELS are text and must use
+     --fsu-color-caption (7.44:1 on white), never an accent colour. */
+  --fsu-chart-axis:     var(--fsu-border-strong);
+  --fsu-chart-gridline: var(--fsu-border);
+}
+
+/* --- 7a. The series ramp on ink -------------------------------------------
+   The ramp above was never redeclared for dark mode, so --fsu-series-1 was
+   FSU Garnet on Stadium Night: 1.72:1, a line the reader cannot see. Every
+   figure that used the ramp as documented was unreadable in dark mode, and
+   the demo authors worked around it by avoiding the ramp entirely.
+
+   Each dark value is the same series slot re-picked for ink. Draw order still
+   leads with the primaries; adjacent pairs still separate by luminance.
+   Measured against every step of the dark ramp, worst case in brackets:
+
+     1  FSU Gold          #CEB888  [6.57:1 on surf-mark]
+     2  Legacy Blue +2    #A3B7C4  [6.14]   derived: Legacy Blue lightened
+     3  Westcott Water    #5CB8B2  [5.43]
+     4  Gulf Sands        #DFD1A7  [8.37]
+     5  Vault Garnet +2   #E8808C  [4.79]   derived: Vault Garnet lightened
+     6  Vault Gold        #FFC72C  [8.16]
+
+   All clear the 3:1 non-text floor (1.4.11). Colour is still never the only
+   encoding: every series carries a direct label, a marker shape or a dash. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fsu-series-1: var(--fsu-gold);
+    --fsu-series-2: var(--fsu-legacy-blue-2l);
+    --fsu-series-3: var(--fsu-westcott-water);
+    --fsu-series-4: var(--fsu-gulf-sands);
+    --fsu-series-5: var(--fsu-vault-garnet-2l);
+    --fsu-series-6: var(--fsu-vault-gold);
+  }
+}
+
+:root[data-theme="dark"] {
+  --fsu-series-1: var(--fsu-gold);
+  --fsu-series-2: var(--fsu-legacy-blue-2l);
+  --fsu-series-3: var(--fsu-westcott-water);
+  --fsu-series-4: var(--fsu-gulf-sands);
+  --fsu-series-5: var(--fsu-vault-garnet-2l);
+  --fsu-series-6: var(--fsu-vault-gold);
+}
+
+
+/* ==========================================================================
+   7b. FIGURE INKS — the four accents an interactive may use
+
+   A figure needs a small, fixed vocabulary that survives both canvases. The
+   rule, taken from the explorable-explainer system: an accent must MEAN
+   something. Four of them, each bound to one job. If a colour does not
+   identify a state, leave it off and use weight or alpha instead.
+
+     --fsu-fig-accent   the answer, and every draggable handle
+     --fsu-fig-ok       verified / the invariant that refuses to move
+     --fsu-fig-warn     the degenerate state — singular, empty, diverged
+     --fsu-fig-info     reference geometry, the "before", secondary panels
+
+   Every value clears 3:1 (1.4.11) on EVERY step of its ramp, not just on the
+   page background, because a figure can sit on a panel or inside an inset.
+   Worst-case ratios are in brackets.
+
+   Three values are derived rather than brand literals, for the same reason
+   the ink ramp is derived: the brand secondaries were picked for print on
+   white and three of the four are invisible on the canvas they are needed on.
+   Each derivation holds the source hue and moves lightness only, and each is
+   a GRAPHIC INK — never a fill behind text, never a brand mark, never a
+   heading. FSU Gold itself is never darkened; --fsu-vault-gold-2d derives
+   from Vault Gold, a secondary, and exists solely so the warning state is
+   distinguishable on paper.
+   ========================================================================== */
+
+:root {
+  --fsu-westcott-water-2d: #2e6e6a;  /* derived: Westcott Water darkened for paper */
+  --fsu-vault-gold-2d:     #7a5e15;  /* derived: Vault Gold darkened for paper */
+  --fsu-legacy-blue-2l:    #a3b7c4;  /* derived: Legacy Blue lightened for ink */
+  --fsu-vault-garnet-2l:   #e8808c;  /* derived: Vault Garnet lightened for ink */
+}
+
+:root,
+:root[data-theme="light"] {
+  --fsu-fig-accent: var(--fsu-plaza-brick);        /* [7.34:1 on surf-mark] */
+  --fsu-fig-ok:     var(--fsu-westcott-water-2d);  /* [3.65] */
+  --fsu-fig-warn:   var(--fsu-vault-gold-2d);      /* [3.77] */
+  --fsu-fig-info:   var(--fsu-legacy-blue);        /* [4.79] */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fsu-fig-accent: var(--fsu-gold);               /* [6.57:1 on surf-mark] */
+    --fsu-fig-ok:     var(--fsu-westcott-water);     /* [5.43] */
+    --fsu-fig-warn:   var(--fsu-vault-gold);         /* [8.16] */
+    --fsu-fig-info:   var(--fsu-legacy-blue-2l);     /* [6.14] */
+  }
+}
+
+:root[data-theme="dark"] {
+  --fsu-fig-accent: var(--fsu-gold);
+  --fsu-fig-ok:     var(--fsu-westcott-water);
+  --fsu-fig-warn:   var(--fsu-vault-gold);
+  --fsu-fig-info:   var(--fsu-legacy-blue-2l);
+}
+
+
+/* ==========================================================================
+   8. UTILITY CLASSES
+   ========================================================================== */
+
+/* --- .visually-hidden ------------------------------------------------------
+   Hidden from sight, present for screen readers — and still usable if it
+   happens to be focusable. The `:not(:focus):not(:focus-within)` guard is the
+   whole point: a visually-hidden element that receives focus becomes visible
+   instead of trapping a sighted keyboard user on something they cannot see.
+
+   Do not use `display:none` or `visibility:hidden` for this; both remove the
+   element from the accessibility tree entirely. */
+.visually-hidden:not(:focus):not(:focus-within),
+.sr-only:not(:focus):not(:focus-within) {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* --- .numeric -------------------------------------------------------------
+   Counts, topic numbers, complexities, matrix entries, years. Mono with
+   tabular figures so a column of numbers lines up and a changing readout does
+   not jitter (design-system.md §3). */
+.numeric {
+  font-family: var(--fsu-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* --- .skip-link -----------------------------------------------------------
+   2.4.1 Bypass Blocks (A). First element in <body>, pointing at
+   <main id="main" tabindex="-1">.
+
+   The common failure is hiding it with display:none, which also removes it
+   from the tab order and makes it useless. This one is off-screen but
+   focusable, and it lands above every other layer so no sticky header can
+   cover it (2.4.11). */
+.skip-link {
+  position: absolute;
+  left: var(--fsu-space-2);
+  top: calc(-1 * var(--fsu-space-5));
+  z-index: var(--fsu-z-skip-link);
+  display: inline-block;
+  padding: var(--fsu-space-1) var(--fsu-space-2);
+  min-height: var(--fsu-target-min);
+  background: var(--fsu-surface-brand);   /* FSU Garnet */
+  color: var(--fsu-on-brand);             /* 9.21:1 on FSU Garnet */
+  border-bottom: var(--fsu-rule-width) solid var(--fsu-rule);
+  border-radius: 0 0 var(--fsu-radius) var(--fsu-radius);
+  font-family: var(--fsu-font-sans);
+  font-size: var(--fsu-text-body);
+  font-weight: var(--fsu-weight-medium);
+  line-height: var(--fsu-leading-normal);
+  text-decoration: underline;
+  text-underline-offset: var(--fsu-link-underline-offset);
+  transition: top var(--fsu-duration) var(--fsu-easing);
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+
+/* ==========================================================================
+   9. REDUCED MOTION — 2.3.3 Animation from Interactions (AAA),
+      2.2.2 Pause Stop Hide (A)
+
+   Neutralise, do not delete: durations go to ~0 rather than `none`, so
+   transitionend/animationend handlers still fire and no component hangs
+   waiting for an event that never arrives.
+
+   This block covers CSS only. Anything animated in JavaScript — the Plotly
+   step-throughs, the Brownian motion demo — must check
+   window.matchMedia('(prefers-reduced-motion: reduce)') itself and still ship
+   a visible pause/stop control (2.2.2).
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  :root {
+    --fsu-duration-fast: 0.01ms;
+    --fsu-duration:      0.01ms;
+  }
+
+  /* The skip link must still arrive instantly rather than sliding. */
+  .skip-link {
+    transition: none !important;
+  }
+}
+
+
+/* ==========================================================================
+   10. FORCED COLORS — Windows High Contrast Mode
+
+   In forced-colors mode the OS replaces the whole palette. Backgrounds are
+   stripped, which is how decorative bars drawn with `background-color`
+   silently vanish. Map the tokens onto system colour keywords so components
+   built on them follow the user's chosen scheme instead of fighting it.
+
+   Do NOT sprinkle `forced-color-adjust: none` to "keep the brand". Overriding
+   a user's high-contrast choice is the failure this mode exists to prevent.
+   The one narrow exception below is the gold rule, which is pure decoration
+   and is remapped to CanvasText rather than being allowed to disappear.
+   ========================================================================== */
+
+@media (forced-colors: active) {
+  :root {
+    --fsu-surface:            Canvas;
+    --fsu-surface-warm:       Canvas;
+    --fsu-surface-brand:      Canvas;
+    --fsu-surface-brand-deep: Canvas;
+    --fsu-surface-gold:       Canvas;
+    --fsu-surface-dark:       Canvas;
+    --fsu-bg:                 Canvas;
+    --fsu-bg-subtle:          Canvas;
+
+    --fsu-color-body:     CanvasText;
+    --fsu-color-strong:   CanvasText;
+    --fsu-color-heading:  CanvasText;
+    --fsu-color-caption:  CanvasText;
+    --fsu-color-eyebrow:  CanvasText;
+    --fsu-color-body-on-warm:    CanvasText;
+    --fsu-color-strong-on-warm:  CanvasText;
+    --fsu-color-heading-on-warm: CanvasText;
+    --fsu-color-caption-on-warm: CanvasText;
+    --fsu-text:           CanvasText;
+    --fsu-text-muted:     CanvasText;
+    --fsu-heading:        CanvasText;
+    --fsu-on-gold:        CanvasText;
+    --fsu-on-dark:        CanvasText;
+
+    --fsu-link:           LinkText;
+    --fsu-link-hover:     LinkText;
+    --fsu-link-visited:   VisitedText;
+
+    --fsu-border:         CanvasText;
+    --fsu-border-strong:  CanvasText;
+    --fsu-rule:           CanvasText;
+
+    --fsu-status-error-text: CanvasText;
+    --fsu-status-warn-text:  CanvasText;
+    --fsu-status-info-text:  CanvasText;
+    --fsu-status-ok-text:    CanvasText;
+
+    --fsu-shadow-1: none;
+    --fsu-shadow-2: none;
+    --fsu-shadow-3: none;
+  }
+
+  /* Highlight is the system's own focus colour and is guaranteed to contrast
+     with Canvas. Keep the ring; drop the halo, which no longer carries meaning. */
+  :focus-visible,
+  .fsu-focus-ring {
+    outline: var(--fsu-focus-ring-width) solid Highlight;
+    outline-offset: var(--fsu-focus-ring-offset);
+    box-shadow: none;
+  }
+
+  .skip-link {
+    background: Canvas;
+    color: CanvasText;
+    border: var(--fsu-border-width-strong) solid CanvasText;
+  }
+
+  /* Fills that carry meaning (selected tabs, active steps, status bars) lose
+     their background here. Give them a border in the component CSS; a border
+     survives forced colors, a background does not. */
+}
+
+
+/* ==========================================================================
+   11. PRINT
+
+   Students print handouts and dashboard exports. White paper, black ink,
+   and every link target spelled out, because a printed page has no hover
+   and no address bar (2.4.4 Link Purpose in a medium with no interaction).
+   ========================================================================== */
+
+@media print {
+  :root {
+    --fsu-surface:            #ffffff;
+    --fsu-surface-warm:       #ffffff;
+    --fsu-surface-brand:      #ffffff;
+    --fsu-surface-brand-deep: #ffffff;
+    --fsu-surface-gold:       #ffffff;
+    --fsu-surface-dark:       #ffffff;
+    --fsu-bg:                 #ffffff;
+    --fsu-bg-subtle:          #ffffff;
+
+    --fsu-color-body:    #000000;
+    --fsu-color-strong:  #000000;
+    --fsu-color-heading: #000000;
+    --fsu-color-caption: #000000;
+    --fsu-color-eyebrow: #000000;
+    --fsu-text:          #000000;
+    --fsu-text-muted:    #000000;
+    --fsu-heading:       #000000;
+    --fsu-on-brand:      #000000;
+    --fsu-on-gold:       #000000;
+    --fsu-on-dark:       #000000;
+    --fsu-link:          #000000;
+    --fsu-link-hover:    #000000;
+    --fsu-link-visited:  #000000;
+
+    --fsu-border:        #000000;
+    --fsu-border-strong: #000000;
+    --fsu-rule:          #000000;
+
+    --fsu-shadow-1: none;
+    --fsu-shadow-2: none;
+    --fsu-shadow-3: none;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Print the destination after every real link. Internal fragments and
+     javascript: hrefs are skipped — the URL would be noise. */
+  a[href]:not([href^="#"]):not([href^="javascript:"])::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  /* Expand abbreviations once, in place (3.1.4). */
+  abbr[title]::after {
+    content: " (" attr(title) ")";
+  }
+
+  /* On-screen affordances that mean nothing on paper. */
+  .skip-link,
+  [data-print="hide"] {
+    display: none !important;
+  }
+
+  /* Keep headings attached to what they introduce, and never split a table row. */
+  h1, h2, h3, h4, h5, h6 {
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
+
+  tr, img, figure, pre, blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  @page {
+    margin: 2cm;
+  }
+}

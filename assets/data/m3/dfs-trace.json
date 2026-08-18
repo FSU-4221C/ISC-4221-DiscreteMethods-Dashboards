@@ -1,0 +1,363 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "dfs",
+  "module": "M3",
+  "topics": [
+    "3.4.1",
+    "3.4.2",
+    "3.4.3",
+    "3.4.6",
+    "3.4.7"
+  ],
+  "title": "Depth-first search from A on the seven-node traversal graph",
+  "seed": null,
+  "determinism": "no randomness; the input is fixed",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "Neighbours are pushed in reverse order so the traversal follows ascending node names. Without the reversal the order is the mirror image of the one the lecture writes on the board, and students conclude the demo is broken."
+  ],
+  "input": {
+    "name": "traversal",
+    "nodes": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+    ],
+    "edges": [
+      [
+        "A",
+        "B",
+        1
+      ],
+      [
+        "A",
+        "C",
+        1
+      ],
+      [
+        "B",
+        "D",
+        1
+      ],
+      [
+        "B",
+        "E",
+        1
+      ],
+      [
+        "C",
+        "F",
+        1
+      ],
+      [
+        "C",
+        "G",
+        1
+      ],
+      [
+        "E",
+        "F",
+        1
+      ]
+    ],
+    "weighted": false,
+    "positions": {
+      "A": [
+        0.5,
+        0.1
+      ],
+      "B": [
+        0.26,
+        0.4
+      ],
+      "C": [
+        0.74,
+        0.4
+      ],
+      "D": [
+        0.1,
+        0.76
+      ],
+      "E": [
+        0.4,
+        0.76
+      ],
+      "F": [
+        0.62,
+        0.76
+      ],
+      "G": [
+        0.9,
+        0.76
+      ]
+    },
+    "layout": "fixed, authored — not force-directed, so every artefact draws the same picture",
+    "source": "A",
+    "container": "stack (last in, first out)"
+  },
+  "columns": [
+    {
+      "label": "Visit",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Node",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Pushed this step",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Stack after, top last",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Visited so far",
+      "unit": "",
+      "numeric": false
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 7,
+  "steps": [
+    {
+      "index": 0,
+      "label": "Step 1: take A from the TOP of the stack. Pushed C, B onto the top. Stack is now (top last): C, B.",
+      "rows": [
+        [
+          1,
+          "A",
+          "C, B",
+          "C, B",
+          "A"
+        ]
+      ],
+      "state": {
+        "current": "A",
+        "visited": [
+          "A"
+        ],
+        "container": [
+          "C",
+          "B"
+        ],
+        "containerKind": "stack",
+        "pushed": [
+          "C",
+          "B"
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "label": "Step 2: take B from the TOP of the stack. Pushed E, D onto the top. Stack is now (top last): C, E, D.",
+      "rows": [
+        [
+          2,
+          "B",
+          "E, D",
+          "C, E, D",
+          "A, B"
+        ]
+      ],
+      "state": {
+        "current": "B",
+        "visited": [
+          "A",
+          "B"
+        ],
+        "container": [
+          "C",
+          "E",
+          "D"
+        ],
+        "containerKind": "stack",
+        "pushed": [
+          "E",
+          "D"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "label": "Step 3: take D from the TOP of the stack. No new neighbours to push. Stack is now (top last): C, E.",
+      "rows": [
+        [
+          3,
+          "D",
+          "—",
+          "C, E",
+          "A, B, D"
+        ]
+      ],
+      "state": {
+        "current": "D",
+        "visited": [
+          "A",
+          "B",
+          "D"
+        ],
+        "container": [
+          "C",
+          "E"
+        ],
+        "containerKind": "stack",
+        "pushed": []
+      }
+    },
+    {
+      "index": 3,
+      "label": "Step 4: take E from the TOP of the stack. Pushed F onto the top. Stack is now (top last): C, F.",
+      "rows": [
+        [
+          4,
+          "E",
+          "F",
+          "C, F",
+          "A, B, D, E"
+        ]
+      ],
+      "state": {
+        "current": "E",
+        "visited": [
+          "A",
+          "B",
+          "D",
+          "E"
+        ],
+        "container": [
+          "C",
+          "F"
+        ],
+        "containerKind": "stack",
+        "pushed": [
+          "F"
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "label": "Step 5: take F from the TOP of the stack. No new neighbours to push. Stack is now (top last): C.",
+      "rows": [
+        [
+          5,
+          "F",
+          "—",
+          "C",
+          "A, B, D, E, F"
+        ]
+      ],
+      "state": {
+        "current": "F",
+        "visited": [
+          "A",
+          "B",
+          "D",
+          "E",
+          "F"
+        ],
+        "container": [
+          "C"
+        ],
+        "containerKind": "stack",
+        "pushed": []
+      }
+    },
+    {
+      "index": 5,
+      "label": "Step 6: take C from the TOP of the stack. Pushed G onto the top. Stack is now (top last): G.",
+      "rows": [
+        [
+          6,
+          "C",
+          "G",
+          "G",
+          "A, B, D, E, F, C"
+        ]
+      ],
+      "state": {
+        "current": "C",
+        "visited": [
+          "A",
+          "B",
+          "D",
+          "E",
+          "F",
+          "C"
+        ],
+        "container": [
+          "G"
+        ],
+        "containerKind": "stack",
+        "pushed": [
+          "G"
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "label": "Step 7: take G from the TOP of the stack. No new neighbours to push. Stack is now (top last): empty.",
+      "rows": [
+        [
+          7,
+          "G",
+          "—",
+          "empty",
+          "A, B, D, E, F, C, G"
+        ]
+      ],
+      "state": {
+        "current": "G",
+        "visited": [
+          "A",
+          "B",
+          "D",
+          "E",
+          "F",
+          "C",
+          "G"
+        ],
+        "container": [],
+        "containerKind": "stack",
+        "pushed": []
+      }
+    }
+  ],
+  "summary": {
+    "order": [
+      "A",
+      "B",
+      "D",
+      "E",
+      "F",
+      "C",
+      "G"
+    ],
+    "orderText": "A then B then D then E then F then C then G",
+    "bfsOrder": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+    ],
+    "container": "stack",
+    "property": "DFS follows one branch to its end before backtracking, so it reaches deep nodes early and does not find shortest paths"
+  },
+  "alt": {
+    "first": "A is popped from the stack and visited. Its neighbours are pushed in reverse name order so that B ends up on top and is taken next.",
+    "last": "All seven nodes are visited in the order A then B then D then E then F then C then G. Depth-first search reached the leaf D at its fourth visit, whereas breadth-first search (A then B then C then D then E then F then G) finished the whole first level first."
+  }
+}

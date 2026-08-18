@@ -1,0 +1,843 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "linkage-complete",
+  "module": "M5",
+  "topics": [
+    "5.3.1",
+    "5.3.3",
+    "5.3.5",
+    "5.3.6"
+  ],
+  "title": "Complete linkage on the twelve-point lecture-note example",
+  "seed": null,
+  "determinism": "no randomness; the input is fixed",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "Merge heights come from the complete-linkage definition, so the dendrogram drawn from these numbers is the same tree the step table describes."
+  ],
+  "input": {
+    "points": [
+      [
+        3,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        6,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        7,
+        3
+      ],
+      [
+        6,
+        5
+      ],
+      [
+        4,
+        7
+      ],
+      [
+        7,
+        7
+      ],
+      [
+        0,
+        8
+      ],
+      [
+        2,
+        8
+      ]
+    ],
+    "labels": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12"
+    ],
+    "method": "complete",
+    "rule": "farthest neighbour: the longest link",
+    "metric": "Euclidean",
+    "source": "the twelve points of the M5 lecture notes worked example (LN-9), which exists only in the notes — the P1 deck replaced it with a placeholder"
+  },
+  "columns": [
+    {
+      "label": "Merge",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Cluster A",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Cluster B",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Height",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Size after",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Members after",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Clusters remaining",
+      "unit": "",
+      "numeric": true
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 11,
+  "steps": [
+    {
+      "index": 0,
+      "label": "Merge 1: point 2 and point 3 are the closest pair at 1.000 — the longest link between them — so they join at that height. 11 clusters remain.",
+      "rows": [
+        [
+          1,
+          "point 2",
+          "point 3",
+          1.0,
+          2,
+          "2, 3",
+          11
+        ]
+      ],
+      "state": {
+        "merge": 1,
+        "left": 1,
+        "right": 2,
+        "height": 1.0,
+        "members": [
+          1,
+          2
+        ],
+        "remaining": 11
+      }
+    },
+    {
+      "index": 1,
+      "label": "Merge 2: point 5 and point 6 are the closest pair at 2.000 — the longest link between them — so they join at that height. 10 clusters remain.",
+      "rows": [
+        [
+          2,
+          "point 5",
+          "point 6",
+          2.0,
+          2,
+          "5, 6",
+          10
+        ]
+      ],
+      "state": {
+        "merge": 2,
+        "left": 4,
+        "right": 5,
+        "height": 2.0,
+        "members": [
+          4,
+          5
+        ],
+        "remaining": 10
+      }
+    },
+    {
+      "index": 2,
+      "label": "Merge 3: point 11 and point 12 are the closest pair at 2.000 — the longest link between them — so they join at that height. 9 clusters remain.",
+      "rows": [
+        [
+          3,
+          "point 11",
+          "point 12",
+          2.0,
+          2,
+          "11, 12",
+          9
+        ]
+      ],
+      "state": {
+        "merge": 3,
+        "left": 10,
+        "right": 11,
+        "height": 2.0,
+        "members": [
+          10,
+          11
+        ],
+        "remaining": 9
+      }
+    },
+    {
+      "index": 3,
+      "label": "Merge 4: point 1 and cluster {5, 6} are the closest pair at 2.236 — the longest link between them — so they join at that height. 8 clusters remain.",
+      "rows": [
+        [
+          4,
+          "point 1",
+          "cluster {5, 6}",
+          2.2361,
+          3,
+          "1, 5, 6",
+          8
+        ]
+      ],
+      "state": {
+        "merge": 4,
+        "left": 0,
+        "right": 13,
+        "height": 2.2360679775,
+        "members": [
+          0,
+          4,
+          5
+        ],
+        "remaining": 8
+      }
+    },
+    {
+      "index": 4,
+      "label": "Merge 5: point 4 and point 7 are the closest pair at 2.236 — the longest link between them — so they join at that height. 7 clusters remain.",
+      "rows": [
+        [
+          5,
+          "point 4",
+          "point 7",
+          2.2361,
+          2,
+          "4, 7",
+          7
+        ]
+      ],
+      "state": {
+        "merge": 5,
+        "left": 3,
+        "right": 6,
+        "height": 2.2360679775,
+        "members": [
+          3,
+          6
+        ],
+        "remaining": 7
+      }
+    },
+    {
+      "index": 5,
+      "label": "Merge 6: point 8 and point 10 are the closest pair at 2.236 — the longest link between them — so they join at that height. 6 clusters remain.",
+      "rows": [
+        [
+          6,
+          "point 8",
+          "point 10",
+          2.2361,
+          2,
+          "8, 10",
+          6
+        ]
+      ],
+      "state": {
+        "merge": 6,
+        "left": 7,
+        "right": 9,
+        "height": 2.2360679775,
+        "members": [
+          7,
+          9
+        ],
+        "remaining": 6
+      }
+    },
+    {
+      "index": 6,
+      "label": "Merge 7: point 9 and cluster {8, 10} are the closest pair at 3.000 — the longest link between them — so they join at that height. 5 clusters remain.",
+      "rows": [
+        [
+          7,
+          "point 9",
+          "cluster {8, 10}",
+          3.0,
+          3,
+          "8, 9, 10",
+          5
+        ]
+      ],
+      "state": {
+        "merge": 7,
+        "left": 8,
+        "right": 17,
+        "height": 3.0,
+        "members": [
+          7,
+          8,
+          9
+        ],
+        "remaining": 5
+      }
+    },
+    {
+      "index": 7,
+      "label": "Merge 8: cluster {2, 3} and cluster {1, 5, 6} are the closest pair at 4.123 — the longest link between them — so they join at that height. 4 clusters remain.",
+      "rows": [
+        [
+          8,
+          "cluster {2, 3}",
+          "cluster {1, 5, 6}",
+          4.1231,
+          5,
+          "1, 2, 3, 5, 6",
+          4
+        ]
+      ],
+      "state": {
+        "merge": 8,
+        "left": 12,
+        "right": 15,
+        "height": 4.123105625618,
+        "members": [
+          0,
+          1,
+          2,
+          4,
+          5
+        ],
+        "remaining": 4
+      }
+    },
+    {
+      "index": 8,
+      "label": "Merge 9: cluster {4, 7} and cluster {8, 9, 10} are the closest pair at 6.325 — the longest link between them — so they join at that height. 3 clusters remain.",
+      "rows": [
+        [
+          9,
+          "cluster {4, 7}",
+          "cluster {8, 9, 10}",
+          6.3246,
+          5,
+          "4, 7, 8, 9, 10",
+          3
+        ]
+      ],
+      "state": {
+        "merge": 9,
+        "left": 16,
+        "right": 18,
+        "height": 6.324555320337,
+        "members": [
+          3,
+          6,
+          7,
+          8,
+          9
+        ],
+        "remaining": 3
+      }
+    },
+    {
+      "index": 9,
+      "label": "Merge 10: cluster {11, 12} and cluster {1, 2, 3, 5, 6} are the closest pair at 8.544 — the longest link between them — so they join at that height. 2 clusters remain.",
+      "rows": [
+        [
+          10,
+          "cluster {11, 12}",
+          "cluster {1, 2, 3, 5, 6}",
+          8.544,
+          7,
+          "1, 2, 3, 5, 6, 11, 12",
+          2
+        ]
+      ],
+      "state": {
+        "merge": 10,
+        "left": 14,
+        "right": 19,
+        "height": 8.544003745318,
+        "members": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          10,
+          11
+        ],
+        "remaining": 2
+      }
+    },
+    {
+      "index": 10,
+      "label": "Merge 11: cluster {4, 7, 8, 9, 10} and cluster {1, 2, 3, 5, 6, 11, 12} are the closest pair at 9.220 — the longest link between them — so they join at that height. 1 cluster remain.",
+      "rows": [
+        [
+          11,
+          "cluster {4, 7, 8, 9, 10}",
+          "cluster {1, 2, 3, 5, 6, 11, 12}",
+          9.2195,
+          12,
+          "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12",
+          1
+        ]
+      ],
+      "state": {
+        "merge": 11,
+        "left": 20,
+        "right": 21,
+        "height": 9.219544457293,
+        "members": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "remaining": 1
+      }
+    }
+  ],
+  "summary": {
+    "method": "complete",
+    "rule": "farthest neighbour: the longest link",
+    "merges": [
+      {
+        "height": 1.0,
+        "size": 2,
+        "members": [
+          2,
+          3
+        ]
+      },
+      {
+        "height": 2.0,
+        "size": 2,
+        "members": [
+          5,
+          6
+        ]
+      },
+      {
+        "height": 2.0,
+        "size": 2,
+        "members": [
+          11,
+          12
+        ]
+      },
+      {
+        "height": 2.2360679775,
+        "size": 3,
+        "members": [
+          1,
+          5,
+          6
+        ]
+      },
+      {
+        "height": 2.2360679775,
+        "size": 2,
+        "members": [
+          4,
+          7
+        ]
+      },
+      {
+        "height": 2.2360679775,
+        "size": 2,
+        "members": [
+          8,
+          10
+        ]
+      },
+      {
+        "height": 3.0,
+        "size": 3,
+        "members": [
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "height": 4.123105625618,
+        "size": 5,
+        "members": [
+          1,
+          2,
+          3,
+          5,
+          6
+        ]
+      },
+      {
+        "height": 6.324555320337,
+        "size": 5,
+        "members": [
+          4,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "height": 8.544003745318,
+        "size": 7,
+        "members": [
+          1,
+          2,
+          3,
+          5,
+          6,
+          11,
+          12
+        ]
+      },
+      {
+        "height": 9.219544457293,
+        "size": 12,
+        "members": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      }
+    ],
+    "heights": [
+      1.0,
+      2.0,
+      2.0,
+      2.2360679775,
+      2.2360679775,
+      2.2360679775,
+      3.0,
+      4.123105625618,
+      6.324555320337,
+      8.544003745318,
+      9.219544457293
+    ],
+    "maxHeight": 9.219544457293,
+    "leafOrder": [
+      4,
+      7,
+      9,
+      8,
+      10,
+      11,
+      12,
+      2,
+      3,
+      1,
+      5,
+      6
+    ],
+    "coords": {
+      "3": [
+        0,
+        0.0
+      ],
+      "6": [
+        1,
+        0.0
+      ],
+      "8": [
+        2,
+        0.0
+      ],
+      "7": [
+        3,
+        0.0
+      ],
+      "9": [
+        4,
+        0.0
+      ],
+      "10": [
+        5,
+        0.0
+      ],
+      "11": [
+        6,
+        0.0
+      ],
+      "1": [
+        7,
+        0.0
+      ],
+      "2": [
+        8,
+        0.0
+      ],
+      "0": [
+        9,
+        0.0
+      ],
+      "4": [
+        10,
+        0.0
+      ],
+      "5": [
+        11,
+        0.0
+      ],
+      "12": [
+        7.5,
+        1.0
+      ],
+      "13": [
+        10.5,
+        2.0
+      ],
+      "14": [
+        5.5,
+        2.0
+      ],
+      "15": [
+        9.75,
+        2.2360679775
+      ],
+      "16": [
+        0.5,
+        2.2360679775
+      ],
+      "17": [
+        3.5,
+        2.2360679775
+      ],
+      "18": [
+        2.75,
+        3.0
+      ],
+      "19": [
+        8.625,
+        4.123105625618
+      ],
+      "20": [
+        1.625,
+        6.324555320337
+      ],
+      "21": [
+        7.0625,
+        8.544003745318
+      ],
+      "22": [
+        4.34375,
+        9.219544457293
+      ]
+    },
+    "root": 22,
+    "cuts": {
+      "1.0": {
+        "clusters": 11,
+        "groups": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ],
+          [
+            9
+          ],
+          [
+            10
+          ],
+          [
+            11
+          ],
+          [
+            12
+          ]
+        ]
+      },
+      "2.0": {
+        "clusters": 9,
+        "groups": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5,
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ],
+          [
+            9
+          ],
+          [
+            10
+          ],
+          [
+            11,
+            12
+          ]
+        ]
+      },
+      "2.5": {
+        "clusters": 6,
+        "groups": [
+          [
+            1,
+            5,
+            6
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            9
+          ],
+          [
+            11,
+            12
+          ]
+        ]
+      },
+      "3.0": {
+        "clusters": 5,
+        "groups": [
+          [
+            1,
+            5,
+            6
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            8,
+            9,
+            10
+          ],
+          [
+            11,
+            12
+          ]
+        ]
+      },
+      "4.0": {
+        "clusters": 5,
+        "groups": [
+          [
+            1,
+            5,
+            6
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            8,
+            9,
+            10
+          ],
+          [
+            11,
+            12
+          ]
+        ]
+      }
+    },
+    "reading": "the height of a join is the distance at which those two clusters merged, so cutting the tree at a height gives the clusters at that resolution"
+  },
+  "alt": {
+    "first": "The first merge joins the two closest points at height 1.000; every point starts as its own cluster.",
+    "last": "The last merge joins the final two clusters at height 9.220, so the whole tree is that tall. Cutting at 2.5 leaves 6 clusters; cutting at 4.0 leaves 5."
+  }
+}

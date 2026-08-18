@@ -1,0 +1,367 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "convex-hull",
+  "module": "M6",
+  "topics": [
+    "6.4.1",
+    "6.4.2",
+    "6.4.3",
+    "6.2.5"
+  ],
+  "title": "Gift wrapping the convex hull of ten points",
+  "seed": null,
+  "determinism": "no randomness; the input is fixed",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [],
+  "input": {
+    "points": [
+      [
+        1.0,
+        1.5
+      ],
+      [
+        2.6,
+        0.6
+      ],
+      [
+        4.4,
+        1.1
+      ],
+      [
+        5.6,
+        2.7
+      ],
+      [
+        5.0,
+        4.6
+      ],
+      [
+        3.2,
+        5.4
+      ],
+      [
+        1.4,
+        4.3
+      ],
+      [
+        0.6,
+        2.9
+      ],
+      [
+        2.9,
+        2.4
+      ],
+      [
+        3.9,
+        3.4
+      ]
+    ],
+    "labels": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5",
+      "P6",
+      "P7",
+      "P8",
+      "P9",
+      "P10"
+    ],
+    "start": "the leftmost point, ties broken by the lowest y",
+    "direction": "counter-clockwise"
+  },
+  "columns": [
+    {
+      "label": "Step",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Standing at",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Wraps to",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "Candidates tested",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Hull vertices so far",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Result",
+      "unit": "",
+      "numeric": false
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 8,
+  "steps": [
+    {
+      "index": 0,
+      "label": "Step 1: P8 is the leftmost point, so it is certainly on the hull. Testing all 9 other points, P1 is the one that leaves every point to its left, so the first hull edge is P8 to P1.",
+      "rows": [
+        [
+          1,
+          "P8",
+          "P1",
+          9,
+          2,
+          "added"
+        ]
+      ],
+      "state": {
+        "hull": [
+          7,
+          0
+        ],
+        "from": 7,
+        "to": 0,
+        "tested": 9,
+        "closed": false
+      }
+    },
+    {
+      "index": 1,
+      "label": "Step 2: standing at P1 and testing 9 candidates, P2 is the one with every other point to its left, so the wrap turns there. The hull now has 3 vertices.",
+      "rows": [
+        [
+          2,
+          "P1",
+          "P2",
+          9,
+          3,
+          "added"
+        ]
+      ],
+      "state": {
+        "hull": [
+          7,
+          0,
+          1
+        ],
+        "from": 0,
+        "to": 1,
+        "tested": 9,
+        "closed": false
+      }
+    },
+    {
+      "index": 2,
+      "label": "Step 3: standing at P2 and testing 9 candidates, P3 is the one with every other point to its left, so the wrap turns there. The hull now has 4 vertices.",
+      "rows": [
+        [
+          3,
+          "P2",
+          "P3",
+          9,
+          4,
+          "added"
+        ]
+      ],
+      "state": {
+        "hull": [
+          7,
+          0,
+          1,
+          2
+        ],
+        "from": 1,
+        "to": 2,
+        "tested": 9,
+        "closed": false
+      }
+    },
+    {
+      "index": 3,
+      "label": "Step 4: standing at P3 and testing 9 candidates, P4 is the one with every other point to its left, so the wrap turns there. The hull now has 5 vertices.",
+      "rows": [
+        [
+          4,
+          "P3",
+          "P4",
+          9,
+          5,
+          "added"
+        ]
+      ],
+      "state": {
+        "hull": [
+          7,
+          0,
+          1,
+          2,
+          3
+        ],
+        "from": 2,
+        "to": 3,
+        "tested": 9,
+        "closed": false
+      }
+    },
+    {
+      "index": 4,
+      "label": "Step 5: standing at P4 and testing 9 candidates, P5 is the one with every other point to its left, so the wrap turns there. The hull now has 6 vertices.",
+      "rows": [
+        [
+          5,
+          "P4",
+          "P5",
+          9,
+          6,
+          "added"
+        ]
+      ],
+      "state": {
+        "hull": [
+          7,
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "from": 3,
+        "to": 4,
+        "tested": 9,
+        "closed": false
+      }
+    },
+    {
+      "index": 5,
+      "label": "Step 6: standing at P5 and testing 9 candidates, P6 is the one with every other point to its left, so the wrap turns there. The hull now has 7 vertices.",
+      "rows": [
+        [
+          6,
+          "P5",
+          "P6",
+          9,
+          7,
+          "added"
+        ]
+      ],
+      "state": {
+        "hull": [
+          7,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "from": 4,
+        "to": 5,
+        "tested": 9,
+        "closed": false
+      }
+    },
+    {
+      "index": 6,
+      "label": "Step 7: standing at P6 and testing 9 candidates, P7 is the one with every other point to its left, so the wrap turns there. The hull now has 8 vertices.",
+      "rows": [
+        [
+          7,
+          "P6",
+          "P7",
+          9,
+          8,
+          "added"
+        ]
+      ],
+      "state": {
+        "hull": [
+          7,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "from": 5,
+        "to": 6,
+        "tested": 9,
+        "closed": false
+      }
+    },
+    {
+      "index": 7,
+      "label": "Step 8: from P7 the tightest wrap comes back to the start P8, so the hull is closed. It has 8 vertices and cost 72 candidate tests.",
+      "rows": [
+        [
+          8,
+          "P7",
+          "P8",
+          9,
+          8,
+          "closed"
+        ]
+      ],
+      "state": {
+        "hull": [
+          7,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "from": 6,
+        "to": 7,
+        "tested": 9,
+        "closed": true
+      }
+    }
+  ],
+  "summary": {
+    "hull": [
+      "P8",
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5",
+      "P6",
+      "P7"
+    ],
+    "hullIndices": [
+      7,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "hullSize": 8,
+    "interior": [
+      "P9",
+      "P10"
+    ],
+    "interiorCount": 2,
+    "perimeter": 14.844143427661,
+    "area": 16.43,
+    "testsTotal": 72,
+    "cost": "O(n times h): one full scan of the points per hull vertex found",
+    "boundingBoxArea": 24.0
+  },
+  "alt": {
+    "first": "The wrap starts at the leftmost point, which must be on the hull, and tests every other point to find the one with all the rest to its left.",
+    "last": "The rope closes on a 8-sided polygon; 2 of the ten points lie strictly inside it. The hull encloses 16.43 square units against the bounding box's 24.00 — which is why the hull, not the box, is the shape of the data."
+  }
+}

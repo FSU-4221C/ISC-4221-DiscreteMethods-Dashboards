@@ -1,173 +1,110 @@
-# Interactive Educational Dashboards for Discrete Algorithms
+# ISC 4221C Interactive Dashboard (2026)
 
-A comprehensive collection of interactive educational dashboards for learning discrete algorithms, graph theory, probability, and data science concepts. Built with Streamlit and various visualization libraries.
+A single static dashboard covering all 323 topics of ISC 4221C — Discrete
+Algorithms. Plain HTML, CSS, and hand-written ES modules. No framework, no
+bundler, no npm, and **no network requests of any kind**.
 
-## Project Overview
+---
 
-This repository contains interactive dashboards designed for educational purposes, covering various topics in discrete algorithms and their applications. Each dashboard provides step-by-step visualizations and interactive learning experiences.
+## Running it
 
-## Available Dashboards
+**Open `index.html`.** Double-click it, drag it onto a browser window, put the
+folder on a USB stick and open it there. No server, no install, no build step.
+Everything works: search, the theme switch, and every interactive.
 
-### 📊 Graph Algorithms Dashboard
-**Location**: `Graphs/interactive_graph_dashboards.py`
-
-Interactive graph theory concepts and algorithms with step-by-step visualizations:
-
-- **Graph Representations**: Explore adjacency matrices, adjacency lists, and edge lists
-- **Graph Traversal**: Visualize BFS and DFS algorithms with interactive step-through
-- **Shortest Path**: Interactive demonstration of Dijkstra's algorithm
-- **Minimum Spanning Tree**: Kruskal's algorithm with Union-Find visualization
-
-**Run with**: `uv run streamlit run Graphs/interactive_graph_dashboards.py`
-
-### 🔢 Discrete Algorithms Dashboard
-**Location**: `Algorithms/interactive_algorithms_dashboards.py`
-
-Fundamental algorithmic strategies and complexity analysis:
-
-- Algorithm complexity analysis
-- Sorting algorithm comparisons
-- Dynamic programming examples
-- Divide and conquer strategies
-
-**Run with**: `uv run streamlit run Algorithms/interactive_algorithms_dashboards.py`
-
-### 🎲 Probability & Monte Carlo Dashboards
-**Location**: `ProbabilityMonteCarlo/` directory
-
-Multiple dashboards covering statistical simulations and probability concepts:
-
-- **Probability Building Blocks** (`dashboard_1_probability_building_blocks.py`): Basic probability concepts
-- **Monte Carlo Pi** (`dashboard_4_monte_carlo_pi.py`): Monte Carlo simulation for π estimation
-- **Brownian Motion** (`dashboard_6_brownian_motion.py`): Random walk simulations
-- **Secretary Problem** (`dashboard_7_secretary_problem.py`): Optimal stopping theory
-
-**Run with**: `uv run streamlit run ProbabilityMonteCarlo/dashboard_X_[name].py`
-
-### 🖼️ Image Processing
-**Location**: `ImageProcessing/` directory
-
-Computer vision and image manipulation algorithms:
-
-- Image filtering and transformation
-- Edge detection algorithms
-- Color space conversions
-- Morphological operations
-
-*Note: Implementation files are in development*
-
-### 📈 Data Mining
-**Location**: `DataMining/` directory
-
-Machine learning and data analysis algorithms:
-
-- Clustering algorithms
-- Classification methods
-- Dimensionality reduction
-- Association rule mining
-
-*Note: Implementation files are in development*
-
-## Installation
-
-This project uses `uv` for dependency management. Make sure you have `uv` installed:
+There is a local server in `tools/serve.py` if you want one, but it is a
+convenience for editing (it disables caching so a reload picks up your changes),
+not a requirement for reading.
 
 ```bash
-# Install uv (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
+python3 tools/serve.py          # optional; http://localhost:8731/index.html
 ```
 
-## Quick Start
+### Why this used to need a server, and does not now
 
-1. **Install dependencies**:
-   ```bash
-   uv sync
-   ```
+The runtime was written as ES modules (`<script type="module">`), and **Chrome
+and Firefox refuse to load a module script from a `file://` address**: the
+origin is opaque, so the CORS check fails before the file is read. Safari
+allows it; the other two have not since 2019.
 
-2. **Run any dashboard**:
-   ```bash
-   # For Graph Algorithms
-   uv run streamlit run Graphs/interactive_graph_dashboards.py
-   
-   # For Discrete Algorithms
-   uv run streamlit run Algorithms/interactive_algorithms_dashboards.py
-   
-   # For Probability & Monte Carlo (example)
-   uv run streamlit run ProbabilityMonteCarlo/dashboard_1_probability_building_blocks.py
-   ```
+That made "works offline" and "works by opening the file" two different claims,
+and the project only made the first one. A reader who double-clicked
+`index.html` got the prose and the static figures, and a fallback note in place
+of every interactive.
 
-3. **Open your browser** and navigate to `http://localhost:8501`
+The runtime is now classic scripts publishing globals, which is the shape the
+explorable-explainer format requires for exactly this reason. `tools/demodulize.py`
+performed the conversion and documents it; `tools/fix_script_tags.py` keeps the
+`defer` load order in dependency order. Both are idempotent, so re-running them
+after adding a page is safe.
 
-## Dependencies
+The old in-page fallbacks are still there and still correct — they now cover
+only the case where JavaScript is genuinely off or a file is missing.
 
-- Python >= 3.8.1
-- streamlit >= 1.28.0
-- networkx >= 3.0
-- plotly >= 5.15.0
-- numpy >= 1.24.0
-- pandas >= 2.0.0
-- scipy >= 1.10.0
-- matplotlib >= 3.7.0
-- seaborn >= 0.12.0
+---
 
-## Project Structure
+## Layout
 
 ```
-Examples_2025/
-├── Algorithms/                    # Discrete algorithms dashboards
-│   ├── interactive_algorithms_dashboards.py
-│   └── Discrete Algorithms Tutorial Generation.md
-├── Graphs/                       # Graph theory dashboards
-│   ├── interactive_graph_dashboards.py
-│   ├── run_dashboard.py
-│   └── dashboard_summary.md
-├── ProbabilityMonteCarlo/        # Probability and simulation dashboards
-│   ├── dashboard_1_probability_building_blocks.py
-│   ├── dashboard_4_monte_carlo_pi.py
-│   ├── dashboard_6_brownian_motion.py
-│   ├── dashboard_7_secretary_problem.py
-│   └── dashboard_summary_table.md
-├── ImageProcessing/              # Image processing algorithms
-│   └── Image Processing.md
-├── DataMining/                   # Data mining and ML algorithms
-│   └── Data Mining Gemini.md
-├── pyproject.toml               # Project configuration
-├── uv.lock                      # Dependency lock file
-└── README.md                    # This file
+Dashboard/
+  index.html                  home: course map, search, threads, a11y statement
+  _TEMPLATE.html              the skeleton every module page copies
+  AUTHORING-CONTRACT.md       the rules the eight module pages follow
+  m0-foundations.html         …m7-discrete-optimization.html
+  assets/
+    css/fsu-tokens.css        design tokens — colour, type, spacing, focus
+    css/dashboard.css         layout and components, built on those tokens
+    js/theme.js               light / dark / system, persisted
+    js/nav-map.js             GENERATED chapter/section map for the header
+    js/nav.js                 chapter dropdowns, current page, current section
+    js/core/gfx.js            canvas stage, drag handles, token palette bridge
+    js/search.js              client-side search over the generated index
+    js/search-index.js        the index itself (module authors append to it)
+    js/demo.js                the shared accessible widget runtime
+    js/demos/                 one script per module page
+    figures/ data/            generated static assets, per module
+  tools/
+    serve.py                  local static server (stdlib only, optional)
+    build.py                  regenerates every static asset; --check audits
+    generate_nav_map.py       reads the pages -> assets/js/nav-map.js
+    rebuild_header.py         writes the two-row header on every page
+    fix_script_tags.py        keeps the defer load order in dependency order
+    demodulize.py             one-time ES-module -> classic-script conversion
+    add_thread_search.py      gives the cross-cutting pages a search box
 ```
 
-## Usage Guidelines
+### After editing a page
 
-1. **Choose a Dashboard**: Each dashboard focuses on specific algorithmic concepts
-2. **Interactive Learning**: Use the interactive controls to explore algorithms step-by-step
-3. **Visual Feedback**: Watch real-time visualizations of algorithm execution
-4. **Experiment**: Try different parameters and inputs to understand algorithm behavior
+| You changed | Run |
+|---|---|
+| a topic group's id or title | `python3 tools/generate_nav_map.py` |
+| added a page, or its scripts | `python3 tools/fix_script_tags.py` |
+| anything at all, before you push | `python3 tools/build.py --check` |
 
-## Development
+All of them are idempotent, so running one that was not needed costs nothing
+and reports "already current".
 
-To contribute or modify the dashboards:
+---
 
-1. Install development dependencies: `uv sync --extra dev`
-2. Run tests: `uv run python test_dashboard.py`
-3. Format code: `uv run black [filename].py`
-4. Lint code: `uv run flake8 [filename].py`
+## Accessibility
 
-## Troubleshooting
+Target: **WCAG 2.1 AA**, plus the 2.2 AA additions. The full student-facing
+statement is at [`../ACCESSIBILITY_STATEMENT.md`](../ACCESSIBILITY_STATEMENT.md).
 
-If you encounter issues:
+The rule that shaped every design decision here: **every figure has a
+non-visual equivalent** — a real data table of the numbers, or a text summary
+in an `aria-live` region that updates when the figure does.
 
-1. **Dependency errors**: Run `uv sync` to reinstall dependencies
-2. **Port conflicts**: Change the port: `--server.port 8502`
-3. **Browser issues**: Try accessing `http://localhost:8501` directly
-4. **Module not found**: Ensure you're running from the project root directory
+`assets/js/demo.js` enforces it. A demo that declares a figure without a
+description, or omits its data table or its live summary, does not render; it
+is replaced by a panel naming the missing function and the criterion it fails.
+The accessible thing is the only thing that works.
 
-## Educational Resources
+---
 
-Each dashboard is accompanied by detailed documentation:
-- `README_Graphs.md` - Detailed guide for graph algorithms
-- `README_Algorithms.md` - Guide for discrete algorithms
-- Individual markdown files in each directory provide specific tutorials
+## Adding a module page
 
-## License
-
-This project is for educational purposes and is designed to support learning in discrete algorithms and computer science courses. 
+Read [`AUTHORING-CONTRACT.md`](AUTHORING-CONTRACT.md) first. It is prescriptive
+and has copy-pasteable markup for every component, the exact anchor-id
+convention, the exact search-index entry shape, and the checklist to run before
+declaring a page finished.

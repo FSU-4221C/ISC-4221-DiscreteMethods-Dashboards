@@ -1,0 +1,343 @@
+{
+  "schema": "isc4221c-trace/1",
+  "id": "simplex-tableau",
+  "module": "M7",
+  "topics": [
+    "7.4.1",
+    "7.4.2",
+    "7.4.4",
+    "7.4.6",
+    "7.5.1",
+    "7.5.3",
+    "7.5.4",
+    "7.5.5",
+    "7.5.6",
+    "7.5.7",
+    "7.5.8",
+    "7.5.9",
+    "7.5.10"
+  ],
+  "title": "Simplex on the two-product plant, three tableaus to the optimum",
+  "seed": null,
+  "determinism": "no randomness; the input is fixed",
+  "generator": "Dashboard/tools/generate_traces.py",
+  "command": "python3 Dashboard/tools/build.py",
+  "notes": [
+    "Exact rational arithmetic. The slides print 3/5 and 4/5 and -2/5; a float tableau prints 0.6000000000000001 and a student checking their own arithmetic against it concludes they are wrong.",
+    "Every tableau here matches the ones in the slide deck (T10 through T16), including the intermediate z = 360 at the corner (3, 0)."
+  ],
+  "input": {
+    "objective": "maximise z = 120 x1 + 100 x2",
+    "constraints": [
+      "2 x1 + 2 x2 + x3 = 8",
+      "5 x1 + 3 x2 + x4 = 15",
+      "x1, x2, x3, x4 >= 0"
+    ],
+    "slackVariables": [
+      "x3",
+      "x4"
+    ],
+    "vertices": [
+      [
+        0,
+        0
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        1.5,
+        2.5
+      ],
+      [
+        0,
+        4
+      ]
+    ],
+    "source": "the running example of the M7 slides, P2 frame 2 and P3 frames 11 to 26"
+  },
+  "columns": [
+    {
+      "label": "Basic variable",
+      "unit": "",
+      "numeric": false
+    },
+    {
+      "label": "x1",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "x2",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "x3",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "x4",
+      "unit": "",
+      "numeric": true
+    },
+    {
+      "label": "Right-hand side",
+      "unit": "",
+      "numeric": true
+    }
+  ],
+  "rowHeader": true,
+  "stepCount": 4,
+  "steps": [
+    {
+      "index": 0,
+      "label": "Initial tableau. Setting the 2 decision variables to zero makes the slack variables basic at x3 = 8, x4 = 15, which is the feasible corner (0, 0) with z = 0. Every right-hand side is positive, so this basic solution is feasible and simplex can start here.",
+      "rows": [
+        [
+          "x3",
+          "2",
+          "2",
+          "1",
+          "0",
+          "8"
+        ],
+        [
+          "x4",
+          "5",
+          "3",
+          "0",
+          "1",
+          "15"
+        ],
+        [
+          "z (objective)",
+          "-120",
+          "-100",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "state": {
+        "iteration": 0,
+        "basis": [
+          "x3",
+          "x4"
+        ],
+        "solution": {
+          "x1": "0",
+          "x2": "0",
+          "x3": "8",
+          "x4": "15"
+        },
+        "z": "0",
+        "entering": null,
+        "departing": null,
+        "pivot": null,
+        "optimal": false
+      }
+    },
+    {
+      "index": 1,
+      "label": "Iteration 1: x1 has the most negative objective coefficient (-120), so it enters. Ratio test — x3 row gives 8 over 2 = 4; x4 row gives 15 over 5 = 3 — so x4 departs on the smallest positive ratio 3. Pivoting on 5 moves to the adjacent corner (3, 0) and raises z to 360.",
+      "rows": [
+        [
+          "x3",
+          "0",
+          "4/5",
+          "1",
+          "-2/5",
+          "2"
+        ],
+        [
+          "x1",
+          "1",
+          "3/5",
+          "0",
+          "1/5",
+          "3"
+        ],
+        [
+          "z (objective)",
+          "0",
+          "-28",
+          "0",
+          "24",
+          "360"
+        ]
+      ],
+      "state": {
+        "iteration": 1,
+        "basis": [
+          "x3",
+          "x1"
+        ],
+        "solution": {
+          "x1": "3",
+          "x2": "0",
+          "x3": "2",
+          "x4": "0"
+        },
+        "z": "360",
+        "entering": "x1",
+        "departing": "x4",
+        "pivot": "5",
+        "pivotRow": 1,
+        "pivotCol": 0,
+        "ratios": [
+          [
+            "x3",
+            "4"
+          ],
+          [
+            "x1",
+            "3"
+          ]
+        ],
+        "optimal": false
+      }
+    },
+    {
+      "index": 2,
+      "label": "Iteration 2: x2 has the most negative objective coefficient (-28), so it enters. Ratio test — x3 row gives 2 over 4/5 = 5/2; x1 row gives 3 over 3/5 = 5 — so x3 departs on the smallest positive ratio 5/2. Pivoting on 4/5 moves to the adjacent corner (3/2, 5/2) and raises z to 430.",
+      "rows": [
+        [
+          "x2",
+          "0",
+          "1",
+          "5/4",
+          "-1/2",
+          "5/2"
+        ],
+        [
+          "x1",
+          "1",
+          "0",
+          "-3/4",
+          "1/2",
+          "3/2"
+        ],
+        [
+          "z (objective)",
+          "0",
+          "0",
+          "35",
+          "10",
+          "430"
+        ]
+      ],
+      "state": {
+        "iteration": 2,
+        "basis": [
+          "x2",
+          "x1"
+        ],
+        "solution": {
+          "x1": "3/2",
+          "x2": "5/2",
+          "x3": "0",
+          "x4": "0"
+        },
+        "z": "430",
+        "entering": "x2",
+        "departing": "x3",
+        "pivot": "4/5",
+        "pivotRow": 0,
+        "pivotCol": 1,
+        "ratios": [
+          [
+            "x2",
+            "5/2"
+          ],
+          [
+            "x1",
+            "5"
+          ]
+        ],
+        "optimal": false
+      }
+    },
+    {
+      "index": 3,
+      "label": "Optimality test: no objective-row coefficient is negative, so no variable can be increased without lowering z. The tableau is optimal at x1 = 3/2, x2 = 5/2 with z = 430.",
+      "rows": [
+        [
+          "x2",
+          "0",
+          "1",
+          "5/4",
+          "-1/2",
+          "5/2"
+        ],
+        [
+          "x1",
+          "1",
+          "0",
+          "-3/4",
+          "1/2",
+          "3/2"
+        ],
+        [
+          "z (objective)",
+          "0",
+          "0",
+          "35",
+          "10",
+          "430"
+        ]
+      ],
+      "state": {
+        "iteration": 3,
+        "basis": [
+          "x2",
+          "x1"
+        ],
+        "solution": {
+          "x1": "3/2",
+          "x2": "5/2",
+          "x3": "0",
+          "x4": "0"
+        },
+        "z": "430",
+        "entering": null,
+        "departing": null,
+        "pivot": null,
+        "optimal": true
+      }
+    }
+  ],
+  "summary": {
+    "optimal": true,
+    "solution": {
+      "x1": "3/2",
+      "x2": "5/2",
+      "x3": "0",
+      "x4": "0"
+    },
+    "z": "430",
+    "pivots": 2,
+    "path": [
+      "(0, 0)",
+      "(3, 0)",
+      "(3/2, 5/2)",
+      "(3/2, 5/2)"
+    ],
+    "zByStep": [
+      "0",
+      "360",
+      "430",
+      "430"
+    ],
+    "enteringRule": "most negative objective coefficient, lowest index on a tie (Bland's rule)",
+    "departingRule": "smallest positive ratio of right-hand side to entering-column coefficient",
+    "optimalityTest": "no negative coefficient remains in the objective row",
+    "exact": true
+  },
+  "alt": {
+    "first": "The initial tableau sets both decision variables to zero, which makes the two slack variables basic at 8 and 15 — the corner (0, 0) where z is 0.",
+    "last": "The objective row has no negative coefficient left, so the tableau is optimal: x1 = 3/2, x2 = 5/2, z = 430. Simplex reached it in 2 pivots, visiting three of the four corners rather than evaluating all of them."
+  }
+}

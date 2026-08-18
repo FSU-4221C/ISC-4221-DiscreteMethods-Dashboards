@@ -1,0 +1,79 @@
+<!--
+  Generated file — do not edit by hand.
+
+    Regenerate:  python3 Dashboard/tools/build.py
+    Generator:   Dashboard/tools/generate_figures.py  (figure id 'dijkstra-example-graph')
+
+  Topics: 3.5.1, 3.5.2, 3.5.3, 3.5.5, 3.5.6, 3.5.7
+
+  Colour comes from fsu-tokens.css when this file is inlined into a dashboard
+  page; the var() fallbacks are the same values as standards/color-palette.md
+  and only apply when the file is opened on its own. The white plot panel is
+  deliberate and theme-independent — see Dashboard/tools/fsu_palette.py.
+
+  The non-visual equivalent of this figure is the table in the sibling file
+  dijkstra-example-graph.table.html. Ship them together.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 470" width="720" height="470" role="img" aria-labelledby="fig-dijkstra-example-graph-title fig-dijkstra-example-graph-desc" class="fsu-figure" data-figure="dijkstra-example-graph">
+  <title id="fig-dijkstra-example-graph-title">The shortest route from A to F runs A to C to E to F and totals 11 kilometres — not the shorter-looking A, B, D, F, which costs 15.</title>
+  <desc id="fig-dijkstra-example-graph-desc">A weighted undirected graph of six nodes, A to F, and nine edges. The shortest path from A to F is drawn as a thick solid line through A, C, E, F; the other edges are thin and dashed. Every edge carries its weight in a small box at its midpoint, and every node carries its final Dijkstra distance beneath it. Hop count is not the deciding factor: the route through B and D takes the same three hops but costs 15 kilometres against 11, because its first two edges are heavy.</desc>
+  <style>
+    /* Reflow: the figure scales with its container instead of forcing
+       a horizontal page scrollbar at 320px or at 400% zoom (1.4.10). */
+    svg.fsu-figure { max-width: 100%; height: auto; }
+  </style>
+  <text x="24" y="30" fill="var(--fsu-black, #161514)" font-size="17" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700">Shortest path from A to F, with the final Dijkstra distances</text>
+  <rect x="24" y="52" width="672" height="330" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <line x1="131" y1="217" x2="267.8" y2="132" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.8" stroke-dasharray="6 4" stroke-linecap="round" />
+  <line x1="131" y1="217" x2="267.8" y2="302" stroke="var(--fsu-garnet, #782f40)" stroke-width="5.0" stroke-linecap="round" />
+  <line x1="267.8" y1="132" x2="267.8" y2="302" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.8" stroke-dasharray="6 4" stroke-linecap="round" />
+  <line x1="267.8" y1="132" x2="438.8" y2="167" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.8" stroke-dasharray="6 4" stroke-linecap="round" />
+  <line x1="267.8" y1="302" x2="438.8" y2="167" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.8" stroke-dasharray="6 4" stroke-linecap="round" />
+  <line x1="267.8" y1="302" x2="438.8" y2="282" stroke="var(--fsu-garnet, #782f40)" stroke-width="5.0" stroke-linecap="round" />
+  <line x1="438.8" y1="167" x2="438.8" y2="282" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.8" stroke-dasharray="6 4" stroke-linecap="round" />
+  <line x1="438.8" y1="167" x2="598.4" y2="222" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.8" stroke-dasharray="6 4" stroke-linecap="round" />
+  <line x1="438.8" y1="282" x2="598.4" y2="222" stroke="var(--fsu-garnet, #782f40)" stroke-width="5.0" stroke-linecap="round" />
+  <rect x="186.4" y="163.5" width="26" height="22" rx="4" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="199.4" y="179.5" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">4</text>
+  <rect x="186.4" y="248.5" width="26" height="22" rx="4" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-garnet, #782f40)" stroke-width="1.6" />
+  <text x="199.4" y="264.5" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700" text-anchor="middle">2</text>
+  <rect x="254.8" y="206" width="26" height="22" rx="4" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="267.8" y="222" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">1</text>
+  <rect x="340.3" y="138.5" width="26" height="22" rx="4" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="353.3" y="154.5" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">5</text>
+  <rect x="340.3" y="223.5" width="26" height="22" rx="4" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="353.3" y="239.5" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">8</text>
+  <rect x="340.3" y="281" width="26" height="22" rx="4" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-garnet, #782f40)" stroke-width="1.6" />
+  <text x="353.3" y="297" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700" text-anchor="middle">6</text>
+  <rect x="425.8" y="213.5" width="26" height="22" rx="4" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="438.8" y="229.5" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">2</text>
+  <rect x="505.6" y="183.5" width="26" height="22" rx="4" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1" />
+  <text x="518.6" y="199.5" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" text-anchor="middle">6</text>
+  <rect x="505.6" y="241" width="26" height="22" rx="4" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-garnet, #782f40)" stroke-width="1.6" />
+  <text x="518.6" y="257" fill="var(--fsu-black, #161514)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700" text-anchor="middle">3</text>
+  <circle cx="131" cy="217" r="24" fill="none" stroke="var(--fsu-garnet, #782f40)" stroke-width="2.5" />
+  <circle cx="131" cy="217" r="19" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-garnet, #782f40)" stroke-width="2.4" />
+  <text x="131" y="223" fill="var(--fsu-white, #ffffff)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700" text-anchor="middle">A</text>
+  <text x="131" y="255" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600" text-anchor="middle">d = 0</text>
+  <circle cx="267.8" cy="132" r="19" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-garnet, #782f40)" stroke-width="2.4" />
+  <text x="267.8" y="138" fill="var(--fsu-black, #161514)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700" text-anchor="middle">B</text>
+  <text x="267.8" y="170" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600" text-anchor="middle">d = 3</text>
+  <circle cx="267.8" cy="302" r="19" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-garnet, #782f40)" stroke-width="2.4" />
+  <text x="267.8" y="308" fill="var(--fsu-black, #161514)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700" text-anchor="middle">C</text>
+  <text x="267.8" y="340" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600" text-anchor="middle">d = 2</text>
+  <circle cx="438.8" cy="167" r="19" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-garnet, #782f40)" stroke-width="2.4" />
+  <text x="438.8" y="173" fill="var(--fsu-black, #161514)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700" text-anchor="middle">D</text>
+  <text x="438.8" y="205" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600" text-anchor="middle">d = 8</text>
+  <circle cx="438.8" cy="282" r="19" fill="var(--fsu-white, #ffffff)" stroke="var(--fsu-garnet, #782f40)" stroke-width="2.4" />
+  <text x="438.8" y="288" fill="var(--fsu-black, #161514)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700" text-anchor="middle">E</text>
+  <text x="438.8" y="320" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600" text-anchor="middle">d = 8</text>
+  <circle cx="598.4" cy="222" r="24" fill="none" stroke="var(--fsu-garnet, #782f40)" stroke-width="2.5" />
+  <circle cx="598.4" cy="222" r="19" fill="var(--fsu-garnet, #782f40)" stroke="var(--fsu-garnet, #782f40)" stroke-width="2.4" />
+  <text x="598.4" y="228" fill="var(--fsu-white, #ffffff)" font-size="14" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="700" text-anchor="middle">F</text>
+  <text x="598.4" y="260" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600" text-anchor="middle">d = 11</text>
+  <line x1="24" y1="426" x2="60" y2="426" stroke="var(--fsu-garnet, #782f40)" stroke-width="5" stroke-linecap="round" />
+  <text x="68" y="431" fill="var(--fsu-slate, #2c2a29)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif" font-weight="600">shortest path A to F, 11 km, drawn thick and solid</text>
+  <line x1="24" y1="448" x2="60" y2="448" stroke="var(--fsu-neutral-2s, #565554)" stroke-width="1.8" stroke-dasharray="6 4" stroke-linecap="round" />
+  <text x="68" y="453" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif">other edges, drawn thin and dashed</text>
+  <g><text x="24" y="404" fill="var(--fsu-neutral-2s, #565554)" font-size="12.5" font-family="&#x27;Open Sans&#x27;, Arial, Helvetica, &#x27;Helvetica Neue&#x27;, sans-serif">Ringed nodes are the source and the destination. Weights are kilometres.</text></g>
+</svg>
