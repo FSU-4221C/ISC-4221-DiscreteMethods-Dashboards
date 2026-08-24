@@ -1,0 +1,4 @@
+dash>=4.0,<5
+numpy>=2.0
+plotly>=6.0,<7
+scipy>=1.14
