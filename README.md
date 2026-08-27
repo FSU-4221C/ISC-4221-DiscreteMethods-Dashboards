@@ -1,4 +1,4 @@
-Hello # ISC 4221C interactive labs
+Hello and bye # ISC 4221C interactive labs
 
 Local Dash labs for Discrete Algorithms for Science Applications, grouped by
 course module. Each lab has an **Explore** tab (one to four interactive
